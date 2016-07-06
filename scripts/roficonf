@@ -1,0 +1,16 @@
+#!/bin/sh
+rofi \
+-color-enabled \
+-color-window "argb:F21d102c, argb:001d102c, argb:001d102c" \
+-color-normal "argb:0000000, #fff, argb:0000000, argb:001d102c, #e0008c" \
+-color-active "argb:0000000, #fff, argb:0000000, argb:001d102c, #e0008c" \
+-color-urgent "argb:0000000, #fff, argb:0000000, argb:001d102c, #e0008c" \
+-show run \
+-location 0 \
+-width 1920 \
+-lines 4 \
+-eh 2 \
+-bw 0 \
+-padding 486 \
+-seperator-style none \
+-font "Source Code Pro 18" \

@@ -1,0 +1,179 @@
+#!/bin/bash
+
+PANEL_FIFO=/tmp/panel-fifo
+PANEL_HEIGHT=28
+PANEL_FONT_FAMILY="Sans Bold:size=10"
+ICON_FONT="FontAwesome:size=14"
+COLOR_BACKGROUND="#BEC4C7"
+COLOR_BACKGROUND="#e9cc24"
+COLOR_FOREGROUND="#000000"
+COLOR_HIGHLIGHT="#000000"
+COLOR_TEXT_HIGHLIGHT="#FFFFFF"
+UPDATE="~/.config/lemonbar/update"
+
+if [ $(pgrep -cx panel) -gt 1 ] ; then
+	printf "%s\n" "The panel is already running." >&2
+	exit 1
+fi
+
+trap 'trap - TERM; kill 0' INT TERM QUIT EXIT
+
+
+# Power button
+power(){
+	echo -e '%{A:oblogout:}    %{A}'
+}
+
+# Clock
+clock(){
+	echo -e '  ' $(date +'%A, %b %e')  '\uE924' $(date +'%l:%M %p') ' '
+}
+
+_date(){
+	echo -e '  ' $(date +'%A, %b %e')
+}
+
+_time(){
+	echo -e '  ' $(date +'%l:%M %p') ' '
+}
+
+# Battery
+battery(){
+	lvl=$(cat /sys/class/power_supply/BAT1/capacity)
+	stat=$(cat /sys/class/power_supply/BAT1/status)
+	if [ $stat == "Charging" ]
+	then
+		icon=' '
+	elif (($lvl > 80))
+	then
+		icon=' '
+	elif (($lvl > 60))
+	then
+		icon=' '
+	elif (($lvl > 40))
+	then
+		icon=' '
+	elif (($lvl > 20))
+	then
+		icon=' '
+	else
+		icon=' '
+	fi
+
+	echo -e $icon $lvl'%' ' '
+}
+
+# Networking
+network(){
+	wired=$(ip route get 8.8.8.8 | grep -Po 'dev \K\w+' | grep -qFf - /proc/net/wireless)
+	if $wired; then
+		icon=' '
+		ssid=''
+	else
+		icon=' '
+		ssid=$(iwgetid -r)
+	fi
+	echo -e $icon $ssid ' '
+}
+
+ssid(){
+	name=$(iwgetid -r)
+	echo $name
+}
+
+# Volume
+volume(){
+	vol=$(amixer get Master | grep % | sed -n 1p | awk -F '[' '{print $2}' | awk -F ']' '{print $1}' | sed s/%//)
+	if [ $vol = 0 ]; then
+		icon=' '
+	elif [ $vol -lt 33 ]; then
+		icon=' '
+	elif [ $vol -lt 66 ]; then
+		icon=' '
+	else
+		icon=' '
+	fi
+
+	echo -e "%{A:amixer -q set Master 5%+ && ${UPDATE}:}  %{A}\
+					 %{A:amixer -q set Master 5%- && ${UPDATE}:}  %{A}"\
+					 '' $icon $vol'%' ' '
+}
+
+#Music
+music(){
+	song=$(mpc current)
+	echo -e '  ' $song
+}
+
+music_control_left(){
+	echo -e "%{A:mpc prev:}  %{A}"
+}
+
+music_control_right(){
+	echo -e "%{A:mpc next:}  %{A}"
+}
+
+music_control_pause_play(){
+	echo -e "%{A:mpc toggle:}  %{A}"
+}
+
+music_controls(){
+	echo -e "$(music_control_left) $(music_control_pause_play) $(music_control_right)"
+}
+
+#Player
+player(){
+	status=$(mpc status | grep -E "(playing|paused)" -o)
+	progress=$(mpc status | grep -E "(playing|paused)" | rev | cut -c 3- | rev | cut -d "(" -f 2)
+	full=$((progress / 2))
+	shade=$((50 - full))
+	if [ $status == "playing" ]; then
+		icon='  '
+	else
+		icon='  '
+	fi
+	echo -e "%{A:mpc -q prev && ${UPDATE}:}  %{A}%{A:mpc -q toggle && ${UPDATE}:} " $icon " %{A}%{A:mpc -q next && ${UPDATE}:}  %{A} ▌"$(seq -s█ $full|tr -d '[:digit:]')$(seq -s▓ $shade|tr -d '[:digit:]')"▐"
+}
+
+# Workspace
+workspace() {
+	wslist=$(\
+		wmctrl -d \
+		| awk '/ / {print $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20}' ORS=''\
+		| sed -e 's/\s*  / /g' \
+		-e 's/\b1\b/          /g' \
+		-e 's/\b2\b/          /g' \
+		-e 's/\b3\b/          /g' \
+		-e 's/\b4\b/          /g' \
+		-e 's/\b5\b/          /g' \
+		-e 's/\b6\b/          /g' \
+		-e 's/\b7\b/          /g' \
+		-e 's/\b8\b/          /g' \
+		-e 's/\b9\b/          /g' \
+		-e 's/\b10\b/          /g' \
+		# -e 's/\*[ 0-9A-Za-z]*[^ -~]*/\\uE3FA /g' \
+		# -e 's/\-[ 0-9A-Za-z]*[^ -~]*/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}\\uE836 %{A}/g' \
+		# -e 's/\*//g' \
+		# -e 's/ -/ /g' \
+	)
+
+	# if (( $(wmctrl -d | wc -l) == 10)); then
+	# 	new=""
+	# else
+	# 	new=$(\
+	# 		wmctrl -d\
+	# 		| rev\
+	# 		| cut -c 1\
+	# 		| awk -v RS='\\s+' '{ a[$1] } END { for(i = 1; i in a; ++i); print i }'\
+	# 	)
+	# 	new="%{A:i3-msg workspace $new && ${UPDATE}:}\uE3BA%{A}"
+	# fi
+
+	echo -n -e " $wslist$new"
+}
+
+title(){
+	title=$(xdotool getactivewindow getwindowname)
+	echo "$title" | cut -c 1-70
+}
+

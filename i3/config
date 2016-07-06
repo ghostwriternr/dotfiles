@@ -102,6 +102,17 @@ bindsym $mod+a focus parent
 #bindsym $mod+d focus child
 
 # Rename workspaces
+# set $workspace1 ""
+# set $workspace2 ""
+# set $workspace3 ""
+# set $workspace4 ""
+# set $workspace5 ""
+# set $workspace6 ""
+# set $workspace7 ""
+# set $workspace8 ""
+# set $workspace9 ""
+# set $workspace10 ""
+
 set $workspace1 "1"
 set $workspace2 "2"
 set $workspace3 "3"
@@ -189,7 +200,7 @@ bindsym XF86MonBrightnessUp exec light -A 10 # increase screen brightness
 bindsym XF86MonBrightnessDown exec light -U 10 # decrease screen brightness
 
 # Set Wallpaper
-exec_always feh --bg-scale /home/ghostwriter/Downloads/Wallpapers/wallhaven-177621.jpg
+exec_always feh --bg-scale /home/ghostwriter/Downloads/Wallpapers/WP_Lightning_Legend-2560x1440_00000.jpg
 
 # Display Settings
 exec_always xrandr --output VGA-1 --off --output HDMI-1 --off --output eDP-1 --mode 1920x1080 --pos 0x0 --rotate normal
@@ -220,3 +231,6 @@ bindsym --release $mod+Print exec scrot -s -e 'mv $f ~/Pictures/Screenshots'
 
 # Enable tap to click
 exec --no-startup-id synclient TapButton1=1
+
+# Lemonbar
+exec --no-startup-id ~/.config/lemonbar/bottom

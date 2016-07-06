@@ -20,7 +20,6 @@
     background_color = "#0a0f14"
     background_darkness = 0.97
     background_image = None
-    background_type = transparent
     cursor_color = "#98d1ce"
     foreground_color = "#98d1ce"
     palette = "#0a0f14:#c33027:#26a98b:#edb54b:#195465:#4e5165:#33859d:#98d1ce:#10151b:#d26939:#081f2d:#245361:#093748:#888ba5:#599caa:#d3ebe9"
