@@ -141,16 +141,16 @@ workspace() {
 		wmctrl -d \
 		| awk '/ / {print $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20}' ORS=''\
 		| sed -e 's/\s*  / /g' \
-		-e 's/\b1\b/          /g' \
-		-e 's/\b2\b/          /g' \
-		-e 's/\b3\b/          /g' \
-		-e 's/\b4\b/          /g' \
-		-e 's/\b5\b/          /g' \
-		-e 's/\b6\b/          /g' \
-		-e 's/\b7\b/          /g' \
-		-e 's/\b8\b/          /g' \
-		-e 's/\b9\b/          /g' \
-		-e 's/\b10\b/          /g' \
+		-e 's/\b1\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/\b2\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/\b3\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/\b4\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/\b5\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/\b6\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/\b7\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/\b8\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/\b9\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/\b10\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
 		# -e 's/\*[ 0-9A-Za-z]*[^ -~]*/\\uE3FA /g' \
 		# -e 's/\-[ 0-9A-Za-z]*[^ -~]*/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}\\uE836 %{A}/g' \
 		# -e 's/\*//g' \
