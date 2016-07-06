@@ -11,6 +11,24 @@
 
 set $mod Mod4
 
+# Colors
+set $base00 #101218
+set $base01 #1f222d
+set $base02 #252936
+set $base03 #7780a1
+set $base04 #C0C5CE
+set $base05 #d1d4e0
+set $base06 #C9CCDB
+set $base07 #ffffff
+set $base08 #ee829f
+set $base09 #f99170
+set $base0A #ffefcc
+set $base0B #a5ffe1
+set $base0C #97e0ff
+set $base0D #97bbf7
+set $base0E #c0b7f9
+set $base0F #fcc09e
+
 # Gaps
 gaps inner 5
 gaps outer 5
@@ -89,12 +107,6 @@ bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
-# toggle tiling / floating
-bindsym $mod+Shift+space floating toggle
-
-# change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
-
 # focus the parent container
 bindsym $mod+a focus parent
 
@@ -136,6 +148,9 @@ bindsym $mod+8 workspace $workspace8
 bindsym $mod+9 workspace $workspace9
 bindsym $mod+0 workspace $workspace10
 
+bindsym $mod+Tab workspace next
+bindsym $mod+Shift+Tab workspace prev
+
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace $workspace1
 bindsym $mod+Shift+2 move container to workspace $workspace2
@@ -148,12 +163,37 @@ bindsym $mod+Shift+8 move container to workspace $workspace8
 bindsym $mod+Shift+9 move container to workspace $workspace9
 bindsym $mod+Shift+0 move container to workspace $workspace10
 
+# FLoating mode modifier
+floating_modifier $mod
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# Sticky Windows
+bindsym $mod+a+s sticky toggle
+bindsym $mod+y fullscreen disable; floating enable; resize set 560 315; sticky enable; move window to position 1340 20
+
+# Widow Colours
+#                         border  background text    indicator
+  client.focused          $base01 $base01    $base07 $base0F
+  client.focused_inactive $base02 $base02    $base03 $base0F
+  client.unfocused        $base02 $base02    $base03 $base0F
+  client.urgent           $base02 $base08    $base00 $base0F
+
+# Default workspaces for certain applications
+assign [class="google-chrome-beta"] $workspace2
+assign [class="Subl3"] $workspace4
+assign [class="Thunar"] $workspace5
+
 # reload the configuration file
 bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+# bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -190,7 +230,10 @@ bindsym $mod+r mode "resize"
 # Lockscreen
 bindsym $mod+shift+x exec ~/.scripts/i3lock
 
-# Pulse Audio controls
+# Enable pulseaudio
+exec --no-startup-id pulseaudio --start
+
+# Audio controls
 bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -D default sset Master 5%+ #increase sound volume
 bindsym XF86AudioLowerVolume exec --no-startup-id amixer -D default sset Master 5%- #decrease sound volume
 bindsym XF86AudioMute exec --no-startup-id amixer -D default sset Master 1+ toggle # mute sound
@@ -203,27 +246,32 @@ bindsym XF86MonBrightnessDown exec light -U 10 # decrease screen brightness
 exec_always feh --bg-scale /home/ghostwriter/Downloads/Wallpapers/WP_Lightning_Legend-2560x1440_00000.jpg
 
 # Display Settings
-exec_always xrandr --output VGA-1 --off --output HDMI-1 --off --output eDP-1 --mode 1920x1080 --pos 0x0 --rotate normal
+exec_always ~/.screenlayout/dualmonitor.sh
+
+# Switch worspaces between dispays
+bindsym $mod+Shift+s exec python ~/.scripts/workspace-switch.py
 
 # Launcher settings
 bindsym $mod+d exec ~/.scripts/roficonf
 exec --no-startup-id compton -f
 
 # Session Management
+
+bindsym $mod+Shift+e mode "$mode_system" exec ~/.config/lemonbar/top && ~/.scripts/killtoplemon
+
 set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (Shift+s) shutdown
 mode "$mode_system" {
-    bindsym l exec --no-startup-id ~/.scripts/i3exit lock, mode "default"
-    bindsym e exec --no-startup-id ~/.scripts/i3exit logout, mode "default"
-    bindsym s exec --no-startup-id ~/.scripts/i3exit suspend, mode "default"
-    bindsym h exec --no-startup-id ~/.scripts/i3exit hibernate, mode "default"
-    bindsym r exec --no-startup-id ~/.scripts/i3exit reboot, mode "default"
-    bindsym Shift+s exec --no-startup-id ~/.scripts/i3exit shutdown, mode "default"
+    bindsym l exec --no-startup-id ~/.scripts/mode-i3exit lock & ~/.scripts/killtoplemon, mode "default"
+    bindsym e exec --no-startup-id ~/.scripts/mode-i3exit logout & ~/.scripts/killtoplemon, mode "default"
+    bindsym s exec --no-startup-id ~/.scripts/mode-i3exit suspend & ~/.scripts/killtoplemon, mode "default"
+    bindsym h exec --no-startup-id ~/.scripts/mode-i3exit hibernate & ~/.scripts/killtoplemon, mode "default"
+    bindsym r exec --no-startup-id ~/.scripts/mode-i3exit reboot & ~/.scripts/killtoplemon, mode "default"
+    bindsym d exec --no-startup-id ~/.scripts/mode-i3exit shutdown & ~/.scripts/killtoplemon, mode "default"
 
     # back to normal: Enter or Escape
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
+    bindsym Return mode "default" exec --no-startup-id ~/.scripts/killtoplemon
+    bindsym Escape mode "default" exec --no-startup-id ~/.scripts/killtoplemon
 }
-bindsym $mod+p mode "$mode_system"
 
 # Screenshots
 bindsym Print exec scrot -e 'mv $f ~/Pictures/Screenshots'

@@ -26,7 +26,7 @@ power(){
 
 # Clock
 clock(){
-	echo -e '  ' $(date +'%A, %b %e')  '\uE924' $(date +'%l:%M %p') ' '
+	echo -e '  ' $(date +'%A, %b %e')  '  ' $(date +'%l:%M %p') ' '
 }
 
 _date(){
@@ -137,39 +137,39 @@ player(){
 
 # Workspace
 workspace() {
+
+	# Coloring the output
+	RED='\033[0;31m' # Red
+	NC='\033[0m' # No Color
+
 	wslist=$(\
 		wmctrl -d \
-		| awk '/ / {print $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20}' ORS=''\
+		| awk '/ / {print $2 $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20}' ORS=''\
 		| sed -e 's/\s*  / /g' \
-		-e 's/\b1\b//g' \
-		-e 's/\b2\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/\b3\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/\b4\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/\b5\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/\b6\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/\b7\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/\b8\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/\b9\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/\b10\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		# -e 's/\*[ 0-9A-Za-z]*[^ -~]*/\\uE3FA /g' \
-		# -e 's/\-[ 0-9A-Za-z]*[^ -~]*/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}\\uE836 %{A}/g' \
-		# -e 's/\*//g' \
-		# -e 's/ -/ /g' \
+		-e 's/*\b1\b//g' \
+		-e 's/*\b2\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}         %{A}/g' \
+		-e 's/*\b3\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}         %{A}/g' \
+		-e 's/*\b4\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}         %{A}/g' \
+		-e 's/*\b5\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}         %{A}/g' \
+		-e 's/*\b6\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}         %{A}/g' \
+		-e 's/*\b7\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}         %{A}/g' \
+		-e 's/*\b8\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}         %{A}/g' \
+		-e 's/*\b9\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}         %{A}/g' \
+		-e 's/*\b10\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}         %{A}/g' \
+		-e 's/-\b1\b//g' \
+		-e 's/-\b2\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b3\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b4\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b5\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b6\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b7\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b8\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b9\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b10\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
 	)
 
-	# if (( $(wmctrl -d | wc -l) == 10)); then
-	# 	new=""
-	# else
-	# 	new=$(\
-	# 		wmctrl -d\
-	# 		| rev\
-	# 		| cut -c 1\
-	# 		| awk -v RS='\\s+' '{ a[$1] } END { for(i = 1; i in a; ++i); print i }'\
-	# 	)
-	# 	new="%{A:i3-msg workspace $new && ${UPDATE}:}\uE3BA%{A}"
-	# fi
 
-	echo -n -e "%{A:i3-msg workspace 1 && ~/.config/lemonbar/update:}           %{A}$wslist$new"
+	echo -n -e "%{A:i3-msg workspace 1 && ~/.config/lemonbar/update:}          %{A}$wslist$new"
 }
 
 title(){

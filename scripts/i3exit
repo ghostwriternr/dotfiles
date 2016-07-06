@@ -1,30 +1,19 @@
 #!/bin/sh
-lock() {
-    i3lock
+
+PANEL_FIFO=/tmp/panel-fifo
+PANEL_HEIGHT=28
+PANEL_FONT_FAMILY="Sans Bold:size=10"
+ICON_FONT="MaterialIcons:size=14"
+COLOR_BACKGROUND="#BEC4C7"
+COLOR_BACKGROUND="#e9cc24"
+COLOR_FOREGROUND="#000000"
+COLOR_HIGHLIGHT="#000000"
+COLOR_TEXT_HIGHLIGHT="#FFFFFF"
+
+close() {
+    echo -e '   %{A:~/.scripts/killtoplemon:} \uE5CD Close (Esc) %{A}'
 }
 
-case "$1" in
-    lock)
-        lock
-        ;;
-    logout)
-        i3-msg exit
-        ;;
-    suspend)
-        lock && systemctl suspend
-        ;;
-    hibernate)
-        lock && systemctl hibernate
-        ;;
-    reboot)
-        systemctl reboot
-        ;;
-    shutdown)
-        systemctl poweroff
-        ;;
-    *)
-        echo "Usage: $0 {lock|logout|suspend|hibernate|reboot|shutdown}"
-        exit 2
-esac
-
-exit 0
+manager() {
+    echo -e '   %{A:~/.scripts/i3lock & ~/.scripts/killtoplemon:} \uE899 Lock (L) %{A}   %{A:i3-msg exit & ~/.scripts/killtoplemon:} \uE5D5 Restart Session (E) %{A}   %{A:systemctl suspend & ~/.scripts/killtoplemon:} \uE644 Suspend (S) %{A}   %{A:systemctl hibernate & ~/.scripts/killtoplemon:} \uE8C6 Hibernate (H) %{A}   %{A:systemctl reboot:} \uE86A Reboot (R) %{A}   %{A:systemctl poweroff:} \uE8ac Shut Down (D) %{A}'
+}

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+source ~/.scripts/i3exit
+
+while true; do
+    echo "%{l}$(close) \
+          %{r}$(manager)"
+    sleep 1s
+done |
+
+lemonbar\
+    eDP1 \
+    -g "x32"\
+    -F "#ffffff"\
+    -B "#19000000"\
+    -f "$PANEL_FONT_FAMILY"\
+    -f "$ICON_FONT" | bash
