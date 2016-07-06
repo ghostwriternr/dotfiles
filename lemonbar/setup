@@ -141,7 +141,7 @@ workspace() {
 		wmctrl -d \
 		| awk '/ / {print $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20}' ORS=''\
 		| sed -e 's/\s*  / /g' \
-		-e 's/\b1\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/\b1\b//g' \
 		-e 's/\b2\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
 		-e 's/\b3\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
 		-e 's/\b4\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
@@ -169,7 +169,7 @@ workspace() {
 	# 	new="%{A:i3-msg workspace $new && ${UPDATE}:}\uE3BA%{A}"
 	# fi
 
-	echo -n -e " $wslist$new"
+	echo -n -e "%{A:i3-msg workspace 1 && ~/.config/lemonbar/update:}           %{A}$wslist$new"
 }
 
 title(){
