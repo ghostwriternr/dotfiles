@@ -1,0 +1,46 @@
+#!/bin/bash
+
+file=`ls ~/dotfiles/nextapac.txt`
+usage="Usage: $0                  #get time until destination\n \
+              $0 --add time name  #assign time to the name\n \
+              $0 --reset [time]   #reset clock, to time, if given\n \
+       See man date(1) for time add/reset format."
+
+now=`date +%s`
+
+if [ "$1" = "--add"  ] ; then
+	if [ "$#" -lt "3" ] ; then
+		echo "Need more arguments!"
+		echo $usage
+		exit 1
+	fi
+	echo -n "$3:"`date -d "$2" +%s`"::" >> $file
+	exit
+elif [ "$1" = "--reset" ] ; then
+	echo "" > $file
+	exit
+fi
+
+records=`cat $file`
+numrecords=`cat $file | grep "::" | wc -l`
+while [ $numrecords -gt 0 ]
+do
+
+	destfull=`echo $records | gawk -F:: '{print $1}'`
+	destname=`echo $destfull | gawk -F: '{print $1}'`
+	dest=`echo $destfull | gawk -F: '{print $2}'`
+	
+	interval=`expr $dest - $now`
+	seconds=`expr $interval % 60`
+	interval=`expr $interval - $seconds`
+	minutes=`expr $interval % 3600 / 60`
+	interval=`expr $interval - $minutes`
+	hours=`expr $interval % 86400 / 3600`
+	interval=`expr $interval - $hours`
+	days=`expr $interval % 604800 / 86400`
+	interval=`expr $interval - $hours`
+	weeks=`expr $interval / 604800`
+	echo "$destname: "$weeks" weeks, "$days" days, "$hours" hours, "$minutes" minutes, "$seconds" seconds"
+	records="${records#$destfull"::"}"
+	numrecords=`expr $numrecords - 1`
+done

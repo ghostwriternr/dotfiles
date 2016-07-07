@@ -125,16 +125,16 @@ bindsym $mod+a focus parent
 # set $workspace9 ""
 # set $workspace10 ""
 
-set $workspace1 "1"
-set $workspace2 "2"
-set $workspace3 "3"
-set $workspace4 "4"
-set $workspace5 "5"
-set $workspace6 "6"
-set $workspace7 "7"
-set $workspace8 "8"
-set $workspace9 "9"
-set $workspace10 "10"
+set $workspace1 "0"
+set $workspace2 "1"
+set $workspace3 "2"
+set $workspace4 "3"
+set $workspace5 "4"
+set $workspace6 "5"
+set $workspace7 "6"
+set $workspace8 "7"
+set $workspace9 "8"
+set $workspace10 "9"
 
 # switch to workspace
 bindsym $mod+1 workspace $workspace1
@@ -182,11 +182,6 @@ bindsym $mod+y fullscreen disable; floating enable; resize set 560 315; sticky e
   client.focused_inactive $base02 $base02    $base03 $base0F
   client.unfocused        $base02 $base02    $base03 $base0F
   client.urgent           $base02 $base08    $base00 $base0F
-
-# Default workspaces for certain applications
-assign [class="google-chrome-beta"] $workspace2
-assign [class="Subl3"] $workspace4
-assign [class="Thunar"] $workspace5
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
@@ -282,3 +277,18 @@ exec --no-startup-id synclient TapButton1=1
 
 # Lemonbar
 exec --no-startup-id ~/.config/lemonbar/bottom
+exec --no-startup-id ~/.config/lemonbar/header
+
+# Default workspaces for certain applications
+assign [class="google-chrome-beta"] $workspace2
+assign [class="Subl3"] $workspace4
+assign [class="Thunar"] $workspace5
+assign [class="Spotify"] $workspace10
+assign [class="Nylas N1"] $workspace8
+
+# Startup application
+exec --no-startup-id google-chrome-beta
+exec --no-startup-id i3-msg 'workspace 2; exec terminator'
+exec --no-startup-id thunar
+exec --no-startup-id subl3
+exec --no-startup-id i3-msg 'workspace 0'

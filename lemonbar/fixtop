@@ -1,0 +1,24 @@
+#!/bin/bash
+
+PANEL_FIFO=/tmp/panel-fifo
+PANEL_HEIGHT=28
+PANEL_FONT_FAMILY="Sans Bold:size=10"
+ICON_FONT="FontAwesome:size=14"
+COLOR_BACKGROUND="#BEC4C7"
+COLOR_BACKGROUND="#e9cc24"
+COLOR_FOREGROUND="#000000"
+COLOR_HIGHLIGHT="#000000"
+COLOR_TEXT_HIGHLIGHT="#FFFFFF"
+UPDATE="~/.config/lemonbar/update"
+
+if [ $(pgrep -cx panel) -gt 1 ] ; then
+	printf "%s\n" "The panel is already running." >&2
+	exit 1
+fi
+
+trap 'trap - TERM; kill 0' INT TERM QUIT EXIT
+
+# Countdown
+count(){
+	echo "$(~/dotfiles/scripts/countdown)"
+}

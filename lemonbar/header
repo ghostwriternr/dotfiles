@@ -1,0 +1,16 @@
+#!/bin/bash
+
+source ~/.config/lemonbar/fixtop
+
+while true; do
+    echo "%{c}$(count)"
+    sleep 1s
+done |
+
+lemonbar\
+    eDP1 \
+    -g "x32"\
+    -F "#ffffff"\
+    -B "#19000000"\
+    -f "$PANEL_FONT_FAMILY"\
+    -f "$ICON_FONT" | bash
