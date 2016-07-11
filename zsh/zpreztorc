@@ -29,22 +29,12 @@ zstyle ':prezto:load' pmodule \
   'terminal' \
   'editor' \
   'history' \
-  'homebrew' \
   'directory' \
   'spectrum' \
   'utility' \
   'completion' \
-  'fasd' \
   'git' \
   'command-not-found' \
-  'tmux' \
-  'node' \
-  'osx' \
-  'rails' \
-  'rsync' \
-  'ruby' \
-  'perl' \
-  'python' \
   'ssh' \
   'wakeonlan' \
   'syntax-highlighting' \
@@ -63,7 +53,7 @@ zstyle ':prezto:module:autosuggestions:color' found 'fg=10'
 #
 
 # Set the key mapping style to 'emacs' or 'vi'.
-zstyle ':prezto:module:editor' key-bindings 'vi'
+# zstyle ':prezto:module:editor' key-bindings 'vi'
 
 # Auto convert .... to ../..
 zstyle ':prezto:module:editor' dot-expansion 'yes'

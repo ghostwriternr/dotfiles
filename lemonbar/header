@@ -3,7 +3,9 @@
 source ~/.config/lemonbar/fixtop
 
 while true; do
-    echo "%{c}$(count)"
+    echo "%{l}  $(music) \
+    	  %{c}$(count) \
+    	  %{r}$(player)   "
     sleep 1s
 done |
 

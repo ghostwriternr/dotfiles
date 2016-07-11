@@ -3,9 +3,9 @@
 source ~/.config/lemonbar/setup
 
 while true; do
-    echo "%{l}%{O 2}$(volume)\
+    echo "%{l}%{O 2}  $(volume)\
           %{c}$(workspace)\
-          %{r}$(battery) $(network)$(ssid) %{O 2} $(_date) %{O 2} $(_time)"
+          %{r}$(battery) $(network)$(ssid) %{O 2} $(_date) %{O 2} $(_time)  "
     sleep 1s
 done |
 

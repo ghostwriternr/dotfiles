@@ -35,6 +35,7 @@ gaps outer 5
 
 # Modify title bar / borders
 for_window [class="^.*"] border pixel 0
+for_window [class=".*"] title_alignment center
 new_window normal 0 px
 hide_edge_borders both
 
@@ -222,15 +223,13 @@ bindsym $mod+r mode "resize"
 #         status_command i3status
 # }
 
-# Lockscreen
-bindsym $mod+shift+x exec ~/.scripts/i3lock
-
 # Enable pulseaudio
 exec --no-startup-id pulseaudio --start
+exec --no-startup-id asoundconf set-default-card PCH
 
 # Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -D default sset Master 5%+ #increase sound volume
-bindsym XF86AudioLowerVolume exec --no-startup-id amixer -D default sset Master 5%- #decrease sound volume
+bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -D default sset Master 5+ #increase sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id amixer -D default sset Master 5- #decrease sound volume
 bindsym XF86AudioMute exec --no-startup-id amixer -D default sset Master 1+ toggle # mute sound
 
 # Sreen brightness controls
@@ -238,7 +237,7 @@ bindsym XF86MonBrightnessUp exec light -A 10 # increase screen brightness
 bindsym XF86MonBrightnessDown exec light -U 10 # decrease screen brightness
 
 # Set Wallpaper
-exec_always feh --bg-scale /home/ghostwriter/Downloads/Wallpapers/WP_Lightning_Legend-2560x1440_00000.jpg
+exec_always feh --bg-fill /home/ghostwriter/Downloads/Wallpapers/WP_Lightning_Legend-2560x1440_00000.jpg
 
 # Display Settings
 exec_always ~/.screenlayout/dualmonitor.sh
@@ -253,6 +252,7 @@ exec --no-startup-id compton -f
 # Session Management
 
 bindsym $mod+Shift+e mode "$mode_system" exec ~/.config/lemonbar/top && ~/.scripts/killtoplemon
+bindsym $mod+Shift+x exec ~/.scripts/i3lock
 
 set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (Shift+s) shutdown
 mode "$mode_system" {
@@ -281,14 +281,14 @@ exec --no-startup-id ~/.config/lemonbar/header
 
 # Default workspaces for certain applications
 assign [class="google-chrome-beta"] $workspace2
-assign [class="Subl3"] $workspace4
+assign [class="Subl3"] $workspace3
 assign [class="Thunar"] $workspace5
 assign [class="Spotify"] $workspace10
 assign [class="Nylas N1"] $workspace8
 
 # Startup application
 exec --no-startup-id google-chrome-beta
-exec --no-startup-id i3-msg 'workspace 2; exec terminator'
+exec --no-startup-id i3-msg 'workspace 3; exec terminator'
 exec --no-startup-id thunar
 exec --no-startup-id subl3
 exec --no-startup-id i3-msg 'workspace 0'

@@ -22,3 +22,40 @@ trap 'trap - TERM; kill 0' INT TERM QUIT EXIT
 count(){
 	echo "$(~/dotfiles/scripts/countdown)"
 }
+
+#Music
+music(){
+	song=$(MPD_PORT=6601 mpc current)
+	echo -e '    '$song
+}
+
+music_control_left(){
+	echo -e "%{A:MPD_PORT=6601 mpc prev:}  %{A}"
+}
+
+music_control_right(){
+	echo -e "%{A:MPD_PORT=6601 mpc next:}  %{A}"
+}
+
+music_control_pause_play(){
+	echo -e "%{A:MPD_PORT=6601 mpc toggle:}  %{A}"
+}
+
+music_controls(){
+	echo -e "$(music_control_left) $(music_control_pause_play) $(music_control_right)"
+}
+
+#Player
+player(){
+	status=$(MPD_PORT=6601 mpc status | grep -E "(playing|paused)" -o)
+	progress=$(MPD_PORT=6601 mpc status | grep -E "(playing|paused)" | rev | cut -c 3- | rev | cut -d "(" -f 2)
+	full=$((progress / 2))
+	shade=$((50 - full))
+	if [ $status == "playing" ]; then
+		icon='  '
+	else
+		icon='  '
+	fi
+	# echo -e "%{A:MPD_PORT=6601 mpc -q prev && ${UPDATE}:}  %{A}%{A:MPD_PORT=6601 mpc -q toggle && ${UPDATE}:} " $icon " %{A}%{A:MPD_PORT=6601 mpc -q next && ${UPDATE}:}  %{A} ▌"$(seq -s█ $full|tr -d '[:digit:]')$(seq -s▓ $shade|tr -d '[:digit:]')"▐"
+	echo -e "%{A:MPD_PORT=6601 mpc -q prev && ${UPDATE}:}  %{A}%{A:MPD_PORT=6601 mpc -q toggle && ${UPDATE}:} " $icon " %{A}%{A:MPD_PORT=6601 mpc -q next && ${UPDATE}:}  %{A}"
+}
