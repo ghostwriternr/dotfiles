@@ -237,7 +237,9 @@ bindsym XF86MonBrightnessUp exec light -A 10 # increase screen brightness
 bindsym XF86MonBrightnessDown exec light -U 10 # decrease screen brightness
 
 # Set Wallpaper
-exec_always feh --bg-fill /home/ghostwriter/Downloads/Wallpapers/WP_Lightning_Legend-2560x1440_00000.jpg
+# exec_always feh --bg-fill /mnt/ghost/Wallpapers/Wallhaven/wallhaven-6463.jpg
+exec_always feh --bg-fill /mnt/ghost/Wallpapers/Wallhaven/wallhaven-4542.jpg
+# exec --no-startup-id /home/ghostwriter/dotfiles/scripts/wallpaper.sh
 
 # Display Settings
 exec_always ~/.screenlayout/dualmonitor.sh
