@@ -25,20 +25,21 @@ count(){
 
 #Music
 music(){
-	song=$(MPD_PORT=6601 mpc current)
-	echo -e '    '$song
+	# song=$(mpc -p 6601 current)
+	# echo -e '    '$song
+	mpc -p 6601 current | zscroll -b "    "
 }
 
 music_control_left(){
-	echo -e "%{A:MPD_PORT=6601 mpc prev:}  %{A}"
+	echo -e "%{A:mpc -p 6601 prev:}  %{A}"
 }
 
 music_control_right(){
-	echo -e "%{A:MPD_PORT=6601 mpc next:}  %{A}"
+	echo -e "%{A:mpc -p 6601 next:}  %{A}"
 }
 
 music_control_pause_play(){
-	echo -e "%{A:MPD_PORT=6601 mpc toggle:}  %{A}"
+	echo -e "%{A:mpc -p 6601 toggle:}  %{A}"
 }
 
 music_controls(){
@@ -47,8 +48,8 @@ music_controls(){
 
 #Player
 player(){
-	status=$(MPD_PORT=6601 mpc status | grep -E "(playing|paused)" -o)
-	progress=$(MPD_PORT=6601 mpc status | grep -E "(playing|paused)" | rev | cut -c 3- | rev | cut -d "(" -f 2)
+	status=$(mpc -p 6601 status | grep -E "(playing|paused)" -o)
+	progress=$(mpc -p 6601 status | grep -E "(playing|paused)" | rev | cut -c 3- | rev | cut -d "(" -f 2)
 	full=$((progress / 2))
 	shade=$((50 - full))
 	if [ $status == "playing" ]; then
@@ -56,6 +57,6 @@ player(){
 	else
 		icon='  '
 	fi
-	# echo -e "%{A:MPD_PORT=6601 mpc -q prev && ${UPDATE}:}  %{A}%{A:MPD_PORT=6601 mpc -q toggle && ${UPDATE}:} " $icon " %{A}%{A:MPD_PORT=6601 mpc -q next && ${UPDATE}:}  %{A} ▌"$(seq -s█ $full|tr -d '[:digit:]')$(seq -s▓ $shade|tr -d '[:digit:]')"▐"
-	echo -e "%{A:MPD_PORT=6601 mpc -q prev && ${UPDATE}:}  %{A}%{A:MPD_PORT=6601 mpc -q toggle && ${UPDATE}:} " $icon " %{A}%{A:MPD_PORT=6601 mpc -q next && ${UPDATE}:}  %{A}"
+	# echo -e "%{A:mpc -p 6601 -q prev && ${UPDATE}:}  %{A}%{A:mpc -p 6601 -q toggle && ${UPDATE}:} " $icon " %{A}%{A:mpc -p 6601 -q next && ${UPDATE}:}  %{A} ▌"$(seq -s█ $full|tr -d '[:digit:]')$(seq -s▓ $shade|tr -d '[:digit:]')"▐"
+	echo -e "%{A:mpc -p 6601 -q prev && ${UPDATE}:}  %{A}%{A:mpc -p 6601 -q toggle && ${UPDATE}:} " $icon " %{A}%{A:mpc -p 6601 -q next && ${UPDATE}:}  %{A}"
 }

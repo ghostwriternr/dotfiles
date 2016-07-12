@@ -2,12 +2,14 @@
 
 source ~/.config/lemonbar/fixtop
 
+{
+zscroll -l 60 -b "%{l}      " -u "mpc current -p 6601" &
 while true; do
-    echo "%{l}  $(music) \
-    	  %{c}$(count) \
-    	  %{r}$(player)   "
+    echo "%{c}$(count) \
+        %{r}$(player)   "
     sleep 1s
-done |
+done
+} |
 
 lemonbar\
     eDP1 \
