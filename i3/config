@@ -114,6 +114,10 @@ bindsym $mod+a focus parent
 # focus the child container
 #bindsym $mod+d focus child
 
+# Media controls
+bindsym $mod+Next exec mpc -p 6601 -q next
+bindsym $mod+Prior exec mpc -p 6601 -q prev
+
 # Rename workspaces
 # set $workspace1 ""
 # set $workspace2 ""
