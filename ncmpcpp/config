@@ -1,12 +1,15 @@
-##
+##################
 ## Basic options
-##
+##################
 
-## Files ##
+## MPD and NCMPCPP options ##
 ncmpcpp_directory = "~/.ncmpcpp"
 lyrics_directory = "~/.ncmpcpp/lyrics"
 # execute_on_song_change = "~/.ncmpcpp/songchange.sh"
 mpd_music_dir = "/mnt/ghost/Music"
+
+mpd_host = "localhost"
+mpd_port = "6601"
 
 ## Unsupported mouse ##
 mouse_support = "no"
@@ -22,13 +25,9 @@ lines_scrolled = "2"
 system_encoding = "utf-8"
 regular_expressions = "extended"
 
-mpd_host = "localhost"
-mpd_port = "6601"
-
-
-##
+################
 ## Appearance
-##
+################
 
 ## Interface'n'Columns ##
 user_interface = "alternative"
@@ -36,7 +35,6 @@ song_list_format = "{$7%n$9} {$8%a - %t$9}$R{$7%b$9}"
 default_place_to_search_in = "database"
 
 ## I dont't like columns ##
-playlist_display_mode = "classic"
 browser_display_mode = "classic"
 search_engine_display_mode = "classic"
 

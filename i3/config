@@ -293,5 +293,5 @@ exec --no-startup-id google-chrome-beta
 exec --no-startup-id i3-msg 'workspace 3; exec terminator'
 exec --no-startup-id thunar
 exec --no-startup-id subl3
-exec --no-startup-id i3-msg 'workspace 9; exec mpd; exec terminator -e "ncmpcpp && reset"'
+exec --no-startup-id i3-msg 'workspace 9; exec mopidy; exec terminator -e "ncmpcpp && reset"'
 exec --no-startup-id i3-msg 'workspace 0'
