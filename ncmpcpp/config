@@ -6,6 +6,7 @@
 ncmpcpp_directory = "~/.ncmpcpp"
 lyrics_directory = "~/.ncmpcpp/lyrics"
 # execute_on_song_change = "~/.ncmpcpp/songchange.sh"
+mpd_music_dir = "/mnt/ghost/Music"
 
 ## Unsupported mouse ##
 mouse_support = "no"
@@ -21,7 +22,7 @@ lines_scrolled = "2"
 system_encoding = "utf-8"
 regular_expressions = "extended"
 
-mpd_host = "127.0.0.1"
+mpd_host = "localhost"
 mpd_port = "6601"
 
 

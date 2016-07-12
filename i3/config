@@ -238,7 +238,7 @@ bindsym XF86MonBrightnessDown exec light -U 10 # decrease screen brightness
 
 # Set Wallpaper
 # exec_always feh --bg-fill /mnt/ghost/Wallpapers/Wallhaven/wallhaven-6463.jpg
-exec_always feh --bg-fill /mnt/ghost/Wallpapers/Wallhaven/wallhaven-4542.jpg
+exec_always feh --bg-fill /mnt/ghost/Wallpapers/Wallhaven/wallhaven-1857.jpg
 # exec --no-startup-id /home/ghostwriter/dotfiles/scripts/wallpaper.sh
 
 # Display Settings
@@ -293,4 +293,5 @@ exec --no-startup-id google-chrome-beta
 exec --no-startup-id i3-msg 'workspace 3; exec terminator'
 exec --no-startup-id thunar
 exec --no-startup-id subl3
+exec --no-startup-id i3-msg 'workspace 9; exec mpd; exec terminator -e "ncmpcpp && reset"'
 exec --no-startup-id i3-msg 'workspace 0'
