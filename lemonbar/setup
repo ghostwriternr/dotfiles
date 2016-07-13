@@ -3,7 +3,7 @@
 PANEL_FIFO=/tmp/panel-fifo
 PANEL_HEIGHT=28
 PANEL_FONT_FAMILY="Sans Bold:size=10"
-ICON_FONT="FontAwesome:size=14"
+ICON_FONT="IonIcons:size=14"
 COLOR_BACKGROUND="#BEC4C7"
 COLOR_BACKGROUND="#e9cc24"
 COLOR_FOREGROUND="#000000"
@@ -21,20 +21,20 @@ trap 'trap - TERM; kill 0' INT TERM QUIT EXIT
 
 # Power button
 power(){
-	echo -e '%{A:oblogout:}    %{A}'
+	echo -e '%{A:oblogout:}    %{A}'
 }
 
 # Clock
 clock(){
-	echo -e '  ' $(date +'%A, %b %e')  '  ' $(date +'%l:%M %p') ' '
+	echo -e '  ' $(date +'%A, %b %e')  '  ' $(date +'%l:%M %p') ' '
 }
 
 _date(){
-	echo -e '  ' $(date +'%A, %b %e')
+	echo -e '  ' $(date +'%A, %b %e')
 }
 
 _time(){
-	echo -e '  ' $(date +'%l:%M %p') ' '
+	echo -e '  ' $(date +'%l:%M %p') ' '
 }
 
 # Battery
@@ -43,21 +43,18 @@ battery(){
 	stat=$(cat /sys/class/power_supply/BAT1/status)
 	if [ $stat == "Charging" ]
 	then
-		icon=' '
-	elif (($lvl > 80))
+		icon=' '
+	elif (($lvl > 75))
 	then
-		icon=' '
-	elif (($lvl > 60))
+		icon=' '
+	elif (($lvl > 50))
 	then
-		icon=' '
-	elif (($lvl > 40))
-	then
-		icon=' '
+		icon=' '
 	elif (($lvl > 20))
 	then
-		icon=' '
+		icon=' '
 	else
-		icon=' '
+		icon=' '
 	fi
 
 	echo -e $icon $lvl'%' ' '
@@ -67,10 +64,10 @@ battery(){
 network(){
 	wired=$(ip route get 8.8.8.8 | grep -Po 'dev \K\w+' | grep -qFf - /proc/net/wireless)
 	if $wired; then
-		icon=' '
+		icon=' '
 		ssid=''
 	else
-		icon=' '
+		icon=' '
 		ssid=$(iwgetid -r)
 	fi
 	echo -e $icon $ssid ' '
@@ -85,36 +82,36 @@ ssid(){
 volume(){
 	vol=$(amixer get Master | grep % | sed -n 1p | awk -F '[' '{print $2}' | awk -F ']' '{print $1}' | sed s/%//)
 	if [ $vol = 0 ]; then
-		icon=' '
+		icon=' '
 	elif [ $vol -lt 33 ]; then
-		icon=' '
+		icon=' '
 	elif [ $vol -lt 66 ]; then
-		icon=' '
+		icon=' '
 	else
-		icon=' '
+		icon=' '
 	fi
 
-	echo -e "%{A:amixer -q set Master 5+ && ${UPDATE}:}  %{A}\
-					 %{A:amixer -q set Master 5- && ${UPDATE}:}  %{A}"\
+	echo -e "%{A:amixer -q set Master 5+ && ${UPDATE}:}  %{A}\
+					 %{A:amixer -q set Master 5- && ${UPDATE}:}  %{A}"\
 					 '' $icon $vol'%' ' '
 }
 
 #Music
 music(){
 	song=$(MPD_PORT=6601 mpc current)
-	echo -e '    '$song
+	echo -e '    '$song
 }
 
 music_control_left(){
-	echo -e "%{A:MPD_PORT=6601 mpc prev:}  %{A}"
+	echo -e "%{A:MPD_PORT=6601 mpc prev:}  %{A}"
 }
 
 music_control_right(){
-	echo -e "%{A:MPD_PORT=6601 mpc next:}  %{A}"
+	echo -e "%{A:MPD_PORT=6601 mpc next:}  %{A}"
 }
 
 music_control_pause_play(){
-	echo -e "%{A:MPD_PORT=6601 mpc toggle:}  %{A}"
+	echo -e "%{A:MPD_PORT=6601 mpc toggle:}  %{A}"
 }
 
 music_controls(){
@@ -128,12 +125,12 @@ player(){
 	full=$((progress / 2))
 	shade=$((50 - full))
 	if [ $status == "playing" ]; then
-		icon='  '
+		icon='  '
 	else
-		icon='  '
+		icon='  '
 	fi
-	# echo -e "%{A:MPD_PORT=6601 mpc -q prev && ${UPDATE}:}  %{A}%{A:MPD_PORT=6601 mpc -q toggle && ${UPDATE}:} " $icon " %{A}%{A:MPD_PORT=6601 mpc -q next && ${UPDATE}:}  %{A} ▌"$(seq -s█ $full|tr -d '[:digit:]')$(seq -s▓ $shade|tr -d '[:digit:]')"▐"
-	echo -e "%{A:MPD_PORT=6601 mpc -q prev && ${UPDATE}:}  %{A}%{A:MPD_PORT=6601 mpc -q toggle && ${UPDATE}:} " $icon " %{A}%{A:MPD_PORT=6601 mpc -q next && ${UPDATE}:}  %{A}"
+	# echo -e "%{A:MPD_PORT=6601 mpc -q prev && ${UPDATE}:}  %{A}%{A:MPD_PORT=6601 mpc -q toggle && ${UPDATE}:} " $icon " %{A}%{A:MPD_PORT=6601 mpc -q next && ${UPDATE}:}  %{A} ▌"$(seq -s█ $full|tr -d '[:digit:]')$(seq -s▓ $shade|tr -d '[:digit:]')"▐"
+	echo -e "%{A:MPD_PORT=6601 mpc -q prev && ${UPDATE}:}  %{A}%{A:MPD_PORT=6601 mpc -q toggle && ${UPDATE}:} " $icon " %{A}%{A:MPD_PORT=6601 mpc -q next && ${UPDATE}:}  %{A}"
 }
 
 # Workspace
@@ -143,34 +140,34 @@ workspace() {
 		wmctrl -d \
 		| awk '/ / {print $2 $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20}' ORS=''\
 		| sed -e 's/\s*  / /g' \
-		-e 's/*\b0\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/*\b1\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/*\b2\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/*\b3\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/*\b4\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/*\b5\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/*\b6\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/*\b7\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/*\b8\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/*\b9\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b0\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b1\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b2\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b3\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b4\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b5\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b6\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b7\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b8\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b9\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
 		-e 's/-\b0\b//g' \
-		-e 's/-\b1\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/-\b2\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/-\b3\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/-\b4\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/-\b5\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/-\b6\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/-\b7\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/-\b8\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/-\b9\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b1\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b2\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b3\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b4\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b5\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b6\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b7\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b8\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b9\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
 		| sed -e 's/workspace [-,*]/workspace /g'
 	)
 
-	if [[ $wslist == *""* ]]
+	if [[ $wslist == *""* ]]
 	then
 		echo -n -e "$wslist"
 	else
-		echo -n -e "%{A:i3-msg workspace 0 && ~/.config/lemonbar/update:}          %{A}$wslist"
+		echo -n -e "%{A:i3-msg workspace 0 && ~/.config/lemonbar/update:}          %{A}$wslist"
 	fi
 }
 

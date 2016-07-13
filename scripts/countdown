@@ -42,7 +42,7 @@ do
 	# interval=`expr $interval - $hours`
 	# weeks=`expr $interval / 604800`
 	# echo "$destname: "$weeks" weeks, "$days" days, "$hours" hours, "$minutes" minutes, "$seconds" seconds"
-	echo "$destname: "$days" days, "$hours" hours, "$minutes" minutes, "$seconds" seconds"
+	echo "  $destname: "$days" days, "$hours" hours, "$minutes" minutes, "$seconds" seconds"
 	records="${records#$destfull"::"}"
 	numrecords=`expr $numrecords - 1`
 done

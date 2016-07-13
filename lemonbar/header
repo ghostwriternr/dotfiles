@@ -3,7 +3,7 @@
 source ~/.config/lemonbar/fixtop
 
 {
-zscroll -l 20 -b "%{l}      " -u "mpc current -p 6601" &
+zscroll -l 20 -b "%{l}      " -u "mpc current -p 6601" &
 while true; do
     echo "%{c}$(count) \
         %{r}$(player)   "

@@ -3,7 +3,7 @@
 PANEL_FIFO=/tmp/panel-fifo
 PANEL_HEIGHT=28
 PANEL_FONT_FAMILY="Sans Bold:size=10"
-ICON_FONT="MaterialIcons:size=14"
+ICON_FONT="IonIcons:size=14"
 COLOR_BACKGROUND="#BEC4C7"
 COLOR_BACKGROUND="#e9cc24"
 COLOR_FOREGROUND="#000000"
@@ -11,9 +11,9 @@ COLOR_HIGHLIGHT="#000000"
 COLOR_TEXT_HIGHLIGHT="#FFFFFF"
 
 close() {
-    echo -e '   %{A:~/.scripts/killtoplemon:} \uE5CD Close (Esc) %{A}'
+    echo -e '   %{A:~/.scripts/killtoplemon:}   \uf406   Close (Esc) %{A}'
 }
 
 manager() {
-    echo -e '   %{A:~/.scripts/i3lock & ~/.scripts/killtoplemon:} \uE899 Lock (L) %{A}   %{A:i3-msg exit & ~/.scripts/killtoplemon:} \uE5D5 Restart Session (E) %{A}   %{A:systemctl suspend & ~/.scripts/killtoplemon:} \uE644 Suspend (S) %{A}   %{A:systemctl hibernate & ~/.scripts/killtoplemon:} \uE8C6 Hibernate (H) %{A}   %{A:systemctl reboot:} \uE86A Reboot (R) %{A}   %{A:systemctl poweroff:} \uE8ac Shut Down (D) %{A}'
+    echo -e '   %{A:~/.scripts/i3lock & ~/.scripts/killtoplemon:}   \uf458  Lock (L) %{A}   %{A:i3-msg exit & ~/.scripts/killtoplemon:}   \uf29c  Restart Session (E) %{A}   %{A:systemctl suspend & ~/.scripts/killtoplemon:}   \uf299  Suspend (S) %{A}   %{A:systemctl hibernate & ~/.scripts/killtoplemon:}   \uf29b  Hibernate (H) %{A}   %{A:systemctl reboot:}   \uf459  Reboot (R) %{A}   %{A:systemctl poweroff:}   \uf2a9  Shut Down (D) %{A}'
 }

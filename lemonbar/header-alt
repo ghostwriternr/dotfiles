@@ -4,7 +4,7 @@ source ~/.config/lemonbar/fixtop
 
 {
 line='                                                           '
-zscroll -n -l 60 -b "%{l}      " -u "printf %q%q '$(mpc current -p 6601)''${line:$(echo $(mpc current -p 6601) | perl -nle "print length")}'" &
+zscroll -n -l 60 -b "%{l}      " -u "printf %q%q '$(mpc current -p 6601)''${line:$(echo $(mpc current -p 6601) | perl -nle "print length")}'" &
 while true; do
     echo "%{c}$(count) \
         %{r}$(player)   "
