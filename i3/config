@@ -54,9 +54,6 @@ font pango:Source Code Pro 8, Awesome 9
 # X core fonts rendering does not support right-to-left and this being a bitmap
 # font, it doesn’t scale on retina/hidpi displays.
 
-# Use Mouse+$mod to drag floating windows to their wanted position
-floating_modifier $mod
-
 # start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
 
@@ -69,6 +66,9 @@ bindsym $mod+Shift+q kill
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
 # bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+
+# Enable Natural Scrolling
+# exec --no-startup-id echo "pointer = 1 2 3 5 4 7 6 8 9 10 11 12" > ~/.Xmodmap && xmodmap ~/.Xmodmap
 
 # change focus
 bindsym $mod+j focus left
@@ -169,6 +169,7 @@ bindsym $mod+Shift+9 move container to workspace $workspace9
 bindsym $mod+Shift+0 move container to workspace $workspace10
 
 # FLoating mode modifier
+# Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
 # toggle tiling / floating
@@ -179,7 +180,7 @@ bindsym $mod+space focus mode_toggle
 
 # Sticky Windows
 bindsym $mod+a+s sticky toggle
-bindsym $mod+y fullscreen disable; floating enable; resize set 560 315; sticky enable; move window to position 1340 20
+bindsym $mod+y fullscreen disable; floating enable; resize set 560 315; sticky enable; move window to position 1340 50
 
 # Widow Colours
 #                         border  background text    indicator
@@ -241,8 +242,7 @@ bindsym XF86MonBrightnessUp exec light -A 10 # increase screen brightness
 bindsym XF86MonBrightnessDown exec light -U 10 # decrease screen brightness
 
 # Set Wallpaper
-# exec_always feh --bg-fill /mnt/ghost/Wallpapers/Wallhaven/wallhaven-6463.jpg
-exec_always feh --bg-fill /home/ghostwriter/Downloads/Wallpapers/iFBc4Bb.jpg
+exec_always feh --bg-fill /mnt/ghost/Wallpapers/Wallhaven/wallhaven-4542.jpg
 # exec --no-startup-id /home/ghostwriter/dotfiles/scripts/wallpaper.sh
 
 # Display Settings
@@ -295,7 +295,13 @@ assign [class="Nylas N1"] $workspace8
 # Startup application
 exec --no-startup-id google-chrome-beta
 exec --no-startup-id i3-msg 'workspace 3; exec terminator'
+exec --no-startup-id i3-msg 'workspace 9; exec mopidy; exec terminator -e "ncmpcpp && reset"'
 exec --no-startup-id thunar
 exec --no-startup-id subl3
-exec --no-startup-id i3-msg 'workspace 9; exec mopidy; exec terminator -e "ncmpcpp && reset"'
 exec --no-startup-id i3-msg 'workspace 0'
+
+# Start stalonetray (Systray)
+exec --no-startup-id stalonetray
+
+# Start dunst (Notifications)
+exec --no-startup-id dunst
