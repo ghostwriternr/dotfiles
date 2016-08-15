@@ -120,3 +120,8 @@
 [test]
     summary = "*test*"
     background="#22dd22"
+
+[messengerfordesktop]
+    appname = Messenger
+    summary = *messenger.com"
+    urgency = low

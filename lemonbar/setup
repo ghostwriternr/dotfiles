@@ -34,7 +34,7 @@ _date(){
 }
 
 _time(){
-	echo -e '  ' $(date +'%l:%M %p') ' '
+	echo -e '  ' $(date +'%l:%M %p') ' '
 }
 
 # Battery
@@ -140,26 +140,26 @@ workspace() {
 		wmctrl -d \
 		| awk '/ / {print $2 $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20}' ORS=''\
 		| sed -e 's/\s*  / /g' \
-		-e 's/*\b0\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/*\b1\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/*\b2\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/*\b3\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/*\b4\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/*\b5\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/*\b6\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/*\b7\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/*\b8\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/*\b9\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/-\b0\b//g' \
-		-e 's/-\b1\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/-\b2\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/-\b3\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/-\b4\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/-\b5\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/-\b6\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/-\b7\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/-\b8\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/-\b9\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/*\b1\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b2\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b3\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b4\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b5\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b6\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b7\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b8\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b9\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b10\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/-\b1\b//g' \
+		-e 's/-\b2\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b3\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b4\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b5\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b6\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b7\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b8\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b9\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b10\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
 		| sed -e 's/workspace [-,*]/workspace /g'
 	)
 
@@ -167,7 +167,7 @@ workspace() {
 	then
 		echo -n -e "$wslist"
 	else
-		echo -n -e "%{A:i3-msg workspace 0 && ~/.config/lemonbar/update:}          %{A}$wslist"
+		echo -n -e "%{A:i3-msg workspace 1 && ~/.config/lemonbar/update:}          %{A}$wslist"
 	fi
 }
 

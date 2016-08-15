@@ -130,16 +130,16 @@ bindsym $mod+Prior exec mpc -p 6601 -q prev
 # set $workspace9 ""
 # set $workspace10 ""
 
-set $workspace1 "0"
-set $workspace2 "1"
-set $workspace3 "2"
-set $workspace4 "3"
-set $workspace5 "4"
-set $workspace6 "5"
-set $workspace7 "6"
-set $workspace8 "7"
-set $workspace9 "8"
-set $workspace10 "9"
+set $workspace1 "1"
+set $workspace2 "2"
+set $workspace3 "3"
+set $workspace4 "4"
+set $workspace5 "5"
+set $workspace6 "6"
+set $workspace7 "7"
+set $workspace8 "8"
+set $workspace9 "9"
+set $workspace10 "10"
 
 # switch to workspace
 bindsym $mod+1 workspace $workspace1
@@ -242,7 +242,7 @@ bindsym XF86MonBrightnessUp exec light -A 10 # increase screen brightness
 bindsym XF86MonBrightnessDown exec light -U 10 # decrease screen brightness
 
 # Set Wallpaper
-exec_always feh --bg-fill /mnt/ghost/Wallpapers/Wallhaven/wallhaven-4542.jpg
+# exec_always feh --bg-fill /mnt/ghost/Wallpapers/huehuehue/huehuehue/Dope/25\ \-\ VR81VZF.jpg
 # exec --no-startup-id /home/ghostwriter/dotfiles/scripts/wallpaper.sh
 
 # Display Settings
@@ -294,11 +294,14 @@ assign [class="Nylas N1"] $workspace8
 
 # Startup application
 exec --no-startup-id google-chrome-beta
-exec --no-startup-id i3-msg 'workspace 3; exec terminator'
-exec --no-startup-id i3-msg 'workspace 9; exec mopidy; exec terminator -e "ncmpcpp && reset"'
+exec --no-startup-id i3-msg 'workspace 4; exec terminator'
+exec --no-startup-id i3-msg 'workspace 10; exec mopidy; exec terminator -e "ncmpcpp && reset"'
 exec --no-startup-id thunar
 exec --no-startup-id subl3
-exec --no-startup-id i3-msg 'workspace 0'
+exec --no-startup-id messengerfordesktop
+exec --no-startup-id i3-msg 'workspace 1;'
+exec --no-startup-id nm-applet
+exec --no-startup-id variety
 
 # Start stalonetray (Systray)
 exec --no-startup-id stalonetray

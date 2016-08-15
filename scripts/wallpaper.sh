@@ -1,7 +1,7 @@
 #!/bin/bash
 
 shopt -s nullglob
-cd /mnt/ghost/Wallpapers/BoB
+cd /mnt/ghost/Wallpapers/huehuehue/huehuehue/Dope
 
 while true; do
 	files=()

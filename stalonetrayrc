@@ -13,7 +13,7 @@
 
 # background <color>         # color can be specified as an HTML hex triplet or
                              # as a name from rgb.txt, note that '#' must be quoted
-background "#777777"
+background "#000000"
 
 # decorations <decspec>      # set trays window decorations; possible values for
                              # decspec are: all, title, border, none
@@ -47,7 +47,7 @@ grow_gravity NW
 icon_gravity NW
 
 # icon_size <int>            # specifies dimensions of typical icon slot
-icon_size 24
+icon_size 28
 
 # log_level <level>          # controls the amount of logging output, level can
                              # be err (default), info, or trace (enabled only
@@ -103,11 +103,11 @@ skip_taskbar true
 sticky true
 
 # tint_color <color>         # set tinting color
-tint_color white
+tint_color black
 
 # tint_level <level>         # set tinting level; level ranges from 0 (disabled)
                              # to 255
-tint_level 0
+tint_level 20
 
 # transparent [<bool>]       # whether to use root-transparency (background
                              # image must be set with Esetroot or compatible utility)
@@ -119,7 +119,7 @@ vertical false
 
 # window_layer <layer>       # set the EWMH-compatible window layer; one of:
                              # bottom, normal, top
-window_layer normal
+window_layer bottom
 
 # window_strut <mode>        # enable/disable window struts for tray window (to
                              # avoid converting of tray window by maximized
@@ -130,7 +130,7 @@ window_strut auto
 
 # window_type <type>         # set the EWMH-compatible window type; one of:
                              # desktop, dock, normal, toolbar, utility
-window_type toolbar
+window_type desktop
 
 # xsync [<bool>]             # whether to operate on X server synchronously (SLOOOOW)
 xsync false
