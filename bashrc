@@ -7,3 +7,5 @@
 
 alias ls='ls --color=auto'
 PS1='[\u@\h \W]\$ '
+
+PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"

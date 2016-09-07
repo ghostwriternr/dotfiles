@@ -34,7 +34,7 @@ gaps inner 5
 gaps outer 5
 
 # Modify title bar / borders
-for_window [class="^.*"] border pixel 0
+for_window [class="^.*"] border pixel 5
 for_window [class=".*"] title_alignment center
 new_window normal 0 px
 hide_edge_borders both
@@ -180,14 +180,14 @@ bindsym $mod+space focus mode_toggle
 
 # Sticky Windows
 bindsym $mod+a+s sticky toggle
-bindsym $mod+y fullscreen disable; floating enable; resize set 560 315; sticky enable; move window to position 1340 50
+bindsym $mod+y fullscreen disable; floating enable; resize set 480 270; sticky enable; move window to position 1420 50
 
 # Widow Colours
 #                         border  background text    indicator
-  client.focused          $base01 $base01    $base07 $base0F
-  client.focused_inactive $base02 $base02    $base03 $base0F
-  client.unfocused        $base02 $base02    $base03 $base0F
-  client.urgent           $base02 $base08    $base00 $base0F
+  client.focused          $base01 $base01    $base07 $base01
+  client.focused_inactive $base02 $base02    $base03 $base02
+  client.unfocused        $base02 $base02    $base03 $base02
+  client.urgent           $base02 $base08    $base00 $base02
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
@@ -243,7 +243,6 @@ bindsym XF86MonBrightnessDown exec light -U 10 # decrease screen brightness
 
 # Set Wallpaper
 # exec_always feh --bg-fill /mnt/ghost/Wallpapers/huehuehue/huehuehue/Dope/25\ \-\ VR81VZF.jpg
-# exec --no-startup-id /home/ghostwriter/dotfiles/scripts/wallpaper.sh
 
 # Display Settings
 exec_always ~/.screenlayout/dualmonitor.sh
@@ -283,25 +282,26 @@ exec --no-startup-id synclient TapButton1=1
 
 # Lemonbar
 exec --no-startup-id ~/.config/lemonbar/bottom
-exec --no-startup-id ~/.config/lemonbar/header
+# exec --no-startup-id ~/.config/lemonbar/header
 
 # Default workspaces for certain applications
 assign [class="google-chrome-beta"] $workspace2
 assign [class="Subl3"] $workspace3
+assign [class="atom"] $workspace3
 assign [class="Thunar"] $workspace5
 assign [class="Spotify"] $workspace10
-assign [class="Nylas N1"] $workspace8
 
 # Startup application
 exec --no-startup-id google-chrome-beta
 exec --no-startup-id i3-msg 'workspace 4; exec terminator'
 exec --no-startup-id i3-msg 'workspace 10; exec mopidy; exec terminator -e "ncmpcpp && reset"'
-exec --no-startup-id thunar
-exec --no-startup-id subl3
 exec --no-startup-id messengerfordesktop
-exec --no-startup-id i3-msg 'workspace 1;'
 exec --no-startup-id nm-applet
 exec --no-startup-id variety
+exec --no-startup-id thunar
+exec --no-startup-id atom
+exec --no-startup-id redshift-gtk -l 22.321636:87.299614 -t 6500:3700
+exec --no-startup-id i3-msg 'workspace 1;'
 
 # Start stalonetray (Systray)
 exec --no-startup-id stalonetray

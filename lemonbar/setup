@@ -26,15 +26,15 @@ power(){
 
 # Clock
 clock(){
-	echo -e '  ' $(date +'%A, %b %e')  '  ' $(date +'%l:%M %p') ' '
+	echo -e '  ' $(TZ='UTC' date +'%A, %b %e')  '  ' $(TZ='UTC' date +'%l:%M %p') ' '
 }
 
 _date(){
-	echo -e '  ' $(date +'%A, %b %e')
+	echo -e '  ' $(TZ='UTC' date +'%A, %b %e')
 }
 
 _time(){
-	echo -e '  ' $(date +'%l:%M %p') ' '
+	echo -e '  ' $(TZ='UTC' date +'%l:%M %p') ' '
 }
 
 # Battery
