@@ -13,7 +13,7 @@ done
 
 lemonbar\
     eDP1 \
-    -g "1750x30+170+0"\
+    -g "1750x28+170+0"\
     -F "#ffffff"\
     -B "#00000000"\
     -f "$PANEL_FONT_FAMILY"\
