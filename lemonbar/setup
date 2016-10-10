@@ -26,15 +26,15 @@ power(){
 
 # Clock
 clock(){
-	echo -e '  ' $(TZ='UTC' date +'%A, %b %e')  '  ' $(TZ='UTC' date +'%l:%M %p') ' '
+	echo -e '  ' $(date +'%A, %b %e')  '  ' $(date +'%l:%M %p') ' '
 }
 
 _date(){
-	echo -e '  ' $(TZ='UTC' date +'%A, %b %e')
+	echo -e '  ' $(date +'%A, %b %e')
 }
 
 _time(){
-	echo -e '  ' $(TZ='UTC' date +'%l:%M %p') ' '
+	echo -e '  ' $(date +'%l:%M %p') ' '
 }
 
 # Battery
@@ -144,20 +144,20 @@ workspace() {
 		-e 's/*\b2\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
 		-e 's/*\b3\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
 		-e 's/*\b4\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/*\b5\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b5\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
 		-e 's/*\b6\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
 		-e 's/*\b7\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
-		-e 's/*\b8\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
+		-e 's/*\b8\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
 		-e 's/*\b9\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
 		-e 's/*\b10\b/%{F#FF0052a2}%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}%{F-}/g' \
 		-e 's/-\b1\b//g' \
 		-e 's/-\b2\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
 		-e 's/-\b3\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
 		-e 's/-\b4\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/-\b5\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b5\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
 		-e 's/-\b6\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
 		-e 's/-\b7\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
-		-e 's/-\b8\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
+		-e 's/-\b8\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
 		-e 's/-\b9\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
 		-e 's/-\b10\b/%{A:i3-msg workspace & \&\& \~\/.config\/lemonbar\/update:}          %{A}/g' \
 		| sed -e 's/workspace [-,*]/workspace /g'
@@ -175,4 +175,3 @@ title(){
 	title=$(xdotool getactivewindow getwindowname)
 	echo "$title" | cut -c 1-70
 }
-

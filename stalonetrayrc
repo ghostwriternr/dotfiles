@@ -107,7 +107,7 @@ tint_color black
 
 # tint_level <level>         # set tinting level; level ranges from 0 (disabled)
                              # to 255
-tint_level 20
+tint_level 88
 
 # transparent [<bool>]       # whether to use root-transparency (background
                              # image must be set with Esetroot or compatible utility)
@@ -134,4 +134,3 @@ window_type dock
 
 # xsync [<bool>]             # whether to operate on X server synchronously (SLOOOOW)
 xsync false
-

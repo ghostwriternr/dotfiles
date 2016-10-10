@@ -10,12 +10,12 @@ while true; do
         %{r}$(player)   "
     sleep 1s
 done
-} | 
+} |
 
 lemonbar\
     eDP1 \
     -g "x32"\
     -F "#ffffff"\
-    -B "#19000000"\
+    -B "#88000000"\
     -f "$PANEL_FONT_FAMILY"\
     -f "$ICON_FONT" | bash
