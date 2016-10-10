@@ -46,6 +46,22 @@ music_controls(){
 	echo -e "$(music_control_left) $(music_control_pause_play) $(music_control_right)"
 }
 
+#Spotify
+spotify_status(){
+	current_track=$(playerctl -p spotify metadata xesam:title)
+	album=$(playerctl -p spotify metadata xesam:artist)
+	echo -e %{F#FF1DB954}$current_track " - " $album%{F-}
+}
+
+spotify_control(){
+	current_status=$(playerctl -p spotify status)
+	if echo $current_status | grep -q "Playing"
+		then echo "$(spotify_status) %{A:playerctl -p spotify previous:}  %{A}%{A:playerctl -p spotify play-pause:}  %{A}%{A:playerctl -p spotify next:}  %{A}"
+	elif echo $current_status | grep -q "Paused"
+		then echo "$(spotify_status) %{A:playerctl -p spotify previous:}  %{A}%{A:playerctl -p spotify play-pause:}  %{A}%{A:playerctl -p spotify next:}  %{A}"
+	fi
+}
+
 #Player
 player(){
 	status=$(mpc -p 6601 status | grep -E "(playing|paused)" -o)

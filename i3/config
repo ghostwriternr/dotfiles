@@ -294,12 +294,13 @@ assign [class="Spotify"] $workspace10
 # Startup application
 exec --no-startup-id google-chrome-beta
 exec --no-startup-id i3-msg 'workspace 4; exec terminator'
-exec --no-startup-id i3-msg 'workspace 10; exec mopidy; exec terminator -e "ncmpcpp && reset"'
+exec --no-startup-id i3-msg 'workspace 10; exec spotify'
+# exec --no-startup-id i3-msg 'workspace 10; exec mopidy; exec terminator -e "ncmpcpp && reset"'
 exec --no-startup-id messengerfordesktop
 exec --no-startup-id nm-applet
 exec --no-startup-id variety
 exec --no-startup-id thunar
-exec --no-startup-id atom
+exec --no-startup-id i3-msg 'workspace 3; exec atom'
 exec --no-startup-id redshift-gtk -l 22.321636:87.299614 -t 6500:3700
 exec --no-startup-id i3-msg 'workspace 1;'
 
