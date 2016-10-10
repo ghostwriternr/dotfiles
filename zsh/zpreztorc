@@ -25,18 +25,14 @@ zstyle ':prezto:load' zfunction 'zargs' 'zmv'
 # The order matters.
 zstyle ':prezto:load' pmodule \
   'environment' \
-  'archive' \
   'terminal' \
   'editor' \
   'history' \
   'directory' \
   'spectrum' \
   'utility' \
-  'completion' \
   'git' \
-  'command-not-found' \
-  'ssh' \
-  'wakeonlan' \
+  'completion' \
   'syntax-highlighting' \
   'history-substring-search' \
   'prompt'
