@@ -309,3 +309,6 @@ exec --no-startup-id stalonetray
 
 # Start dunst (Notifications)
 exec --no-startup-id dunst
+
+# Conky
+exec --no-startup-id xcompmgr -c -t-5 -l-5 -r4.2 -o.55 & conky -d; sleep 1 && transset-df .5 -n Conky

@@ -10,6 +10,7 @@ Includes my setup files for:
 - mpd / mopidy / ncmpcpp
 - terminator
 - stalonetray
+- Conky
 
 ## Screenshot:
 ![Current Setup](SS.png "Current Setup")
