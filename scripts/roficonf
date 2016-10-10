@@ -1,10 +1,10 @@
 #!/bin/sh
 rofi \
 -color-enabled \
--color-window "argb:F21d102c, argb:001d102c, argb:001d102c" \
--color-normal "argb:0000000, #fff, argb:0000000, argb:001d102c, #e0008c" \
--color-active "argb:0000000, #fff, argb:0000000, argb:001d102c, #e0008c" \
--color-urgent "argb:0000000, #fff, argb:0000000, argb:001d102c, #e0008c" \
+-color-window "argb:F2112233, argb:00112233, argb:00112233" \
+-color-normal "argb:0000000, #fff, argb:0000000, argb:00112233, #ff7733" \
+-color-active "argb:0000000, #fff, argb:0000000, argb:00112233, #ff7733" \
+-color-urgent "argb:0000000, #fff, argb:0000000, argb:00112233, #ff7733" \
 -show run \
 -location 0 \
 -width 1920 \
