@@ -76,7 +76,7 @@ no_shrink false
 
 # parent_bg [<bool>]         # whether to use pseudo-transparency
                              # (looks better when reparented into smth like FvwmButtons)
-parent_bg false
+parent_bg true
 
 # pixmap_bg <path_to_xpm>    # use pixmap from specified xpm file for (tiled) background
 # pixmap_bg /home/user/.stalonetraybg.xpm
@@ -107,7 +107,7 @@ tint_color black
 
 # tint_level <level>         # set tinting level; level ranges from 0 (disabled)
                              # to 255
-tint_level 88
+tint_level 136
 
 # transparent [<bool>]       # whether to use root-transparency (background
                              # image must be set with Esetroot or compatible utility)
@@ -119,14 +119,14 @@ vertical false
 
 # window_layer <layer>       # set the EWMH-compatible window layer; one of:
                              # bottom, normal, top
-window_layer top
+window_layer bottom
 
 # window_strut <mode>        # enable/disable window struts for tray window (to
                              # avoid converting of tray window by maximized
                              # windows); mode defines to which screen border tray
                              # will be attached; it can be either top, bottom,
                              # left, right, none or auto (default)
-window_strut auto
+window_strut left
 
 # window_type <type>         # set the EWMH-compatible window type; one of:
                              # desktop, dock, normal, toolbar, utility

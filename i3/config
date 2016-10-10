@@ -282,7 +282,6 @@ exec --no-startup-id synclient TapButton1=1
 
 # Lemonbar
 exec --no-startup-id ~/.config/lemonbar/bottom
-# exec --no-startup-id ~/.config/lemonbar/header
 
 # Default workspaces for certain applications
 assign [class="google-chrome-beta"] $workspace2
@@ -305,6 +304,9 @@ exec --no-startup-id i3-msg 'workspace 1;'
 
 # Start stalonetray (Systray)
 exec --no-startup-id stalonetray
+
+# Lemonbar header
+exec --no-startup-id ~/.config/lemonbar/header
 
 # Start dunst (Notifications)
 exec --no-startup-id dunst

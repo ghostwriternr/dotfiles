@@ -5,7 +5,7 @@ source ~/.config/lemonbar/fixtop
 {
 # zscroll -l 20 -b "%{l}      " -u "mpc current -p 6601" &
 while true; do
-    echo "%{c}$(count) \
+    echo "%{lO570}$(count) \
         %{r}$(player)   "
     sleep 1s
 done
@@ -13,8 +13,9 @@ done
 
 lemonbar\
     eDP1 \
-    -g "x32"\
+    -g "1750x30+170+0"\
     -F "#ffffff"\
-    -B "#88000000"\
+    -B "#00000000"\
     -f "$PANEL_FONT_FAMILY"\
+    -d \
     -f "$ICON_FONT" | bash

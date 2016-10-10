@@ -1,6 +1,6 @@
 #!/bin/bash
 
-file=`ls ~/dotfiles/nextapac.txt`
+file=`ls ~/dotfiles/nextevent.txt`
 usage="Usage: $0                  #get time until destination\n \
               $0 --add time name  #assign time to the name\n \
               $0 --reset [time]   #reset clock, to time, if given\n \
@@ -29,7 +29,7 @@ do
 	destfull=`echo $records | gawk -F:: '{print $1}'`
 	destname=`echo $destfull | gawk -F: '{print $1}'`
 	dest=`echo $destfull | gawk -F: '{print $2}'`
-	
+
 	interval=`expr $dest - $now`
 	seconds=`expr $interval % 60`
 	interval=`expr $interval - $seconds`
@@ -46,3 +46,6 @@ do
 	records="${records#$destfull"::"}"
 	numrecords=`expr $numrecords - 1`
 done
+
+# Sample insert
+# ~/dotfiles/scripts/countdown --add "August 28 2016 10:30:00" "APAC Round B"
