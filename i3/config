@@ -73,8 +73,8 @@ bindsym $mod+Shift+q kill
 # change focus
 bindsym $mod+j focus left
 bindsym $mod+k focus down
-bindsym $mod+l focus up
-bindsym $mod+semicolon focus right
+bindsym $mod+semicolon focus up
+bindsym $mod+apostrophe focus right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
@@ -258,6 +258,7 @@ exec --no-startup-id compton -f
 
 bindsym $mod+Shift+e mode "$mode_system" exec ~/.config/lemonbar/top && ~/.scripts/killtoplemon
 bindsym $mod+Shift+x exec ~/.scripts/i3lock
+bindsym $mod+l exec ~/.scripts/i3lock
 
 set $mode_system System (l) lock, (e) logout, (s) suspend, (h) hibernate, (r) reboot, (Shift+s) shutdown
 mode "$mode_system" {

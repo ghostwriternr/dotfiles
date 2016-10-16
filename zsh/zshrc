@@ -12,3 +12,5 @@ fi
 
 # Customize to your needs...
 PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
+
+alias mycpp='g++ -std=c++11'
