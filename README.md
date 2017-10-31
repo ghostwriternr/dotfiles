@@ -1,7 +1,7 @@
 # My dotfiles
 
 ## All essential dotfiles for my Arch Linux installation.
-Includes my setup files for:
+Includes my config files for:
 - zsh
 - i3
 - Lemonbar
