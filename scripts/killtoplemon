@@ -1,3 +1,0 @@
-#!/bin/sh
-
-kill $(ps aux | grep '[l]emonbar/top' | awk '{print $2}')
