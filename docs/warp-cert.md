@@ -23,14 +23,16 @@ The first `darwin-rebuild` on a fresh machine needs to download from the interne
 1. Extracting Cloudflare certs from the macOS System Keychain
 2. Saving them to `~/.config/cloudflare/zero_trust_cert.pem`
 3. Building a combined CA bundle (Mozilla + WARP certs)
-4. Temporarily patching `/etc/nix/nix.conf` with `ssl-cert-file` pointing to that bundle
+4. Temporarily pointing `NIX_SSL_CERT_FILE` in the nix-daemon's launchd plist to that bundle
 5. Restarting the nix-daemon
 
 After the first successful `darwin-rebuild`, `security.pki` takes over permanently and the temporary bundle can be deleted.
 
-### Store corruption safety
+### Why the launchd plist?
 
-`/etc/nix/nix.conf` is often a symlink into `/nix/store` (managed by nix-darwin). Appending to it would follow the symlink and **corrupt the store** — Nix reuses store paths by input hash, not content, so corruption is silent and permanent. `bootstrap.sh` detects this and breaks the symlink first.
+The nix-daemon reads `NIX_SSL_CERT_FILE` from its launchd environment. Patching the plist is a runtime-only change — no managed files on disk are mutated. (The alternative — patching `/etc/nix/nix.conf` — is risky because nix-darwin manages that file as a symlink into `/nix/store`. Writing through the symlink corrupts the store silently.)
+
+After the first successful `darwin-rebuild`, `security.pki` takes over the daemon's environment and the plist change is overwritten.
 
 ## Re-extracting after cert rotation
 

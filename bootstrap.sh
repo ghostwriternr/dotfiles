@@ -4,8 +4,8 @@
 # This script does two things:
 #   1. Extracts the WARP CA cert from the macOS keychain and saves it to
 #      ~/.config/cloudflare/zero_trust_cert.pem (where flake.nix expects it).
-#   2. Temporarily patches /etc/nix/nix.conf so the nix-daemon can download
-#      during the first darwin-rebuild. After that, security.pki takes over.
+#   2. Temporarily patches the nix-daemon's launchd plist so it trusts the
+#      WARP CA during the first darwin-rebuild. After that, security.pki takes over.
 #
 # Usage:
 #   chmod +x bootstrap.sh
@@ -93,7 +93,7 @@ info "Using Nix CA bundle: ${NIX_CA_FILE}"
 
 # --- Build combined CA bundle ---
 
-COMBINED_BUNDLE=$(mktemp /tmp/nix-ca-bundle.XXXXXX.pem)
+COMBINED_BUNDLE="${WARP_CA_DIR}/bootstrap-ca-bundle.pem"
 cat "$NIX_CA_FILE" > "$COMBINED_BUNDLE"
 echo "" >> "$COMBINED_BUNDLE"
 echo "# Cloudflare WARP Zero Trust certificates (added by bootstrap.sh)" >> "$COMBINED_BUNDLE"
@@ -101,45 +101,43 @@ echo "$WARP_CERTS" >> "$COMBINED_BUNDLE"
 
 info "Combined CA bundle: ${COMBINED_BUNDLE}"
 
-# --- Patch /etc/nix/nix.conf ---
+# --- Patch nix-daemon launchd plist ---
+#
+# We point NIX_SSL_CERT_FILE in the daemon's launchd plist to our combined
+# bundle. This is a runtime-only change — no managed files on disk are
+# mutated (unlike patching /etc/nix/nix.conf, which is a nix-darwin-managed
+# symlink into the store). After the first successful darwin-rebuild,
+# security.pki takes over and sets NIX_SSL_CERT_FILE permanently.
 
-NIX_CONF="/etc/nix/nix.conf"
-REAL_CONF=$(readlink -f "$NIX_CONF" 2>/dev/null || echo "$NIX_CONF")
+DAEMON_PLIST="/Library/LaunchDaemons/org.nixos.nix-daemon.plist"
 
-# Safety: never write into the Nix store — that corrupts it.
-if [[ "$REAL_CONF" == /nix/store/* ]]; then
-  warn "${NIX_CONF} is a symlink into the Nix store (nix-darwin is managing it)."
-  warn "Writing a standalone nix.conf instead."
-  # Break the symlink: copy the store file to a real file, then append.
-  sudo cp "$REAL_CONF" "${NIX_CONF}.tmp"
-  sudo mv "${NIX_CONF}.tmp" "$NIX_CONF"
-  REAL_CONF="$NIX_CONF"
+if [[ ! -f "$DAEMON_PLIST" ]]; then
+  error "Nix daemon plist not found at ${DAEMON_PLIST}"
+  echo "  Is the nix-daemon installed correctly?"
+  exit 1
 fi
 
-if grep -q "ssl-cert-file" "$REAL_CONF" 2>/dev/null; then
-  warn "ssl-cert-file already set in ${NIX_CONF}."
-  echo "  Current setting:"
-  grep "ssl-cert-file" "$REAL_CONF"
-  echo ""
-  read -rp "  Overwrite? [y/N] " answer
-  if [[ "$answer" != "y" && "$answer" != "Y" ]]; then
-    info "Skipping nix.conf modification."
-    echo ""
-    info "Done. If the existing ssl-cert-file is correct, run:"
-    echo "  sudo darwin-rebuild switch --flake ~/.config/nix-darwin"
-    exit 0
-  fi
-  # Remove existing ssl-cert-file line(s) before appending
-  sudo sed -i.bak '/^ssl-cert-file/d' "$REAL_CONF"
+PREV_CERT_FILE=$(/usr/libexec/PlistBuddy -c "Print :EnvironmentVariables:NIX_SSL_CERT_FILE" "$DAEMON_PLIST" 2>/dev/null || true)
+
+if [[ -n "$PREV_CERT_FILE" ]]; then
+  info "Previous NIX_SSL_CERT_FILE: ${PREV_CERT_FILE}"
+  sudo /usr/libexec/PlistBuddy -c "Set :EnvironmentVariables:NIX_SSL_CERT_FILE ${COMBINED_BUNDLE}" "$DAEMON_PLIST"
+else
+  # Ensure EnvironmentVariables dict exists
+  /usr/libexec/PlistBuddy -c "Print :EnvironmentVariables" "$DAEMON_PLIST" &>/dev/null || \
+    sudo /usr/libexec/PlistBuddy -c "Add :EnvironmentVariables dict" "$DAEMON_PLIST"
+  sudo /usr/libexec/PlistBuddy -c "Add :EnvironmentVariables:NIX_SSL_CERT_FILE string ${COMBINED_BUNDLE}" "$DAEMON_PLIST"
 fi
 
-info "Appending ssl-cert-file to ${NIX_CONF}..."
-echo "ssl-cert-file = ${COMBINED_BUNDLE}" | sudo tee -a "$REAL_CONF" >/dev/null
+info "Patched daemon plist: NIX_SSL_CERT_FILE → ${COMBINED_BUNDLE}"
 
 # --- Restart nix-daemon ---
+#
+# We unload/load (not kickstart -k) so launchd re-reads the plist.
 
 info "Restarting nix-daemon..."
-sudo launchctl kickstart -k system/org.nixos.nix-daemon 2>/dev/null || true
+sudo launchctl unload "$DAEMON_PLIST" 2>/dev/null || true
+sudo launchctl load "$DAEMON_PLIST"
 sleep 2
 
 if pgrep -x nix-daemon &>/dev/null; then
@@ -162,6 +160,6 @@ info "Bootstrap complete. Now run:"
 echo "  sudo darwin-rebuild switch --flake ~/.config/nix-darwin"
 echo ""
 info "After the first successful build, security.pki takes over and this"
-info "bootstrap is no longer needed. The temporary bundle at"
+info "bootstrap is no longer needed. The combined bundle at"
 info "  ${COMBINED_BUNDLE}"
 info "can be deleted after the build."
