@@ -33,6 +33,9 @@
 
       # The user that owns the system.
       system.primaryUser = "naresh";
+
+      # Define the user so home-manager can derive home.username and home.homeDirectory.
+      users.users.naresh.home = "/Users/naresh";
     };
   in
   {
