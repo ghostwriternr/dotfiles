@@ -12,14 +12,17 @@
   outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager }:
   let
     configuration = { pkgs, ... }: {
-      # List packages installed in system profile. To search by name, run:
-      # $ nix-env -qaP | grep wget
+      # System-wide packages. Search with: nix search nixpkgs <name>
       environment.systemPackages =
         [ pkgs.vim
         ];
 
       # Necessary for using flakes on this system.
       nix.settings.experimental-features = "nix-command flakes";
+
+      # Cloudflare WARP Zero Trust: add corporate CA so nix-daemon and other tools trust the TLS-inspecting proxy.
+      # The cert lives outside the repo (extracted by bootstrap.sh) to avoid committing internal infrastructure artifacts.
+      security.pki.certificateFiles = [ /Users/naresh/.config/cloudflare/zero_trust_cert.pem ];
 
       # Set Git commit hash for darwin-version.
       system.configurationRevision = self.rev or self.dirtyRev or null;
