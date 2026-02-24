@@ -6,7 +6,7 @@ nix-darwin + home-manager flake for macOS (Apple Silicon, Lix).
 
 ```sh
 # rebuild
-sudo darwin-rebuild switch --flake ~/.config/nix-darwin
+sudo darwin-rebuild switch --flake ~/.config/nix-darwin --impure
 
 # update inputs
 nix flake update --flake ~/.config/nix-darwin
@@ -22,4 +22,6 @@ New files must be staged/committed before rebuilding (flakes only see git-tracke
 1. Install [Lix](https://lix.systems/install/)
 2. `git clone git@github.com:ghostwriternr/dotfiles.git ~/.config/nix-darwin`
 3. `./bootstrap.sh` — one-time WARP cert setup ([details](docs/warp-cert.md))
-4. `sudo darwin-rebuild switch --flake ~/.config/nix-darwin`
+4. `sudo darwin-rebuild switch --flake ~/.config/nix-darwin --impure`
+
+`--impure` is needed because the WARP cert lives outside the flake tree.

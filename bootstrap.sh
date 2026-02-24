@@ -10,7 +10,7 @@
 # Usage:
 #   chmod +x bootstrap.sh
 #   ./bootstrap.sh
-#   sudo darwin-rebuild switch --flake ~/.config/nix-darwin
+#   sudo darwin-rebuild switch --flake ~/.config/nix-darwin --impure
 
 set -euo pipefail
 
@@ -157,7 +157,7 @@ fi
 
 echo ""
 info "Bootstrap complete. Now run:"
-echo "  sudo darwin-rebuild switch --flake ~/.config/nix-darwin"
+echo "  sudo darwin-rebuild switch --flake ~/.config/nix-darwin --impure"
 echo ""
 info "After the first successful build, security.pki takes over and this"
 info "bootstrap is no longer needed. The combined bundle at"

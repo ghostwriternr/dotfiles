@@ -21,7 +21,7 @@
       nix.settings.experimental-features = "nix-command flakes";
 
       # Cloudflare WARP Zero Trust: add corporate CA so nix-daemon and other tools trust the TLS-inspecting proxy.
-      # The cert lives outside the repo (extracted by bootstrap.sh) to avoid committing internal infrastructure artifacts.
+      # The cert lives outside the repo (extracted by bootstrap.sh), so --impure is needed when rebuilding.
       security.pki.certificateFiles = [ /Users/naresh/.config/cloudflare/zero_trust_cert.pem ];
 
       # Set Git commit hash for darwin-version.
