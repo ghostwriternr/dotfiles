@@ -18,7 +18,9 @@
     fd
     just
     nerd-fonts.fira-code
+    ripgrep
     tree
+    uv
     watch
   ];
 

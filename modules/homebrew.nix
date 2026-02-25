@@ -75,6 +75,8 @@
       "obsidian"
       "raycast"
       "todoist-app"
+      "aqua-voice"
+      "bartender"
 
       # communication
       "beeper"
