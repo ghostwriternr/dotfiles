@@ -17,8 +17,29 @@
         [ pkgs.vim
         ];
 
-      # Necessary for using flakes on this system.
-      nix.settings.experimental-features = "nix-command flakes";
+      # Nix daemon settings.
+      nix.settings = {
+        experimental-features = "nix-command flakes";
+        warn-dirty = false;
+        trusted-users = [ "root" "@admin" "naresh" ];
+      };
+
+      # Weekly garbage collection: delete generations older than 30 days.
+      nix.gc = {
+        automatic = true;
+        interval = [{ Weekday = 0; Hour = 3; Minute = 0; }];
+        options = "--delete-older-than 30d";
+      };
+
+      # Weekly store optimisation: hardlink identical store paths to save disk.
+      # Prefer this over auto-optimise-store, which is slow on APFS.
+      nix.optimise = {
+        automatic = true;
+        interval = [{ Weekday = 0; Hour = 4; Minute = 0; }];
+      };
+
+      # No channels — flakes only.
+      nix.channel.enable = false;
 
       # Cloudflare WARP Zero Trust: add corporate CA so nix-daemon and other tools trust the TLS-inspecting proxy.
       # The cert lives outside the repo (extracted by bootstrap.sh), so --impure is needed when rebuilding.
