@@ -10,9 +10,14 @@
     difftastic
     fd
     just
+    nerd-fonts.fira-code
     tree
     watch
   ];
+
+  # ── Window manager configs (yabai + skhd installed via brew) ─────────────────
+  home.file.".yabairc".source = ./config/yabairc;
+  home.file.".skhdrc".source = ./config/skhdrc;
 
   # ── Secrets (sops-nix) ─────────────────────────────────────────────────────
   sops = {
@@ -252,6 +257,37 @@
   programs.starship = {
     enable = true;
     enableZshIntegration = true;
+
+    settings = {
+      format = "$directory$git_branch$git_status$fill$cmd_duration$line_break$character";
+
+      directory = {
+        truncation_length = 4;
+        style = "bold blue";
+      };
+
+      git_branch = {
+        symbol = " ";
+        style = "bold purple";
+      };
+
+      git_status = {
+        format = "([\\[$all_status$ahead_behind\\]]($style) )";
+        style = "bold red";
+      };
+
+      fill.symbol = " ";
+
+      cmd_duration = {
+        min_time = 2000;
+        format = "[$duration](italic yellow)";
+      };
+
+      character = {
+        success_symbol = "[❯](bold green)";
+        error_symbol = "[❯](bold red)";
+      };
+    };
   };
 
   # ── Neovim ──────────────────────────────────────────────────────────────────
