@@ -6,6 +6,7 @@
     ./home/programs.nix
     ./home/secrets.nix
     ./home/shell.nix
+    ./home/opencode.nix
   ];
 
   home.stateVersion = "25.11";

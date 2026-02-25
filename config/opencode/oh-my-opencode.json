@@ -1,0 +1,155 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
+  "agents": {
+    "sisyphus": {
+      "model": "anthropic/claude-opus-4-6",
+      "variant": "max",
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 32000
+      },
+      "fallback_models": ["openai/gpt-5.2", "google/gemini-3-pro-preview"],
+      "compaction": {
+        "model": "google/gemini-3-flash-preview"
+      }
+    },
+    "hephaestus": {
+      "model": "openai/gpt-5.3-codex",
+      "variant": "medium",
+      "fallback_models": ["openai/gpt-5.2", "google/gemini-3-pro-preview"]
+    },
+    "oracle": {
+      "model": "openai/gpt-5.2",
+      "reasoningEffort": "high",
+      "fallback_models": ["google/gemini-3-pro-preview", "anthropic/claude-opus-4-6"],
+      "compaction": {
+        "model": "google/gemini-3-flash-preview"
+      }
+    },
+    "librarian": {
+      "model": "google/gemini-3-flash-preview",
+      "fallback_models": ["anthropic/claude-haiku-4-5"]
+    },
+    "explore": {
+      "model": "anthropic/claude-haiku-4-5",
+      "fallback_models": ["google/gemini-3-flash-preview"]
+    },
+    "multimodal-looker": {
+      "model": "workers-ai/workers-ai/@cf/moonshotai/kimi-k2.5",
+      "fallback_models": ["google/gemini-3-flash-preview", "openai/gpt-5.2"]
+    },
+    "prometheus": {
+      "model": "anthropic/claude-opus-4-6",
+      "variant": "max",
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 32000
+      },
+      "fallback_models": ["openai/gpt-5.2", "google/gemini-3-pro-preview"],
+      "compaction": {
+        "model": "google/gemini-3-flash-preview"
+      }
+    },
+    "metis": {
+      "model": "anthropic/claude-opus-4-6",
+      "variant": "max",
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 32000
+      },
+      "fallback_models": ["openai/gpt-5.2", "google/gemini-3-pro-preview"],
+      "compaction": {
+        "model": "google/gemini-3-flash-preview"
+      }
+    },
+    "momus": {
+      "model": "openai/gpt-5.2",
+      "reasoningEffort": "medium",
+      "fallback_models": ["anthropic/claude-opus-4-6", "google/gemini-3-pro-preview"]
+    },
+    "atlas": {
+      "model": "anthropic/claude-sonnet-4-6",
+      "fallback_models": ["openai/gpt-5.2"]
+    }
+  },
+  "categories": {
+    "visual-engineering": {
+      "model": "google/gemini-3-pro-preview",
+      "variant": "high"
+    },
+    "ultrabrain": {
+      "model": "openai/gpt-5.3-codex",
+      "variant": "xhigh",
+      "fallback_models": ["google/gemini-3-pro-preview", "anthropic/claude-opus-4-6"]
+    },
+    "deep": {
+      "model": "openai/gpt-5.3-codex",
+      "variant": "medium",
+      "fallback_models": ["anthropic/claude-opus-4-6", "google/gemini-3-pro-preview"]
+    },
+    "artistry": {
+      "model": "google/gemini-3-pro-preview",
+      "variant": "high"
+    },
+    "quick": {
+      "model": "anthropic/claude-haiku-4-5"
+    },
+    "unspecified-low": {
+      "model": "anthropic/claude-sonnet-4-6"
+    },
+    "unspecified-high": {
+      "model": "anthropic/claude-opus-4-6",
+      "variant": "max",
+      "thinking": {
+        "type": "enabled",
+        "budgetTokens": 32000
+      }
+    },
+    "writing": {
+      "model": "google/gemini-3-flash-preview"
+    }
+  },
+  "runtime_fallback": {
+    "enabled": true
+  },
+  "git_master": {
+    "commit_footer": false,
+    "include_co_authored_by": false
+  },
+  "disabled_hooks": [
+    "startup-toast",
+    "auto-update-checker",
+    "todo-continuation-enforcer",
+    "ralph-loop",
+    "write-existing-file-guard",
+    "no-sisyphus-gpt",
+    "ultrawork-model-override"
+  ],
+  "experimental": {
+    "safe_hook_creation": true,
+    "aggressive_truncation": true,
+    "auto_resume": false,
+    "dynamic_context_pruning": {
+      "enabled": true,
+      "notification": "minimal",
+      "turn_protection": {
+        "enabled": true,
+        "turns": 3
+      },
+      "strategies": {
+        "deduplication": {
+          "enabled": true
+        },
+        "supersede_writes": {
+          "enabled": true,
+          "aggressive": false
+        },
+        "purge_errors": {
+          "enabled": true,
+          "turns": 5
+        }
+      }
+    }
+  },
+  "_migrations": []
+}

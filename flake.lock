@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "cloudflare-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1771936922,
+        "narHash": "sha256-PeoS9WNc0+eo3D5fCf4C80Wc/wAW5K0zA2B/Nd6wcn0=",
+        "owner": "cloudflare",
+        "repo": "skills",
+        "rev": "6bd8243a7e187da8f1bdd49d190ce7bb421e2d1e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cloudflare",
+        "repo": "skills",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -75,10 +91,12 @@
     },
     "root": {
       "inputs": {
+        "cloudflare-skills": "cloudflare-skills",
         "home-manager": "home-manager",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs",
-        "sops-nix": "sops-nix"
+        "sops-nix": "sops-nix",
+        "superpowers": "superpowers"
       }
     },
     "sops-nix": {
@@ -96,6 +114,22 @@
       "original": {
         "owner": "Mic92",
         "repo": "sops-nix",
+        "type": "github"
+      }
+    },
+    "superpowers": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1771702985,
+        "narHash": "sha256-AeICtdAfWRp0oCgQqd8LdrEWWtKNqUNWdvn0CGL18fA=",
+        "owner": "obra",
+        "repo": "superpowers",
+        "rev": "e4a2375cb705ca5800f0833528ce36a3faf9017a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "obra",
+        "repo": "superpowers",
         "type": "github"
       }
     }

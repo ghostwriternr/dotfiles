@@ -8,9 +8,15 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     sops-nix.url = "github:Mic92/sops-nix";
+
+    # Opencode skill packs (non-flake, pinned in flake.lock)
+    superpowers.url = "github:obra/superpowers";
+    superpowers.flake = false;
+    cloudflare-skills.url = "github:cloudflare/skills";
+    cloudflare-skills.flake = false;
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, sops-nix }: {
+  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, sops-nix, ... }: {
     darwinConfigurations."KVQ52GY6N9" = nix-darwin.lib.darwinSystem {
       modules = [
         ./modules/nix.nix
@@ -25,6 +31,7 @@
           home-manager.useUserPackages = true;
           home-manager.sharedModules = [ sops-nix.homeManagerModules.sops ];
           home-manager.backupFileExtension = "backup";
+          home-manager.extraSpecialArgs = { inherit inputs; };
           home-manager.users.naresh = import ./home.nix;
         }
       ];
