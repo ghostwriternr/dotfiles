@@ -74,7 +74,7 @@
       # productivity
       "obsidian"
       "raycast"
-      "todoist"
+      "todoist-app"
 
       # communication
       "beeper"
