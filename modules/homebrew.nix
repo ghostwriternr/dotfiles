@@ -30,25 +30,15 @@
       "cloudflare/engineering/docker-credential-cloudflared"
       "cloudflared"
 
-      # dev tools
+      # dev tools (tools with nix home-manager modules moved to home.nix)
       "anomalyco/tap/opencode"
-      "coreutils"
-      "difftastic"
-      "fd"
-      "fzf"
       "gawk"
       "gh"
       "glab"
       "gnupg"
-      "just"
-      "neovim"
-      "starship"
-      "tree"
       "util-linux"
-      "watch"
-      "zoxide"
 
-      # containers
+      # containers (upstream recommends brew for macOS)
       "colima"
       "docker"
       "docker-buildx"
@@ -75,9 +65,32 @@
     ];
 
     casks = [
-      "betterdisplay"
+      # terminals / editors
       "ghostty"
+      "cursor"
+      "windsurf"
+      "zed"
+
+      # productivity
+      "obsidian"
+      "raycast"
+      "todoist"
+
+      # communication
+      "beeper"
+      "discord"
+      "slack"
+
+      # media / utilities
+      "betterdisplay"
+      "brave-browser"
+      "google-drive"
       "localsend"
+      "logitune"
+      "obs"
+      "rectangle"
+      "screen-studio"
+      "spotify"
       "upscayl"
     ];
   };
