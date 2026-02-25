@@ -53,6 +53,9 @@ in
 
       mkdir -p "$config_dir"
 
+      # sops-nix decrypts via LaunchAgent (async) — wait for new secrets to appear
+      for _i in $(seq 1 20); do [ -f "$secret" ] && break; sleep 0.5; done
+
       if [ -f "$secret" ]; then
         ${lib.getExe' pkgs.gnused "sed"} \
           "s|__EXA_API_KEY__|$(cat "$secret")|g" \

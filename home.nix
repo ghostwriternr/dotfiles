@@ -7,6 +7,7 @@
     ./home/secrets.nix
     ./home/shell.nix
     ./home/opencode.nix
+    ./home/glab.nix
   ];
 
   home.stateVersion = "25.11";
