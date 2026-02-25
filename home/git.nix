@@ -25,5 +25,10 @@
     includes = [
       { path = "~/.local/share/cloudflare-warp-certs/gitconfig"; }
     ];
+
+    # Global ignores (applied to all repos)
+    ignores = [
+      "**/.claude/settings.local.json"
+    ];
   };
 }
