@@ -19,16 +19,27 @@
       WRANGLER_DOCKER_HOST = "unix://\${HOME}/.colima/default/docker.sock";
     };
 
-    # WARP cert env vars (SSL_CERT_FILE, NODE_EXTRA_CA_CERTS, REQUESTS_CA_BUNDLE,
-    # CARGO_HTTP_CAINFO). Managed by cloudflare-certs brew formula.
+    # Runs for ALL zsh contexts (interactive, non-interactive, login, scripts).
+    # This is critical: tools like opencode spawn /bin/zsh -c "command" which
+    # is neither login nor interactive, so .zprofile and .zshrc are NOT read.
     envExtra = ''
+      # Homebrew (PATH, HOMEBREW_PREFIX, HOMEBREW_CELLAR, etc.)
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+
+      # ASDF version manager shims
+      export PATH="''${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+
+      # Bun runtime
+      export BUN_INSTALL="$HOME/.bun"
+      export PATH="$BUN_INSTALL/bin:$PATH"
+
+      # WARP cert env vars (SSL_CERT_FILE, NODE_EXTRA_CA_CERTS, REQUESTS_CA_BUNDLE,
+      # CARGO_HTTP_CAINFO). Managed by cloudflare-certs brew formula.
       . /Users/naresh/.local/share/cloudflare-warp-certs/config.sh
     '';
 
-    # Homebrew shellenv (PATH, HOMEBREW_PREFIX, etc.)
-    profileExtra = ''
-      eval "$(/opt/homebrew/bin/brew shellenv)"
-    '';
+    # profileExtra intentionally left empty — brew shellenv moved to envExtra
+    # so non-interactive shells (opencode, scripts) also get brew on PATH.
 
     initContent = lib.mkAfter ''
       # Recompile zshrc if edited
@@ -39,13 +50,8 @@
         export EXA_API_KEY=$(cat "${config.sops.secrets.exa_api_key.path}")
       fi
 
-      # ── ASDF ──────────────────────────────────────────────────────────────
-      export PATH="''${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+      # ── ASDF (completions only — PATH is in envExtra) ────────────────────
       fpath=(''${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
-
-      # ── Bun ───────────────────────────────────────────────────────────────
-      export BUN_INSTALL="$HOME/.bun"
-      export PATH="$BUN_INSTALL/bin:$PATH"
 
       # ── Cloudflare ────────────────────────────────────────────────────────
       [ -f /Users/naresh/.config/cloudflare/vault-funcs ] && source /Users/naresh/.config/cloudflare/vault-funcs
