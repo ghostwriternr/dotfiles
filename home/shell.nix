@@ -11,6 +11,9 @@
       # Nix
       nix-rebuild = "sudo darwin-rebuild switch --flake ~/.config/nix-darwin --impure";
       nix-update = "nix flake update --flake ~/.config/nix-darwin && sudo darwin-rebuild switch --flake ~/.config/nix-darwin --impure && git -C ~/.config/nix-darwin add flake.lock && git -C ~/.config/nix-darwin commit -m 'flake: update inputs' && git -C ~/.config/nix-darwin push";
+
+      # Homebrew
+      brew-update = "brew update && brew upgrade && brew cleanup";
     };
 
     sessionVariables = {

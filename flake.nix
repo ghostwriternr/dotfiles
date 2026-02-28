@@ -23,6 +23,7 @@
         ./modules/homebrew.nix
         ./modules/system.nix
         ./modules/macos.nix
+        ./modules/wm.nix
         home-manager.darwinModules.home-manager
         {
           # These need flake-level bindings, so they stay inline.

@@ -14,23 +14,28 @@
 
   # ── Packages (CLI tools managed by nix instead of brew) ─────────────────────
   home.packages = with pkgs; [
-    bazelisk
     asdf-vm
+    bazelisk
     biome
     bun
     coreutils
     difftastic
+    docker-client
+    docker-buildx
+    docker-compose
+    docker-credential-helpers
     fd
     gawk
-    gnupg
     glab
+    gnupg
     just
     nerd-fonts.fira-code
     nginx
+    opencode
     openjdk
     ripgrep
-    tree
     tenv
+    tree
     util-linux
     uv
     vault
@@ -46,7 +51,4 @@
     rustfmt
   ];
 
-  # ── Window manager configs (yabai + skhd installed via brew) ─────────────────
-  home.file.".yabairc".source = ./config/yabairc;
-  home.file.".skhdrc".source = ./config/skhdrc;
 }

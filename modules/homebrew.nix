@@ -10,10 +10,7 @@
     };
 
     taps = [
-      "anomalyco/tap"
       "cloudflare/engineering"
-      "jackielii/tap"
-      "koekeishiya/formulae"
     ];
 
     brews = [
@@ -26,20 +23,9 @@
       "cloudflare/engineering/docker-credential-cloudflared"
       "cloudflared"
 
-      # dev tools
-      "anomalyco/tap/opencode"
-
-      # containers (upstream recommends brew for macOS)
+      # containers (colima needs brew for macOS VM/socket management)
       "colima"
-      "docker"
-      "docker-buildx"
-      "docker-compose"
-      "docker-credential-helper"
       "lima-additional-guestagents"
-
-      # window management
-      "jackielii/tap/skhd-zig"
-      "koekeishiya/formulae/yabai"
     ];
 
     casks = [
