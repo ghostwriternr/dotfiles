@@ -182,6 +182,25 @@
         echo "Done! Docker builds should now work with WARP enabled."
         echo "Tagged: ubuntu:22.04, alpine:3.21"
       }
+
+      # ── Window manager helpers ──────────────────────────────────────────
+      # macOS Accessibility permissions are tied to the exact binary path.
+      # After nix updates, yabai/skhd get new /nix/store paths and need
+      # re-granting. This copies the real binary path to clipboard for
+      # easy pasting in System Settings > Accessibility file picker.
+      wm-fix-perms() {
+        local target="''${1:-yabai}"
+        if [[ "$target" != "yabai" && "$target" != "skhd" ]]; then
+          echo "Usage: wm-fix-perms [yabai|skhd]  (default: yabai)"
+          return 1
+        fi
+        local bin_path
+        bin_path=$(readlink -f "$(which "$target")")
+        echo "$target: $bin_path"
+        printf "%s" "$bin_path" | pbcopy
+        echo "(copied to clipboard — paste with Cmd+Shift+G in the file picker)"
+        open 'x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility'
+      }
     '';
   };
 
