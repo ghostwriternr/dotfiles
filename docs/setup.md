@@ -51,7 +51,7 @@ Check these items to confirm the setup succeeded.
 *   **Shell**: Open a new terminal window. You should see the starship prompt and your aliases should work.
 *   **Git**: Run `git config user.email`. It should return `naresh@cloudflare.com`.
 *   **SSH**: Run `ssh -G github.com`. The output should show the Cloudflare-specific configuration.
-*   **Window manager**: Confirm that yabai and skhd are running. You might need to grant accessibility permissions in System Settings.
+*   **Window manager**: Confirm that yabai and skhd are running. You will need to grant accessibility permissions (see troubleshooting below).
 *   **Secrets**: Check `~/.config/sops-nix/secrets/`. You should see decrypted secret files.
 *   **Ghostty**: The terminal should use the Flexoki theme with a 14pt font.
 
@@ -67,7 +67,7 @@ Nix flakes only see files tracked by git. Run `git add` on any new files you've 
 Verify that your SSH key exists at `~/.ssh/cloudflare/id_ed25519`. You may need to log out and back in to trigger the LaunchAgent.
 
 **Yabai or skhd not working**
-Grant accessibility permissions in System Settings > Privacy & Security > Accessibility. You might need to toggle the permissions off and on again.
+After a nix rebuild, the binary paths in `/nix/store` change and macOS Accessibility permissions need re-granting. Run `wm-fix-perms` (or `wm-fix-perms skhd`) to copy the current binary path to your clipboard and open the Accessibility settings pane. Click `+`, press `Cmd+Shift+G`, paste, and confirm. The entry may not appear in the UI list, but permissions will work.
 
 **Brew package not found**
 You might need to add the required tap in `modules/homebrew.nix` before the package can be installed.

@@ -10,6 +10,7 @@ flake.nix
 ├── modules/homebrew.nix      # Brew: taps, formulae, casks
 ├── modules/system.nix        # Platform, user, WARP cert
 ├── modules/macos.nix         # macOS defaults
+├── modules/wm.nix            # Window manager services (yabai + skhd)
 └── home-manager
     └── home.nix
         ├── home/shell.nix    # Zsh config
@@ -24,16 +25,17 @@ flake.nix
 The choice between Nix and Homebrew depends on the type of tool and its integration requirements.
 
 Nix is used for:
-- CLI tools that don't require deep macOS integration (ripgrep, fd, bun).
+- CLI tools that don't require deep macOS integration (ripgrep, fd, bun, zig).
 - Tools that have dedicated home-manager modules (fzf, zoxide, direnv, starship).
+- Container tooling: colima, docker CLI, docker-buildx, docker-compose.
+- Window management: yabai and skhd via nix-darwin `services.yabai` and `services.skhd`.
 
 Brew is used for:
-- GUI applications (casks).
-- Tools tightly coupled to specific macOS versions (yabai, skhd-zig).
-- Cloudflare internal tools (cfsetup, cf-paste).
-- Tools where Homebrew provides better macOS integration (colima, docker).
+- GUI applications (casks) due to Gatekeeper, Spotlight indexing, and auto-update requirements.
+- Cloudflare internal tools from the private `cloudflare/engineering` tap.
+- `cloudflared`, because SSH ProxyCommand directives hardcode `/opt/homebrew/bin/cloudflared`.
 
-Prefer Nix if home-manager provides a `programs.X` module. Use Brew for GUI apps or tools sensitive to macOS versioning.
+Prefer Nix if home-manager provides a `programs.X` module or the tool is a CLI binary. Use Brew for GUI apps, private taps, and tools with hardcoded brew paths.
 
 ## Secrets management
 Secrets are managed using sops-nix with age encryption. The age key is derived from the SSH key located at `~/.ssh/cloudflare/id_ed25519`. Encrypted values are stored in `secrets/default.yaml`, which is safe to commit to the repository. The `.sops.yaml` file maps the age public key to the secrets file pattern.

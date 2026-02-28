@@ -21,15 +21,15 @@ nix-darwin + home-manager flake for macOS (Apple Silicon, Lix). Cloudflare work 
 | Git | config, aliases, global ignores | home-manager | home/git.nix |
 | Terminal | ghostty (Flexoki theme) | home-manager | home/programs.nix |
 | SSH | config (Colima + Cloudflare) | home-manager | home/programs.nix |
-| Window mgr | yabai + skhd | brew (config via nix) | home.nix + config/ |
+| Window mgr | yabai + skhd | nix-darwin services | modules/wm.nix + config/ |
 | AI tools | opencode, oh-my-opencode | home-manager | home/opencode.nix |
 | GitLab CLI | glab (config + encrypted token) | home-manager | home/glab.nix |
 | GitHub CLI | gh (config) | home-manager | home/programs.nix |
-| Dev tools | fzf, zoxide, direnv, bat, ripgrep, fd, etc. | nix + brew | home/programs.nix, home.nix |
+| Dev tools | fzf, zoxide, direnv, bat, ripgrep, fd, etc. | home-manager + nix | home/programs.nix, home.nix |
 | Secrets | sops-nix (age encryption) | home-manager | home/secrets.nix |
 | macOS | dock, keyboard, Finder, trackpad, screenshots, Touch ID sudo | nix-darwin | modules/macos.nix |
 | Nix | gc, optimise, flakes-only, no channels | nix-darwin | modules/nix.nix |
-| Packages | 40+ brew formulae, 17 casks, 15 nix pkgs | nix-darwin + nix | modules/homebrew.nix, home.nix |
+| Packages | 8 brew formulae, 17 casks, 28 nix pkgs | nix-darwin + nix | modules/homebrew.nix, home.nix |
 
 ## Repo structure
 
@@ -37,7 +37,7 @@ nix-darwin + home-manager flake for macOS (Apple Silicon, Lix). Cloudflare work 
 ~/.config/nix-darwin/
 ├── flake.nix              # Entry point — inputs and system config
 ├── flake.lock             # Pinned dependency versions
-├── home.nix               # Home-manager root — imports, packages, window mgr configs
+├── home.nix               # Home-manager root — imports, packages
 ├── bootstrap.sh           # One-time WARP cert setup for first build
 │
 ├── modules/               # System-level (nix-darwin) configuration
@@ -45,6 +45,7 @@ nix-darwin + home-manager flake for macOS (Apple Silicon, Lix). Cloudflare work 
 │   ├── homebrew.nix       # Taps, formulae, casks
 │   ├── system.nix         # Platform, user, WARP cert path
 │   └── macos.nix          # macOS defaults (dock, keyboard, Finder, etc.)
+│   └── wm.nix             # Window manager services (yabai + skhd)
 │
 ├── home/                  # User-level (home-manager) configuration
 │   ├── shell.nix          # Zsh: aliases, env vars, functions, integrations
@@ -72,14 +73,18 @@ nix-darwin + home-manager flake for macOS (Apple Silicon, Lix). Cloudflare work 
 ## Common commands
 
 ```sh
-# Rebuild after config changes
+# Rebuild after config changes (or use the alias: nix-rebuild)
 sudo darwin-rebuild switch --flake ~/.config/nix-darwin --impure
 
-# Update all flake inputs
+# Update all flake inputs, rebuild, commit and push (alias: nix-update)
 nix flake update --flake ~/.config/nix-darwin
 
-# Update a single input
-nix flake update superpowers --flake ~/.config/nix-darwin
+# Update brew packages (alias: brew-update)
+brew update && brew upgrade && brew cleanup
+
+# Fix yabai/skhd accessibility permissions after nix updates
+wm-fix-perms        # copies yabai path to clipboard, opens System Settings
+wm-fix-perms skhd   # same for skhd
 
 # Search for nix packages
 nix search nixpkgs <name>
