@@ -24,6 +24,13 @@
     tree
     uv
     watch
+
+    # rust
+    cargo
+    clippy
+    rust-analyzer
+    rustc
+    rustfmt
   ];
 
   # ── Window manager configs (yabai + skhd installed via brew) ─────────────────

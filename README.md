@@ -29,7 +29,7 @@ nix-darwin + home-manager flake for macOS (Apple Silicon, Lix). Cloudflare work 
 | Secrets | sops-nix (age encryption) | home-manager | home/secrets.nix |
 | macOS | dock, keyboard, Finder, trackpad, screenshots, Touch ID sudo | nix-darwin | modules/macos.nix |
 | Nix | gc, optimise, flakes-only, no channels | nix-darwin | modules/nix.nix |
-| Packages | 40+ brew formulae, 17 casks, 10 nix pkgs | nix-darwin + nix | modules/homebrew.nix, home.nix |
+| Packages | 40+ brew formulae, 17 casks, 15 nix pkgs | nix-darwin + nix | modules/homebrew.nix, home.nix |
 
 ## Repo structure
 
