@@ -12,12 +12,8 @@
     taps = [
       "anomalyco/tap"
       "cloudflare/engineering"
-      "hashicorp/tap"
-      "int128/kubelogin"
       "jackielii/tap"
       "koekeishiya/formulae"
-      "sst/tap"
-      "zurawiki/brews"
     ];
 
     brews = [
@@ -30,13 +26,8 @@
       "cloudflare/engineering/docker-credential-cloudflared"
       "cloudflared"
 
-      # dev tools (tools with nix home-manager modules moved to home.nix)
+      # dev tools
       "anomalyco/tap/opencode"
-      "gawk"
-      "gh"
-      "glab"
-      "gnupg"
-      "util-linux"
 
       # containers (upstream recommends brew for macOS)
       "colima"
@@ -46,22 +37,9 @@
       "docker-credential-helper"
       "lima-additional-guestagents"
 
-      # languages / runtimes
-      "asdf"
-      "biome"
-      "openjdk"
-      "tenv"
-      "zig"
-
-      # infra
-      "bazelisk"
-      "hashicorp/tap/vault"
+      # window management
       "jackielii/tap/skhd-zig"
       "koekeishiya/formulae/yabai"
-
-      # misc
-      "nginx"
-      "websocat"
     ];
 
     casks = [

@@ -92,19 +92,11 @@
   };
 
   # ── GitHub CLI ────────────────────────────────────────────────────────────
-  # Installed via brew; config managed here. programs.gh needs a package,
-  # so we use xdg.configFile directly to avoid a stub wrapper.
-  xdg.configFile."gh/config.yml".text = lib.generators.toYAML {} {
-    version = 1;
-    git_protocol = "https";
-    editor = "";
-    prompt = "enabled";
-    prefer_editor_prompt = "disabled";
-    pager = "";
-    aliases = {
-      co = "pr checkout";
+  programs.gh = {
+    enable = true;
+    settings = {
+      version = 1;
+      git_protocol = "ssh";
     };
-    http_unix_socket = "";
-    browser = "";
   };
 }

@@ -1,10 +1,15 @@
-{ ... }: {
+{ lib, ... }: {
 
   nix.settings = {
     experimental-features = "nix-command flakes";
     warn-dirty = false;
     trusted-users = [ "root" "@admin" "naresh" ];
   };
+
+  # Allow specific packages with non-free licenses (e.g. HashiCorp BSL).
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+    "vault"
+  ];
 
   # Weekly garbage collection: delete generations older than 30 days.
   nix.gc = {

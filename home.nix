@@ -14,16 +14,29 @@
 
   # ── Packages (CLI tools managed by nix instead of brew) ─────────────────────
   home.packages = with pkgs; [
+    bazelisk
+    asdf-vm
+    biome
     bun
     coreutils
     difftastic
     fd
+    gawk
+    gnupg
+    glab
     just
     nerd-fonts.fira-code
+    nginx
+    openjdk
     ripgrep
     tree
+    tenv
+    util-linux
     uv
+    vault
     watch
+    websocat
+    zig
 
     # rust
     cargo
