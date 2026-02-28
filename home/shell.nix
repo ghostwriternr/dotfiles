@@ -7,6 +7,10 @@
     shellAliases = {
       vim = "nvim";
       zsh-refresh = "rm -f ~/.zcompdump* && exec zsh";
+
+      # Nix
+      nix-rebuild = "sudo darwin-rebuild switch --flake ~/.config/nix-darwin --impure";
+      nix-update = "nix flake update --flake ~/.config/nix-darwin && sudo darwin-rebuild switch --flake ~/.config/nix-darwin --impure && git -C ~/.config/nix-darwin add flake.lock && git -C ~/.config/nix-darwin commit -m 'flake: update inputs' && git -C ~/.config/nix-darwin push";
     };
 
     sessionVariables = {
@@ -42,8 +46,8 @@
     # so non-interactive shells (opencode, scripts) also get brew on PATH.
 
     initContent = lib.mkAfter ''
-      # Recompile zshrc if edited
-      [[ ~/.zshrc -nt ~/.zshrc.zwc ]] && zcompile ~/.zshrc
+      # Recompile zshrc if the real file (resolving symlinks) is newer than the cache
+      [[ $(realpath ~/.zshrc) -nt ~/.zshrc.zwc ]] && zcompile ~/.zshrc
 
       # ── Secrets ───────────────────────────────────────────────────────────
       if [ -f "${config.sops.secrets.exa_api_key.path}" ]; then
