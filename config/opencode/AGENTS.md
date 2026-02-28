@@ -9,7 +9,7 @@ anthropic, openai, google, workers-ai
 - User config overrides are unconditionally respected — match on MODEL name, not provider path
 
 ## Common Model ID Gotchas
-- Google models need `-preview` suffix: `google/gemini-3-pro-preview`, `google/gemini-3-flash-preview`
+- Google models need `-preview` suffix: `google/gemini-3.1-pro-preview`, `google/gemini-3-flash-preview`
 - Workers-AI has double prefix: `workers-ai/workers-ai/@cf/moonshotai/kimi-k2.5`
 
 ## Config Audit
