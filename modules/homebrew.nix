@@ -22,10 +22,6 @@
       "cloudflare/engineering/cloudflare-certs"
       "cloudflare/engineering/docker-credential-cloudflared"
       "cloudflared"
-
-      # containers (colima needs brew for macOS VM/socket management)
-      "colima"
-      "lima-additional-guestagents"
     ];
 
     casks = [

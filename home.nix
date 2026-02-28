@@ -19,6 +19,8 @@
     biome
     bun
     coreutils
+    colima
+    lima-additional-guestagents
     difftastic
     docker-client
     docker-buildx
