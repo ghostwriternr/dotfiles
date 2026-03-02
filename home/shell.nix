@@ -10,7 +10,6 @@
 
       # Nix
       nix-rebuild = "sudo darwin-rebuild switch --flake ~/.config/nix-darwin --impure";
-      nix-update = "nix flake update --flake ~/.config/nix-darwin && sudo darwin-rebuild switch --flake ~/.config/nix-darwin --impure && git -C ~/.config/nix-darwin add flake.lock && git -C ~/.config/nix-darwin commit -m 'flake: update inputs' && git -C ~/.config/nix-darwin push";
 
       # Homebrew
       brew-update = "brew update && brew upgrade && brew cleanup";
@@ -59,6 +58,73 @@
 
       # ── ASDF (completions only — PATH is in envExtra) ────────────────────
       fpath=(''${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
+
+      # ── Nix helpers ──────────────────────────────────────────────────────
+      # Smart update: checks binary cache before committing to source builds.
+      # Updates non-nixpkgs inputs first (always fast), then nixpkgs with a
+      # dry-run gate. If too many packages need building from source, lets you
+      # revert the nixpkgs bump while keeping the other updates.
+      nix-update() {
+        local flake_dir="$HOME/.config/nix-darwin"
+        local system_attr="$flake_dir#darwinConfigurations.KVQ52GY6N9.system"
+
+        # 1. Update non-nixpkgs inputs (always fast — no source builds)
+        echo ":: Updating non-nixpkgs inputs..."
+        nix flake update home-manager nix-darwin sops-nix superpowers cloudflare-skills \
+          --flake "$flake_dir" || return 1
+
+        # Snapshot lock after safe updates, before touching nixpkgs
+        local safe_lock
+        safe_lock=$(<"$flake_dir/flake.lock")
+
+        # 2. Update nixpkgs
+        echo ":: Updating nixpkgs..."
+        nix flake update nixpkgs --flake "$flake_dir" || return 1
+
+        # 3. Dry-run: check what needs building from source
+        echo ":: Checking binary cache coverage..."
+        local dry_output
+        dry_output=$(nix build --dry-run "$system_attr" --impure 2>&1)
+        local dry_exit=$?
+
+        if [[ $dry_exit -ne 0 ]] && ! echo "$dry_output" | grep -q 'will be built\|will be fetched'; then
+          echo "⚠  Dry-run evaluation failed:"
+          echo "$dry_output"
+          read -q "choice?Proceed with rebuild anyway? [y/n] "
+          echo
+          [[ "$choice" != "y" ]] && return 1
+        fi
+
+        # .drv paths only appear under "will be built" — fetch paths don't end in .drv
+        local build_lines
+        build_lines=$(echo "$dry_output" | grep '\.drv$' | \
+          sed 's|^[[:space:]]*/nix/store/[a-z0-9]*-||; s|\.drv$||')
+
+        if [[ -n "$build_lines" ]]; then
+          local count=$(echo "$build_lines" | wc -l | tr -d ' ')
+          echo
+          echo "⚠  $count package(s) will build from source:"
+          echo "$build_lines" | sed 's/^/  - /'
+          echo
+          read -q "choice?Proceed with source builds? [y/n] "
+          echo
+          if [[ "$choice" != "y" ]]; then
+            echo ":: Reverting nixpkgs (keeping other input updates)..."
+            echo "$safe_lock" > "$flake_dir/flake.lock"
+          fi
+        else
+          echo "✓ All packages cached"
+        fi
+
+        # 4. Rebuild
+        echo ":: Rebuilding..."
+        sudo darwin-rebuild switch --flake "$flake_dir" --impure || return 1
+
+        # 5. Commit and push
+        git -C "$flake_dir" add flake.lock
+        git -C "$flake_dir" commit -m 'flake: update inputs'
+        git -C "$flake_dir" push
+      }
 
       # ── Cloudflare ────────────────────────────────────────────────────────
       [ -f /Users/naresh/.config/cloudflare/vault-funcs ] && source /Users/naresh/.config/cloudflare/vault-funcs
