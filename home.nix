@@ -27,6 +27,7 @@
     docker-compose
     docker-credential-helpers
     fd
+    git-filter-repo
     gawk
     glab
     gnupg
