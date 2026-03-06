@@ -33,6 +33,7 @@
 
       # productivity
       "obsidian"
+      "notion"
       "raycast"
       "todoist-app"
       "aqua-voice"
