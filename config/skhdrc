@@ -124,12 +124,13 @@ ctrl + alt - a : yabai -m space --layout bsp
 ctrl + alt - d : yabai -m space --layout float
 ctrl + alt - s : yabai -m space --layout $(yabai -m query --spaces --space | jq -r 'if .type == "bsp" then "float" else "bsp" end')
 
-# toggle stacking - if windows are stacked, unstack them; otherwise stack all windows
-alt - w : stacked=$(yabai -m query --windows --space | jq -r 'map(select(.["stack-index"] > 0)) | length'); \
+# toggle stacking - if windows are stacked, unstack them; otherwise stack all managed windows
+alt - w : managed=$(yabai -m query --windows --space | jq '[.[] | select(."is-floating" == false)]'); \
+          stacked=$(echo "$managed" | jq -r 'map(select(.["stack-index"] > 0)) | length'); \
           if [ "$stacked" -gt 0 ]; then \
             yabai -m space --layout float; \
             yabai -m space --layout bsp; \
           else \
-            first=$(yabai -m query --windows --space | jq -r '.[0].id'); \
-            yabai -m query --windows --space | jq -r '.[] | select(.id != '$first').id' | xargs -I{} yabai -m window $first --stack {}; \
+            first=$(echo "$managed" | jq -r '.[0].id'); \
+            echo "$managed" | jq -r '.[] | select(.id != '"$first"').id' | xargs -I{} yabai -m window $first --stack {}; \
           fi
