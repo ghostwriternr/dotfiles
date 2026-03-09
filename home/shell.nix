@@ -267,6 +267,36 @@
         echo "(copied to clipboard — paste with Cmd+Shift+G in the file picker)"
         open 'x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility'
       }
+
+      # Wrapper: intercept yabai's built-in service commands and redirect
+      # to nix-darwin managed launchd services. yabai --start-service etc.
+      # create a conflicting com.asmvik.yabai plist that ignores nix config.
+      yabai() {
+        case "$1" in
+          --start-service|--restart-service|--install-service)
+            echo "⚠  Blocked: 'yabai $1' conflicts with nix-darwin service."
+            echo "   Running: wm-restart yabai"
+            wm-restart yabai
+            ;;
+          --stop-service|--uninstall-service)
+            echo "⚠  Blocked: 'yabai $1' conflicts with nix-darwin service."
+            echo "   Use: launchctl kill SIGTERM gui/$(id -u)/org.nixos.yabai"
+            ;;
+          *)
+            command yabai "$@"
+            ;;
+        esac
+      }
+
+      # Restart yabai/skhd via launchd (nix-darwin managed services).
+      wm-restart() {
+        local target="''${1:-yabai}"
+        if [[ "$target" != "yabai" && "$target" != "skhd" ]]; then
+          echo "Usage: wm-restart [yabai|skhd]  (default: yabai)"
+          return 1
+        fi
+        launchctl kickstart -k "gui/$(id -u)/org.nixos.$target"
+      }
     '';
   };
 
