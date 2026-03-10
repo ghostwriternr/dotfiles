@@ -1,11 +1,11 @@
 ---
 name: omo-model-audit
-description: Use when upgrading oh-my-opencode, checking model availability, fixing config mismatches, or after gaining access to new models. Triggers on 'omo audit', 'model mismatch', 'upgrade omo', 'check models', 'fix config'.
+description: Use when upgrading oh-my-openagent, checking model availability, fixing config mismatches, or after gaining access to new models. Triggers on 'omo audit', 'model mismatch', 'upgrade omo', 'check models', 'fix config'.
 ---
 
 # OMO Model Audit
 
-Audit and auto-fix oh-my-opencode model configuration. Copy the checklist below and track progress:
+Audit and auto-fix oh-my-openagent model configuration. Copy the checklist below and track progress:
 
 ```
 Audit Progress:
@@ -23,11 +23,11 @@ Audit Progress:
 ## Step 1: Version Check & Upgrade
 
 ```bash
-npm view oh-my-opencode version                              # latest published
-grep '"oh-my-opencode' ~/.config/opencode/opencode.json      # installed ref
+npm view oh-my-openagent version                              # latest published
+grep '"oh-my-openagent' ~/.config/opencode/opencode.json      # installed ref
 ```
 
-If outdated: `npm update oh-my-opencode` (updates package only, preserves config).
+If outdated: `npm update oh-my-openagent` (updates package only, preserves config).
 
 ## Step 2: Collect Available Models
 
@@ -40,10 +40,10 @@ opencode models 2>&1
 ## Step 3: Collect OMO Recommendations
 
 ```bash
-git clone --depth 1 https://github.com/code-yeongyu/oh-my-opencode.git /tmp/oh-my-opencode 2>/dev/null || git -C /tmp/oh-my-opencode pull
+git clone --depth 1 https://github.com/code-yeongyu/oh-my-openagent.git /tmp/oh-my-openagent 2>/dev/null || git -C /tmp/oh-my-openagent pull
 ```
 
-Read `/tmp/oh-my-opencode/src/shared/model-requirements.ts` — contains fallback chains for all agents and categories.
+Read `/tmp/oh-my-openagent/src/shared/model-requirements.ts` — contains fallback chains for all agents and categories.
 
 ## Step 4: Read Current Config
 
@@ -94,14 +94,14 @@ Compare installed version to latest. Fetch all release notes between them:
 
 ```bash
 # Get release list from GitHub
-gh release list --repo code-yeongyu/oh-my-opencode --limit 30 2>/dev/null || \
-  curl -s https://api.github.com/repos/code-yeongyu/oh-my-opencode/releases | grep '"tag_name"'
+gh release list --repo code-yeongyu/oh-my-openagent --limit 30 2>/dev/null || \
+  curl -s https://api.github.com/repos/code-yeongyu/oh-my-openagent/releases | grep '"tag_name"'
 ```
 
 For each release between installed and latest, fetch and review:
 
 ```bash
-gh release view vX.Y.Z --repo code-yeongyu/oh-my-opencode 2>/dev/null
+gh release view vX.Y.Z --repo code-yeongyu/oh-my-openagent 2>/dev/null
 ```
 
 Walk through changes **interactively** with the user. For each release, identify:

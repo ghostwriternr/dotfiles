@@ -393,7 +393,7 @@
     "cf-portal_gitlab-mcp-server_list_merge_request_discussions*": false
   },
   "plugin": [
-    "oh-my-opencode@latest"
+    "oh-my-openagent@latest"
   ],
   "provider": {
     "openai": {
