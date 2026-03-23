@@ -375,24 +375,7 @@
     "grep_app_*": "allow",
     "websearch_*": "allow"
   },
-  "mcp": {
-    "chrome-devtools": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "chrome-devtools-mcp@latest"
-      ]
-    },
-    "websearch": {
-      "type": "remote",
-      "url": "https://mcp.exa.ai/mcp?exaApiKey=__EXA_API_KEY__&tools=web_search_exa"
-    },
-    "cloudflare-api": {
-      "type": "remote",
-      "url": "https://mcp.cloudflare.com/mcp"
-    }
-  },
+  "mcp": {},
   "tools": {
     "cf-portal_gitlab-mcp-server_*emoji*": false,
     "cf-portal_gitlab-mcp-server_list_merge_request_discussions*": false
