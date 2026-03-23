@@ -22,7 +22,7 @@ nix-darwin + home-manager flake for macOS (Apple Silicon, Lix). Cloudflare work 
 | Terminal | ghostty (Flexoki theme) | home-manager | home/programs.nix |
 | SSH | config (Colima + Cloudflare) | home-manager | home/programs.nix |
 | Window mgr | yabai + skhd | nix-darwin services | modules/wm.nix + config/ |
-| AI tools | opencode, oh-my-openagent | home-manager | home/opencode.nix |
+| AI tools | opencode | home-manager | home/opencode.nix |
 | GitLab CLI | glab (config + encrypted token) | home-manager | home/glab.nix |
 | GitHub CLI | gh (config) | home-manager | home/programs.nix |
 | Dev tools | fzf, zoxide, direnv, bat, ripgrep, fd, etc. | home-manager + nix | home/programs.nix, home.nix |
@@ -56,7 +56,7 @@ nix-darwin + home-manager flake for macOS (Apple Silicon, Lix). Cloudflare work 
 │   └── glab.nix           # GitLab CLI: config template, secret injection
 │
 ├── config/                # Raw config files (templates, keybindings)
-│   ├── opencode/          # opencode.json (template), oh-my-opencode.json, AGENTS.md, skills/
+│   ├── opencode/          # opencode.json (template), agents/, skills/
 │   ├── glab-cli/          # config.yml (template), aliases.yml
 │   ├── yabairc            # Yabai window manager rules and settings
 │   └── skhdrc             # skhd hotkey bindings

@@ -54,7 +54,7 @@ The system uses three distinct patterns for managing configuration files.
 
 1. **Nix module**: Used for tools like Ghostty or SSH. Home-manager generates the configuration file as a read-only symlink pointing to the nix store. This is the preferred method for tools that don't need to write back to their own configuration.
 2. **Template + activation script**: Used for `opencode.json` and GitLab's `config.yml`. A template file in `config/` contains placeholder tokens like `__SECRET__`. An activation script copies this template to the target location and substitutes secrets from sops. The resulting file is a real, mutable file rather than a symlink. This pattern is necessary for tools that write state back to their configuration and require secret injection.
-3. **mkOutOfStoreSymlink**: Used for `oh-my-opencode.json` and `AGENTS.md`. This creates a symlink from the home directory to the file within the git repository. The target remains mutable, and any edits made by the user or external tools land directly in the git working tree. This is used for files that are frequently edited.
+3. **mkOutOfStoreSymlink**: Creates a symlink from the home directory to a file within the git repository. The target remains mutable, and any edits made by the user or external tools land directly in the git working tree. This is used for files that are frequently edited.
 
 ## External dependencies
 Several components exist outside this repository and must be present for the system to function correctly.
@@ -73,6 +73,23 @@ Several components exist outside this repository and must be present for the sys
 - `sops-nix`: Handles secrets management.
 - `superpowers`: An opencode skill pack from `obra/superpowers`.
 - `cloudflare-skills`: An opencode skill pack from `cloudflare/skills`.
+
+## OpenCode agents
+Custom agents are defined as markdown files in `config/opencode/agents/` and symlinked to `~/.config/opencode/agents/` via `mkOutOfStoreSymlink` in `home/opencode.nix`. Each file combines a YAML frontmatter (model, permissions, mode) with a system prompt body.
+
+| Agent | Mode | Model | Role |
+| :--- | :--- | :--- | :--- |
+| build | primary | Claude Opus 4.6 | Main coding agent (no custom prompt -- uses provider base) |
+| deep | primary | GPT-5.3 Codex | Autonomous deep reasoning for complex problems |
+| quick | primary | Claude Haiku 4.5 | Fast, cheap agent for trivial tasks |
+| large | primary | Claude Opus 4.6 | Max context escape hatch for large refactors |
+| oracle | subagent | GPT-5.4 | Second opinion -- reasoning, plan review, debugging |
+| review | subagent | Gemini 3.1 Pro | Code review and bug identification |
+| research | subagent | Gemini 3 Flash | Fast codebase search and retrieval |
+| librarian | subagent | Claude Sonnet 4.6 | External code and documentation research |
+| lookat | subagent | Gemini 3 Flash | Image, PDF, and media analysis |
+
+Built-in agents `plan`, `general`, and `explore` are disabled in `opencode.json` as they are replaced by this roster. Model choices follow Amp's architecture: different model families for different cognitive styles (Claude for structured instruction-following, GPT for autonomous reasoning, Gemini for parallel tool use and analysis).
 
 Non-flake inputs are pinned in `flake.lock`. Update them using `nix flake update <input>`.
 
