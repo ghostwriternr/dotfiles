@@ -20,6 +20,11 @@ in
     force = true;
   };
 
+  # ── Skills — user-authored (mutable — symlink to repo) ──────────────────────
+
+  xdg.configFile."opencode/skills/amp-audit".source =
+    config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/opencode/skills/amp-audit";
+
   # ── Custom agents (mutable — symlink to repo so edits land in git) ──────────
 
   xdg.configFile."opencode/agents".source =
