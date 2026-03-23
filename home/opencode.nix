@@ -8,14 +8,6 @@ let
   opencodeConfigTemplate = ../config/opencode/opencode.json;
 in
 {
-  # ── Config files (mutable — symlink to repo so edits land in git) ────────────
-
-  xdg.configFile."opencode/AGENTS.md".source =
-    config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/opencode/AGENTS.md";
-
-  xdg.configFile."opencode/oh-my-opencode.json".source =
-    config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/opencode/oh-my-opencode.json";
-
   # ── Skills — upstream repos (read-only, pinned via flake.lock) ───────────────
 
   xdg.configFile."opencode/skills/superpowers" = {
@@ -28,10 +20,10 @@ in
     force = true;
   };
 
-  # ── Skills — user-authored (mutable — symlink to repo) ──────────────────────
+  # ── Custom agents (mutable — symlink to repo so edits land in git) ──────────
 
-  xdg.configFile."opencode/skills/omo-model-audit".source =
-    config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/opencode/skills/omo-model-audit";
+  xdg.configFile."opencode/agents".source =
+    config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/opencode/agents";
 
   # ── Plugins ──────────────────────────────────────────────────────────────────
 
