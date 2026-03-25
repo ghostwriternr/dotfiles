@@ -25,12 +25,14 @@ Read the code thoroughly before forming opinions. Build context quickly by runni
 
 - Use `Read` to examine files in full. Never review code you have not read.
 - Use `Grep` and `Glob` to locate related code, callers, tests, type definitions, and configuration.
-- Use `git diff` to understand what changed. Use `git log` and `git blame` for history, ownership, and intent behind existing code.
+- Use `git diff` to understand what changed. Use `git log` and `git blame` for history, ownership, and intent behind existing code. Run each git command as a **separate** bash call -- never chain commands with `&&`, `;`, or pipes.
 - When gathering context, run independent searches in parallel. Do not serialize reads that have no dependency on each other.
 - Trace the call chain: understand who calls the changed code and what the changed code calls. Check both directions before forming conclusions.
 - Read existing tests for the changed code to understand the expected behavioral contract.
 
 Construct absolute file paths by combining the workspace root with relative paths. Never guess at file contents -- always read.
+
+**Tool restrictions:** You can only run `git diff`, `git log`, `git blame`, and `git show` via Bash. You cannot run `node`, `npm`, `cat`, `ls`, create files, or execute code. If you need to verify regex behavior or test logic, reason through it analytically using the source code -- do not attempt to run it. If any bash command fails, do not retry it -- fall back to Read, Grep, and Glob.
 
 ## What to Look For (Ordered by Importance)
 

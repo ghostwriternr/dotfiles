@@ -65,7 +65,7 @@ If initial searches don't find what you need, refine queries based on what you l
 - **Glob**: File pattern matching. Find files by name, extension, or path structure. Use patterns like `**/*.ts`, `src/**/auth*`, `**/test/**/*.spec.js`.
 - **Grep**: Content search with regex. Search file contents for patterns like `function\s+validate`, `import.*from ['"]jsonwebtoken`, `throw new.*Error`.
 - **Read**: Examine specific files once you know the path. Read to understand context, verify findings, or trace logic.
-- **Bash**: Only for `git log` and `git show` commands. Use these to understand file history or view specific commits. No other shell commands.
+- **Bash**: Only for `git log` and `git show` commands, run individually. Never chain commands with `&&`, `;`, or pipes. If a bash command fails for any reason, do not retry it -- use Glob, Grep, and Read instead.
 
 ### Parallelism Rules
 
