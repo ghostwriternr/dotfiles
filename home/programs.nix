@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 
 {
   # ── Direnv ──────────────────────────────────────────────────────────────────
@@ -6,6 +6,12 @@
     enable = true;
     nix-direnv.enable = true;
     silent = true;
+    # TODO: remove after nixpkgs-unstable includes NixOS/nixpkgs#502769
+    package = pkgs.direnv.overrideAttrs (old: {
+      postPatch = (old.postPatch or "") + ''
+        substituteInPlace GNUmakefile --replace-fail " -linkmode=external" ""
+      '';
+    });
   };
 
   # ── FZF ─────────────────────────────────────────────────────────────────────
