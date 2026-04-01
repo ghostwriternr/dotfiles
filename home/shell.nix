@@ -198,6 +198,19 @@
         curl -s -X POST "$CHAYOS_URL/sync" | python3 -m json.tool
       }
 
+      # ── GitHub branch protection (cloudflare/sandbox-sdk) ────────────────
+      gh-unprotect-main() {
+        gh api repos/cloudflare/sandbox-sdk/rulesets/7268489 -X PUT \
+          --input - <<< '{"enforcement":"disabled"}' > /dev/null \
+          && echo "protect-main ruleset DISABLED — direct push to main allowed"
+      }
+
+      gh-protect-main() {
+        gh api repos/cloudflare/sandbox-sdk/rulesets/7268489 -X PUT \
+          --input - <<< '{"enforcement":"active"}' > /dev/null \
+          && echo "protect-main ruleset ACTIVE — main branch protected"
+      }
+
       # ── Docker helpers ────────────────────────────────────────────────────
       docker-tail-all() {
         local -A TAILING_PIDS
