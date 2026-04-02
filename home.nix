@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ./home/theme.nix
     ./home/git.nix
     ./home/programs.nix
     ./home/secrets.nix
@@ -17,20 +18,24 @@
     asdf-vm
     bazelisk
     biome
+    btop
     bun
     coreutils
     colima
     lima-additional-guestagents
+    delta
     difftastic
     docker-client
     docker-buildx
     docker-compose
     docker-credential-helpers
+    fastfetch
     fd
     git-filter-repo
     gawk
     glab
     gnupg
+    jq
     just
     nerd-fonts.fira-code
     nginx
@@ -38,7 +43,6 @@
     openjdk
     ripgrep
     tenv
-    tree
     util-linux
     uv
     vault

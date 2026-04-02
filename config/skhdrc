@@ -134,3 +134,8 @@ alt - w : managed=$(yabai -m query --windows --space | jq '[.[] | select(."is-fl
             first=$(echo "$managed" | jq -r '.[0].id'); \
             echo "$managed" | jq -r '.[] | select(.id != '"$first"').id' | xargs -I{} yabai -m window $first --stack {}; \
           fi
+
+# ── Theme toggle ─────────────────────────────────────────────────
+# Toggle light/dark mode, reload SketchyBar, restart JankyBorders.
+# NOTE: skhd runs via /bin/sh — no shell functions available.
+ctrl + alt - t : osascript -e 'tell app "System Events" to tell appearance preferences to set dark mode to not dark mode' && sleep 0.5 && sketchybar --reload && launchctl kickstart -k "gui/$(id -u)/homebrew.mxcl.borders" 2>/dev/null

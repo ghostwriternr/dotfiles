@@ -1,5 +1,9 @@
 { config, lib, ... }:
 
+let
+  t = config.theme;
+  p = t.palette;
+in
 {
   programs.zsh = {
     enable = true;
@@ -7,6 +11,12 @@
     shellAliases = {
       vim = "nvim";
       zsh-refresh = "rm -f ~/.zcompdump* && exec zsh";
+
+      # CLI upgrades (bat, eza)
+      cat = "bat --style=plain --paging=never";
+      ls = "eza --icons";
+      ll = "eza -la --icons --git";
+      tree = "eza --tree --icons";
 
       # Nix
       nix-rebuild = "sudo darwin-rebuild switch --flake ~/.config/nix-darwin --impure";
@@ -48,6 +58,48 @@
     # so non-interactive shells (opencode, scripts) also get brew on PATH.
 
     initContent = lib.mkAfter ''
+      # ── Theme switching (precmd hook) ────────────────────────────────────
+      __theme_last_appearance=""
+      __theme_update() {
+        local current
+        if defaults read -g AppleInterfaceStyle &>/dev/null; then
+          current="dark"
+        else
+          current="light"
+        fi
+        [[ "$current" == "$__theme_last_appearance" ]] && return
+        __theme_last_appearance="$current"
+
+        if [[ "$current" == "dark" ]]; then
+          export BAT_THEME="theme-dark"
+          export DELTA_FEATURES="dark"
+          export EZA_COLORS="di=${p.accent.blue}:ex=${p.accent.red}:fi=${p.dark.fg}:ln=${p.accent.aqua}:or=${p.accent.red}:ow=${p.accent.blue}:pi=${p.accent.purple}:so=${p.accent.orange}:bd=${p.accent.yellow}:cd=${p.accent.yellow}:su=${p.accent.red}:sg=${p.accent.red}:tw=${p.accent.blue}:st=${p.dark.grey2}:ur=${p.accent.yellow}:uw=${p.accent.red}:ux=${p.accent.green}:ue=${p.accent.green}:gr=${p.accent.yellow}:gw=${p.accent.red}:gx=${p.accent.green}:tr=${p.accent.yellow}:tw=${p.accent.red}:tx=${p.accent.green}:sn=${p.accent.green}:sb=${p.accent.green}:uu=${p.accent.yellow}:un=${p.accent.red}:gu=${p.accent.yellow}:gn=${p.accent.red}:da=${p.accent.blue}:ga=${p.accent.green}:gm=${p.accent.yellow}:gd=${p.accent.red}:gv=${p.accent.aqua}:gt=${p.accent.aqua}:*.tar=${p.accent.orange}:*.zip=${p.accent.orange}:*.gz=${p.accent.orange}:*.jpg=${p.accent.purple}:*.png=${p.accent.purple}:*.svg=${p.accent.purple}:*.pdf=${p.accent.green}:*.md=${p.accent.green}:*.json=${p.accent.yellow}:*.yml=${p.accent.yellow}:*.yaml=${p.accent.yellow}:*.toml=${p.accent.yellow}:*.conf=${p.accent.yellow}:*.log=${p.dark.grey2}:*.lock=${p.dark.grey2}:*.js=${p.accent.yellow}:*.ts=${p.accent.blue}:*.py=${p.accent.blue}:*.go=${p.accent.aqua}:*.rs=${p.accent.orange}:*.sh=${p.accent.green}:*.nix=${p.accent.green}"
+          export FZF_DEFAULT_OPTS="--color=bg+:${p.dark.bg1},bg:${p.dark.bg},fg:${p.dark.fg},fg+:${p.dark.fg},hl:${p.accent.green},hl+:${p.accent.green} --color=info:${p.accent.yellow},prompt:${p.accent.yellow},pointer:${p.accent.aqua},marker:${p.accent.aqua},spinner:${p.accent.aqua},header:${p.accent.green} --color=border:${p.dark.bg3},preview-bg:${p.dark.bg},preview-border:${p.dark.bg3},scrollbar:${p.dark.grey0},query:${p.dark.fg},disabled:${p.dark.grey0},separator:${p.dark.bg1},gutter:${p.dark.bg}"
+          export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/config-dark"
+        else
+          export BAT_THEME="theme-light"
+          export DELTA_FEATURES="light"
+          export EZA_COLORS="di=${p.accent.blue}:ex=${p.accent.red}:fi=${p.light.fg}:ln=${p.accent.aqua}:or=${p.accent.red}:ow=${p.accent.blue}:pi=${p.accent.purple}:so=${p.accent.orange}:bd=${p.accent.yellow}:cd=${p.accent.yellow}:su=${p.accent.red}:sg=${p.accent.red}:tw=${p.accent.blue}:st=${p.light.grey2}:ur=${p.accent.yellow}:uw=${p.accent.red}:ux=${p.accent.green}:ue=${p.accent.green}:gr=${p.accent.yellow}:gw=${p.accent.red}:gx=${p.accent.green}:tr=${p.accent.yellow}:tw=${p.accent.red}:tx=${p.accent.green}:sn=${p.accent.green}:sb=${p.accent.green}:uu=${p.accent.yellow}:un=${p.accent.red}:gu=${p.accent.yellow}:gn=${p.accent.red}:da=${p.accent.blue}:ga=${p.accent.green}:gm=${p.accent.yellow}:gd=${p.accent.red}:gv=${p.accent.aqua}:gt=${p.accent.aqua}:*.tar=${p.accent.orange}:*.zip=${p.accent.orange}:*.gz=${p.accent.orange}:*.jpg=${p.accent.purple}:*.png=${p.accent.purple}:*.svg=${p.accent.purple}:*.pdf=${p.accent.green}:*.md=${p.accent.green}:*.json=${p.accent.yellow}:*.yml=${p.accent.yellow}:*.yaml=${p.accent.yellow}:*.toml=${p.accent.yellow}:*.conf=${p.accent.yellow}:*.log=${p.light.grey2}:*.lock=${p.light.grey2}:*.js=${p.accent.yellow}:*.ts=${p.accent.blue}:*.py=${p.accent.blue}:*.go=${p.accent.aqua}:*.rs=${p.accent.orange}:*.sh=${p.accent.green}:*.nix=${p.accent.green}"
+          export FZF_DEFAULT_OPTS="--color=bg+:${p.light.bg1},bg:${p.light.bg},fg:${p.light.fg},fg+:${p.light.fg},hl:${p.accent.green},hl+:${p.accent.green} --color=info:${p.accent.yellow},prompt:${p.accent.yellow},pointer:${p.accent.aqua},marker:${p.accent.aqua},spinner:${p.accent.aqua},header:${p.accent.green} --color=border:${p.light.bg3},preview-bg:${p.light.bg},preview-border:${p.light.bg3},scrollbar:${p.light.grey0},query:${p.light.fg},disabled:${p.light.grey0},separator:${p.light.bg1},gutter:${p.light.bg}"
+          export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/config-light"
+        fi
+      }
+      autoload -Uz add-zsh-hook
+      add-zsh-hook precmd __theme_update
+
+      # ── One-time env vars (ANSI-based, auto-adapt via terminal) ──────
+      export LS_COLORS="rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.zip=01;31:*.gz=01;31:*.bz2=01;31:*.xz=01;31:*.jpg=01;35:*.png=01;35:*.svg=01;35:*.mp4=01;35:*.mp3=00;36:*.flac=00;36:*.ogg=00;36"
+      # Man page colors via LESS_TERMCAP (ANSI codes, terminal remaps per theme)
+      export LESS_TERMCAP_mb=$'\e[1;31m'
+      export LESS_TERMCAP_md=$'\e[1;32m'
+      export LESS_TERMCAP_me=$'\e[0m'
+      export LESS_TERMCAP_se=$'\e[0m'
+      export LESS_TERMCAP_so=$'\e[1;33;44m'
+      export LESS_TERMCAP_ue=$'\e[0m'
+      export LESS_TERMCAP_us=$'\e[1;4;36m'
+      export JQ_COLORS="8:1:2:3:4:5:6:7"
+      export GREP_COLORS="ms=01;32:mc=01;32:sl=:cx=:fn=01;34:ln=32:bn=32:se=36"
+
       # Recompile zshrc if the real file (resolving symlinks) is newer than the cache
       [[ $(realpath ~/.zshrc) -nt ~/.zshrc.zwc ]] && zcompile ~/.zshrc
 

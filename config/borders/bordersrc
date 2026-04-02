@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+source "$HOME/.config/theme/current.sh"
+
+active="0xff${THEME_GREEN#\#}"
+inactive="0xff${THEME_BG3#\#}"
+
+options=(
+  style=round
+  width=8.0
+  hidpi=on
+  active_color=$active
+  inactive_color=$inactive
+  blacklist="System Settings,System Information"
+)
+
+borders "${options[@]}"

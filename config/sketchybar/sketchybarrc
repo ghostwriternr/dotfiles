@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+source "$HOME/.config/theme/current.sh"
+
+PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
+FONT="FiraCode Nerd Font"
+
+# SketchyBar uses 0xAARRGGBB format -- strip # and prefix with 0xff
+bar_color="0xff${THEME_BG_DIM#\#}"
+label_color="0xff${THEME_FG#\#}"
+icon_color="0xff${THEME_FG#\#}"
+active_color="0xff${THEME_GREEN#\#}"
+occupied_color="0xff${THEME_GREY2#\#}"
+inactive_color="0xff${THEME_GREY0#\#}"
+
+sketchybar --bar \
+  height=32 position=top color=$bar_color \
+  padding_left=10 padding_right=10
+
+sketchybar --default \
+  icon.font="$FONT:Bold:14.0" icon.color=$icon_color \
+  label.font="$FONT:Regular:13.0" label.color=$label_color \
+  padding_left=4 padding_right=4
+
+# Space indicators matching yabairc labels
+LABELS=(todo web code terminal finder chat music misc1 misc2 notes)
+for i in $(seq 1 10); do
+  sketchybar --add space space.$i left \
+             --set space.$i \
+               associated_space=$i \
+               icon="${LABELS[$((i-1))]}" \
+               icon.color=$inactive_color \
+               icon.highlight_color=$active_color \
+               background.drawing=off \
+               script="$PLUGIN_DIR/spaces.sh" \
+             --subscribe space.$i space_change space_windows_change
+done
+
+# Note: plugins source ~/.config/theme/current.sh directly
+# (they run as separate processes, not child shells of this script)
+
+sketchybar --add item battery right \
+           --set battery update_freq=60 script="$PLUGIN_DIR/battery.sh"
+
+sketchybar --add item clock right \
+           --set clock update_freq=30 script="$PLUGIN_DIR/clock.sh"
+
+sketchybar --update

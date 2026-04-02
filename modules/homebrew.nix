@@ -11,6 +11,7 @@
 
     taps = [
       "cloudflare/engineering"
+      "FelixKratz/formulae"
     ];
 
     brews = [
@@ -22,6 +23,10 @@
       "cloudflare/engineering/cloudflare-certs"
       "cloudflare/engineering/docker-credential-cloudflared"
       "cloudflared"
+
+      # window management rice
+      "FelixKratz/formulae/sketchybar"
+      "FelixKratz/formulae/borders"
     ];
 
     casks = [
@@ -44,6 +49,9 @@
       "discord"
       "slack"
 
+      # window management (IT-managed, keep)
+      "rectangle"
+
       # media / utilities
       "betterdisplay"
       "brave-browser"
@@ -51,7 +59,6 @@
       "localsend"
       "logitune"
       "obs"
-      "rectangle"
       "screen-studio"
       "spotify"
       "upscayl"

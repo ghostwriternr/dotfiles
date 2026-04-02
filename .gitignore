@@ -4,3 +4,7 @@ result-*
 
 # Ignore automatically generated direnv output
 .direnv
+
+# Superpowers planning/brainstorm artifacts
+.superpowers/
+docs/superpowers/

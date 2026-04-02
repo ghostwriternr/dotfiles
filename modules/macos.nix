@@ -15,7 +15,6 @@
     InitialKeyRepeat = 10;        # Shortest: ~150ms before repeat starts
     KeyRepeat = 1;                # Fastest repeat rate
     ApplePressAndHoldEnabled = false;  # Disable accent popup, enable key repeat
-    AppleInterfaceStyle = "Dark";
 
     # Disable all "smart" text mangling
     NSAutomaticCapitalizationEnabled = false;
@@ -32,6 +31,15 @@
 
     # Scrollbar visibility
     AppleShowScrollBars = "WhenScrolling";
+
+    # Hide menu bar (SketchyBar replaces it)
+    _HIHideMenuBar = true;
+  };
+
+  # ── Custom preferences (not typed in nix-darwin) ───────────────────────────
+  system.defaults.CustomUserPreferences.NSGlobalDomain = {
+    AppleAccentColor = 3; # green
+    SLSMenuBarUseBlurredAppearance = 1; # opaque bg when hidden menu bar shows on hover
   };
 
   # ── Finder ──────────────────────────────────────────────────────────────────
