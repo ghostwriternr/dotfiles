@@ -9,6 +9,7 @@
     ./home/shell.nix
     ./home/opencode.nix
     ./home/glab.nix
+    ./home/colima.nix
   ];
 
   home.stateVersion = "25.11";
