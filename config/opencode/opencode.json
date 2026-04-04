@@ -320,6 +320,7 @@
       "chmod *": "ask",
       "chown *": "ask"
     },
+    "look_at": "allow",
     "task": "allow",
     "skill": "allow",
     "lsp": "allow",

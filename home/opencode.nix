@@ -33,6 +33,9 @@ in
     force = true;
   };
 
+  xdg.configFile."opencode/plugins/look-at.js".source =
+    config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/opencode/plugins/look-at.js";
+
   # ── opencode.json (mutable — symlink to repo so edits land in git) ───────────
 
   xdg.configFile."opencode/opencode.json".source =
