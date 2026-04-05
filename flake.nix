@@ -22,6 +22,7 @@
         ./modules/nix.nix
         ./modules/homebrew.nix
         ./modules/system.nix
+        ./modules/postgresql.nix
         ./modules/macos.nix
         ./modules/wm.nix
         home-manager.darwinModules.home-manager
