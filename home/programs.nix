@@ -98,15 +98,18 @@ let
   ripgrepConfig = mode: let
     g = p.${mode};
     a = p.accent;
+    # ripgrep 24-bit color format: 0xRR,0xGG,0xBB
+    h = color: let hex = lib.removePrefix "#" color;
+    in "0x${builtins.substring 0 2 hex},0x${builtins.substring 2 2 hex},0x${builtins.substring 4 2 hex}";
   in ''
     # Colors (all 5 ripgrep color types)
-    --colors=match:fg:${a.green}
+    --colors=match:fg:${h a.green}
     --colors=match:style:bold
-    --colors=line:fg:${g.grey2}
-    --colors=path:fg:${a.blue}
+    --colors=line:fg:${h g.grey2}
+    --colors=path:fg:${h a.blue}
     --colors=path:style:bold
-    --colors=column:fg:${g.grey2}
-    --colors=match:bg:${g.bg_green}
+    --colors=column:fg:${h g.grey2}
+    --colors=match:bg:${h g.bg_green}
 
     # Sensible defaults (from ivuorinen/everforest-resources reference)
     --smart-case
