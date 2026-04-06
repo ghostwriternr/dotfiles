@@ -471,6 +471,7 @@
       "chown *": "ask"
     },
     "look_at": "allow",
+    "interactive_bash": "ask",
     "task": "allow",
     "skill": "allow",
     "lsp": "allow",

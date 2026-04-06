@@ -8,3 +8,6 @@ result-*
 # Superpowers planning/brainstorm artifacts
 .superpowers/
 docs/superpowers/
+
+# node_modules symlink for OpenCode plugin imports (managed by home.activation)
+config/opencode/node_modules

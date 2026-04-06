@@ -44,6 +44,7 @@
     openjdk
     ripgrep
     tenv
+    tmux
     util-linux
     uv
     vault
