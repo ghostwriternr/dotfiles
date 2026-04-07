@@ -35,6 +35,11 @@ const ALLOWED_KEYS = [
 
 const LABEL_RE = /^[a-zA-Z0-9_-]+$/;
 const LABEL_MAX = 30;
+
+// Shell metacharacters that signal compound/piped/redirected commands.
+// These can't be safely prefix-matched against glob patterns because
+// "echo foo && rm x" would match "echo *: allow", bypassing "rm *: ask".
+const SHELL_META_RE = /&&|\|\||[;|`><]|\$\(/;
 const LINES_DEFAULT = 100;
 const LINES_MIN = 1;
 const LINES_MAX = 2000;
@@ -109,6 +114,12 @@ export const InteractiveBashPlugin = async (ctx) => {
   // Per-OpenCode-session tracking: Map<sessionID, Set<tmuxSessionName>>
   const tracked = new Map();
 
+  // Pending command text per tmux session (for split send-keys detection).
+  // When text is sent without Enter, we buffer it here. When Enter arrives
+  // (either as `enter: true` on a text send, or as a separate `key: "Enter"`
+  // call), we check the accumulated command against bash permission rules.
+  const pendingText = new Map(); // Map<tmuxSessionName, string>
+
   function getTracked(sessionID) {
     let set = tracked.get(sessionID);
     if (!set) {
@@ -122,6 +133,7 @@ export const InteractiveBashPlugin = async (ctx) => {
     const set = tracked.get(sessionID);
     if (!set) return;
     for (const name of set) {
+      pendingText.delete(name);
       try {
         await runTmux(tmuxPath || "tmux", ["kill-session", "-t", name], 5000);
       } catch {
@@ -129,6 +141,46 @@ export const InteractiveBashPlugin = async (ctx) => {
       }
     }
     tracked.delete(sessionID);
+  }
+
+  /**
+   * Check a command against the user's bash permission rules.
+   *
+   * Uses `context.ask()` which routes through the same permission pipeline
+   * as the built-in bash tool: the patterns in opencode.json under
+   * `permission.bash` are evaluated, and the user is prompted for "ask"
+   * commands via the standard UI.
+   *
+   * Throws if the permission is denied or the user rejects the prompt.
+   */
+  async function checkBashPermission(context, command, sessionLabel) {
+    // Compound commands (&&, ||, ;, pipes, redirects, subshells) can't be
+    // safely evaluated against prefix-based glob patterns because
+    // "echo foo && rm x" would match "echo *: allow", bypassing "rm *: ask".
+    // Route these through the interactive_bash permission instead, which
+    // always prompts the user with the full command visible.
+    if (SHELL_META_RE.test(command)) {
+      await context.ask({
+        permission: "interactive_bash",
+        patterns: [command],
+        always: [command],
+        metadata: {
+          description: `tmux(${sessionLabel}) [compound]: ${command}`,
+        },
+      });
+      return;
+    }
+
+    await context.ask({
+      permission: "bash",
+      patterns: [command],
+      // Use the specific command as the "always" pattern so that clicking
+      // "Always" only auto-approves this exact command, not all bash.
+      always: [command],
+      metadata: {
+        description: `tmux(${sessionLabel}): ${command}`,
+      },
+    });
   }
 
   return {
@@ -259,6 +311,20 @@ export const InteractiveBashPlugin = async (ctx) => {
 
           // ── new-session ────────────────────────────────────────────
           if (args.command === "new-session") {
+            // Check shell_command against bash permission rules before
+            // creating the session — same rules as the built-in bash tool.
+            if (args.shell_command) {
+              try {
+                await checkBashPermission(
+                  context,
+                  args.shell_command,
+                  args.session
+                );
+              } catch {
+                return `Error: permission denied for command "${args.shell_command}". Use the bash tool for commands that require approval.`;
+              }
+            }
+
             const tmuxArgs = ["new-session", "-d", "-s", name];
             if (args.cwd) {
               tmuxArgs.push("-c", args.cwd);
@@ -285,10 +351,41 @@ export const InteractiveBashPlugin = async (ctx) => {
               return 'Error: send-keys requires either "text" or "key".';
             }
 
+            // ── key mode ───────────────────────────────────────────
             if (args.key != null) {
               if (!ALLOWED_KEYS.includes(args.key)) {
                 return `Error: unknown key "${args.key}". Allowed: ${ALLOWED_KEYS.join(", ")}`;
               }
+
+              // When Enter is pressed, check any buffered text against
+              // bash permission rules (catches split text → Enter bypass).
+              if (args.key === "Enter" && pendingText.has(name)) {
+                const buffered = pendingText.get(name);
+                try {
+                  await checkBashPermission(
+                    context,
+                    buffered.trim(),
+                    args.session
+                  );
+                } catch {
+                  pendingText.delete(name);
+                  // Cancel the pending command line in the terminal
+                  await runTmux(tmuxPath, [
+                    "send-keys",
+                    "-t",
+                    name,
+                    "C-c",
+                  ]);
+                  return `Error: permission denied for command "${buffered.trim()}". Use the bash tool for commands that require approval.`;
+                }
+                pendingText.delete(name);
+              }
+
+              // C-c and Escape cancel the current input — clear buffer.
+              if (args.key === "C-c" || args.key === "Escape") {
+                pendingText.delete(name);
+              }
+
               const result = await runTmux(tmuxPath, [
                 "send-keys",
                 "-t",
@@ -301,7 +398,43 @@ export const InteractiveBashPlugin = async (ctx) => {
               return `Sent key "${args.key}" to "${args.session}".`;
             }
 
-            // text mode — use -l for literal (no key interpretation)
+            // ── text mode ──────────────────────────────────────────
+
+            // Accumulate text in the pending buffer for this session.
+            const previousText = pendingText.get(name) || "";
+            const fullCommand = previousText + args.text;
+
+            if (args.enter) {
+              // Full command being executed — check bash permissions
+              // BEFORE sending anything to tmux.
+              try {
+                await checkBashPermission(
+                  context,
+                  fullCommand.trim(),
+                  args.session
+                );
+              } catch {
+                // If prior text was already sent to tmux (from a
+                // previous text-only send), cancel the pending line.
+                if (previousText) {
+                  await runTmux(tmuxPath, [
+                    "send-keys",
+                    "-t",
+                    name,
+                    "C-c",
+                  ]);
+                }
+                pendingText.delete(name);
+                return `Error: permission denied for command "${fullCommand.trim()}". Use the bash tool for commands that require approval.`;
+              }
+              pendingText.delete(name);
+            } else {
+              // Text without Enter — buffer for later check, send to
+              // tmux so it appears in the terminal.
+              pendingText.set(name, fullCommand);
+            }
+
+            // Send the text to tmux
             const result = await runTmux(tmuxPath, [
               "send-keys",
               "-t",
@@ -314,7 +447,7 @@ export const InteractiveBashPlugin = async (ctx) => {
               return `Error: ${result.stderr || `tmux exited with code ${result.exitCode}`}`;
             }
 
-            // Optionally send Enter after text
+            // Send Enter if requested (permission already checked above)
             if (args.enter) {
               const enterResult = await runTmux(tmuxPath, [
                 "send-keys",
@@ -359,6 +492,7 @@ export const InteractiveBashPlugin = async (ctx) => {
               return `Error: ${result.stderr || `tmux exited with code ${result.exitCode}`}`;
             }
             getTracked(sid).delete(name);
+            pendingText.delete(name);
             return `Session "${args.session}" destroyed.`;
           }
 
