@@ -80,7 +80,7 @@ Custom agents are defined as markdown files in `config/opencode/agents/` and sym
 | Agent | Mode | Model | Role |
 | :--- | :--- | :--- | :--- |
 | build | primary | Claude Opus 4.6 | Main coding agent (no custom prompt -- uses provider base) |
-| deep | primary | GPT-5.3 Codex | Autonomous deep reasoning for complex problems |
+| deep | primary | GPT-5.4 | Autonomous deep reasoning for complex problems |
 | quick | primary | Claude Haiku 4.5 | Fast, cheap agent for trivial tasks |
 | large | primary | Claude Opus 4.6 | Max context escape hatch for large refactors |
 | oracle | subagent | GPT-5.4 | Second opinion -- reasoning, plan review, debugging |

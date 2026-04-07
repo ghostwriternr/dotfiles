@@ -18,7 +18,7 @@ Compare our OpenCode agent roster against Amp's current state. Covers model assi
 | Agent | Mode | Model | Amp Equivalent |
 |---|---|---|---|
 | build | primary | anthropic/claude-opus-4-6 | Smart mode |
-| deep | primary | openai/gpt-5.3-codex | Deep mode |
+| deep | primary | openai/gpt-5.4 | Deep mode |
 | quick | primary | anthropic/claude-haiku-4-5 | Rush mode |
 | large | primary | anthropic/claude-opus-4-6 | Large mode |
 | oracle | subagent | openai/gpt-5.4 | Oracle tool |
