@@ -58,6 +58,11 @@
     rust-analyzer
     rustc
     rustfmt
+
+    # cloudflare workers (rust)
+    worker-build
+    wasm-bindgen-cli
+    binaryen # provides wasm-opt
   ];
 
 }

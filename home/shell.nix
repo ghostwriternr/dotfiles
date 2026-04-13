@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   t = config.theme;
@@ -28,6 +28,10 @@ in
     sessionVariables = {
       EDITOR = "nvim";
       VISUAL = "nvim";
+
+      # Cloudflare worker-build: use nix-managed wasm toolchain
+      WASM_BINDGEN_BIN = "${pkgs.wasm-bindgen-cli}/bin/wasm-bindgen";
+      WASM_OPT_BIN = "${pkgs.binaryen}/bin/wasm-opt";
 
       # Colima / Docker
       DOCKER_BUILDKIT = "1";
