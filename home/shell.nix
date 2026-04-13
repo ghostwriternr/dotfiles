@@ -116,6 +116,7 @@ in
       # Updates non-nixpkgs inputs first (always fast), then nixpkgs with a
       # dry-run gate. If too many packages need building from source, lets you
       # revert the nixpkgs bump while keeping the other updates.
+      # Also upgrades Homebrew formulae and checks for skill updates.
       nix-update() {
         local flake_dir="$HOME/.config/nix-darwin"
         local system_attr="$flake_dir#darwinConfigurations.KVQ52GY6N9.system"
@@ -172,7 +173,15 @@ in
         echo ":: Rebuilding..."
         sudo darwin-rebuild switch --flake "$flake_dir" --impure || return 1
 
-        # 5. Commit and push
+        # 5. Upgrade Homebrew formulae
+        echo ":: Upgrading Homebrew packages..."
+        brew upgrade
+
+        # 6. Check for skill updates
+        echo ":: Checking for skill updates..."
+        npx skills update
+
+        # 7. Commit and push
         git -C "$flake_dir" add flake.lock
         git -C "$flake_dir" commit -m 'flake: update inputs'
         git -C "$flake_dir" push
