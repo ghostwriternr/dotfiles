@@ -53,7 +53,7 @@
       "rectangle"
 
       # AI / ML
-      "ollama"
+      "ollama-app"
 
       # media / utilities
       "betterdisplay"
