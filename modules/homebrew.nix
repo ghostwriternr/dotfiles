@@ -52,6 +52,9 @@
       # window management (IT-managed, keep)
       "rectangle"
 
+      # AI / ML
+      "ollama"
+
       # media / utilities
       "betterdisplay"
       "brave-browser"

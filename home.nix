@@ -1,5 +1,17 @@
 { pkgs, ... }:
 
+let
+  llvm = pkgs.llvmPackages_18;
+
+  # Wrapper that provides clang-18 with the correct resource-dir for wasm32 cross-compilation.
+  # Nix splits clang-unwrapped headers into a separate .lib output, so the bare binary
+  # can't find <stddef.h> etc. This wrapper wires the two together.
+  wasm-clang = pkgs.writeShellScriptBin "wasm-clang" ''
+    exec ${llvm.clang-unwrapped}/bin/clang-18 \
+      -resource-dir=${llvm.clang-unwrapped.lib}/lib/clang/18 \
+      "$@"
+  '';
+in
 {
   imports = [
     ./home/theme.nix
@@ -43,6 +55,7 @@
     opencode
     openjdk
     ripgrep
+    tesseract
     tenv
     tmux
     util-linux
@@ -59,10 +72,12 @@
     rustc
     rustfmt
 
-    # cloudflare workers (rust)
+    # cloudflare workers (rust → wasm32)
     worker-build
     wasm-bindgen-cli
     binaryen # provides wasm-opt
+    lld # provides wasm-ld linker for wasm32 targets
+    wasm-clang # clang-18 with resource-dir wired for wasm32 cross-compilation
   ];
 
 }
