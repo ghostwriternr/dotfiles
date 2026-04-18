@@ -2,7 +2,6 @@
 description: Fast and cheap. For small, well-defined tasks -- typo fixes, simple renames, one-liner changes.
 mode: primary
 model: anthropic/claude-haiku-4-5
-steps: 15
 ---
 
 # Rush Mode

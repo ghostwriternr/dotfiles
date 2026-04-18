@@ -1,8 +1,11 @@
 ---
-description: Code review and bug identification powered by Gemini. Read-only. Surfaces bugs, risks, and actionable feedback while filtering noise.
+description: Code review and bug identification powered by GPT-5.4. Read-only. Surfaces bugs, risks, and actionable feedback while filtering noise.
 mode: subagent
-model: google/gemini-3.1-pro-preview
+model: openai/gpt-5.4
 temperature: 0.1
+reasoningEffort: xhigh
+options:
+  textVerbosity: high
 permission:
   edit: deny
   task: deny

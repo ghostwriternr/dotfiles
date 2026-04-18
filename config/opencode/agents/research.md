@@ -2,6 +2,7 @@
 description: Fast codebase search and retrieval powered by Gemini Flash. For finding code by behavior or concept, correlating patterns across files, and answering codebase questions.
 mode: subagent
 model: google/gemini-3-flash-preview
+temperature: 0.1
 permission:
   edit: deny
   task: deny
