@@ -54,6 +54,11 @@ in
   xdg.configFile."opencode/opencode.json".source =
     config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/opencode/opencode.json";
 
+  # ── Global AGENTS.md (mutable — machine-wide rules for every session) ───────
+
+  xdg.configFile."opencode/AGENTS.md".source =
+    config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/opencode/AGENTS.md";
+
   # ── Plugin dependency resolution ────────────────────────────────────────────
   #
   # Bun resolves imports from the plugin's real file path (the repo), not the
