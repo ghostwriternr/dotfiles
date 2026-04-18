@@ -71,12 +71,17 @@ diff -u <last-audit-snapshot>/anthropic.txt ~/github/opencode/packages/opencode/
 ( cd ~/github/opencode && git log --since="<last-audit-date>" -- \
     packages/opencode/src/session/llm.ts \
     packages/opencode/src/session/ \
-    packages/opencode/src/provider/ )
+    packages/opencode/src/provider/ \
+    packages/opencode/src/tool/registry.ts \
+    packages/opencode/src/agent/agent.ts \
+    packages/opencode/src/permission/ )
 ```
 
 Look for:
 - Changes to how custom agent bodies combine with base prompts (replace vs extend semantics). If this has flipped, the entire `updating-opencode-agents` workflow may need revisiting.
 - New or changed provider option defaults (e.g. verbosity / reasoning effort floors). These silently override agent frontmatter.
+- Changes to model→tool selection in `tool/registry.ts` (e.g. which model families get `apply_patch` vs `edit`/`write`). A shift here may require prompt updates for affected agents.
+- New native subagents in `agent/agent.ts` (joining `general`, `explore`, etc.). These appear in Task dispatch menus by default and may need to be allowlisted against or disabled globally.
 - New permission types, mode types, or fields in the agent config schema.
 
 **New tools, plugins, or agent fields:**
@@ -85,9 +90,20 @@ Look for:
 rg -l "class.*Tool|registerTool|AgentConfig" ~/github/opencode/packages/opencode/src/
 ```
 
+**Our global config:**
+
+```bash
+# Does our opencode.json still match what OpenCode expects?
+cat ~/.config/nix-darwin/config/opencode/opencode.json | jq '.agent, .permission' 2>/dev/null
+```
+
+Flag if new OpenCode schema fields, new default-enabled agents, or new permission types mean our global config is outdated.
+
 Report:
 - `OPENCODE CHANGE (base prompt): anthropic.txt added a <section> → consider adapting in build/large/quick/librarian`
 - `OPENCODE CHANGE (semantics): llm.ts now extends rather than replaces — revisit updating-opencode-agents skill`
+- `OPENCODE CHANGE (tool selection): registry.ts now routes <model-family> to <tool> → update prompts for <affected agents>`
+- `OPENCODE NEW NATIVE AGENT: <name> with <permissions> → decide allowlist/disable in our config`
 - `OPENCODE NEW FIELD: agent frontmatter now supports <X> → consider adopting on <agents>`
 
 ### Section 2: Amp
