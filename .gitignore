@@ -5,7 +5,9 @@ result-*
 # Ignore automatically generated direnv output
 .direnv
 
-# Superpowers planning/brainstorm artifacts
+# Superpowers planning/brainstorm artifacts (default skill location; our global
+# AGENTS.md redirects these to ~/Documents/notes/Engineering/Plans/<repo>/, but
+# keep these ignored as a safety net in case a skill writes to the default path)
 .superpowers/
 docs/superpowers/
 

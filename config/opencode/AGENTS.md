@@ -20,3 +20,27 @@ Follow Chris Beams' seven rules (https://cbea.ms/git-commit/):
 - Omit the body for trivial commits where the subject fully describes the change. Include a body when motivation, tradeoffs, side effects, or references matter.
 - Reference issues, PRs, or external links in the body, not the subject.
 - Match the repository's existing convention if it clearly diverges (e.g. Conventional Commits via `feat:`/`fix:` prefixes). When in doubt, ask. Project-level `AGENTS.md` takes precedence.
+
+## Superpowers Plan Storage
+
+**Override** the default `docs/superpowers/plans/` location from `superpowers:writing-plans`. By default, plans, specs, and reviews are noisy working artifacts the user does not want to commit into source repos, but does want to revisit weeks later. Save them to the user's Obsidian vault instead.
+
+**Root:** `~/Documents/notes/Engineering/Plans/<repo-name>/`
+
+**Layout:**
+
+- Plans → `~/Documents/notes/Engineering/Plans/<repo-name>/plans/YYYY-MM-DD-<feature>.md`
+- Specs (from `superpowers:brainstorming`) → `~/Documents/notes/Engineering/Plans/<repo-name>/specs/YYYY-MM-DD-<feature>.md`
+- Code review docs (from `superpowers:requesting-code-review` or saved oracle/review output) → `~/Documents/notes/Engineering/Plans/<repo-name>/reviews/YYYY-MM-DD-<topic>.md`
+
+**Resolving `<repo-name>`:** `basename "$(git rev-parse --show-toplevel)"` from inside the working repo. If not in a git repo, use the basename of the current working directory.
+
+**Create the directory if missing:** `mkdir -p ~/Documents/notes/Engineering/Plans/<repo-name>/{plans,specs,reviews}` before writing the first artifact for a repo.
+
+**Cross-references:** When a plan references its spec (or vice versa), use the absolute vault path so links survive when files are read from either side. Example: `**Spec:** ~/Documents/notes/Engineering/Plans/nix-darwin/specs/2026-04-18-agent-upgrade-design.md`.
+
+**Announcement to the user:** When saving, report the full vault path, not the skill's default. e.g. *"Plan saved to `~/Documents/notes/Engineering/Plans/nix-darwin/plans/2026-04-18-foo.md`"*.
+
+**Do not commit these files to the working repo.** The vault is a separate git repo (`~/Documents/notes/`) with its own commit cadence — leave vault commits to the user unless asked.
+
+**Per-repo override:** A project-level `AGENTS.md` can opt back into committing plans inside the repo (useful for open-source or team projects). If the project-level file specifies a plan location, that wins over this rule.

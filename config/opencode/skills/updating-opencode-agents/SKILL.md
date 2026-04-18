@@ -74,7 +74,7 @@ Frontmatter-only and small additions are low-risk. Body rewrites must go through
 
 Skipping this cost four review rounds last time. Do not skip it.
 
-1. **Stage, don't edit live.** Create a staging directory: `docs/superpowers/plans/YYYY-MM-DD-<topic>/`. Write every proposed new body there, one file per agent. Live `config/opencode/agents/` stays untouched until the whole batch passes review.
+1. **Stage, don't edit live.** Create a staging directory in the vault: `~/Documents/notes/Engineering/Plans/nix-darwin/staging/YYYY-MM-DD-<topic>/`. Write every proposed new body there, one file per agent. Live `config/opencode/agents/` stays untouched until the whole batch passes review. Staging belongs outside the nix-darwin repo so in-progress drafts never get half-committed (see the global `Superpowers Plan Storage` rule in `config/opencode/AGENTS.md`).
 2. **Per-agent gap-audit.** For each staged draft, dispatch Oracle with: the draft + the base prompt it replaces + the current live agent file + any upstream source you're porting from. Fix every gap. Re-dispatch. Repeat until no findings on that agent.
 3. **Final holistic pass.** After per-agent passes are clean, run one more Oracle pass covering the whole staged set: prompts + permissions + parameters + `opencode.json` context together. Per-agent passes miss cross-cutting issues — model↔tool mismatches (e.g. `apply_patch` vs `edit`), privilege-escalation paths via `task` dispatch, `large.md` missing from the staging dir, parameter↔prompt tensions. The holistic pass is where those surface.
 4. **Deploy as a single commit.** Once the holistic pass is clean, copy the entire staging directory to `config/opencode/agents/`, then `darwin-rebuild` and verify. One commit, reversible.
@@ -130,7 +130,7 @@ For multi-file rewrites, deploy from the staging directory in one atomic step. F
 
 ```bash
 # 1. (Multi-file rewrite only) Copy staging → live in one commit
-cp docs/superpowers/plans/YYYY-MM-DD-<topic>/*.md config/opencode/agents/
+cp ~/Documents/notes/Engineering/Plans/nix-darwin/staging/YYYY-MM-DD-<topic>/*.md config/opencode/agents/
 git add config/opencode/agents/ && git commit -m "feat: <description>"
 
 # 2. Rebuild — the mkOutOfStoreSymlink in home/opencode.nix picks up edits immediately
@@ -155,7 +155,7 @@ If the rebuild does not pick up changes, check that `home/opencode.nix` has `xdg
 |---|---|---|
 | Editing body without gap-audit | Silent loss of 100+ lines of base-prompt behaviour | Use Oracle loop for any body rewrite |
 | Stopping after per-agent passes | Cross-cutting issues (tool mismatches, task escalation, missing files) only surface when reviewing the whole system together | Always run the holistic final pass after per-agent passes clear |
-| Editing live agents during iteration | Hard to roll back mid-rewrite; agents run inconsistent drafts | Stage all drafts under `docs/superpowers/plans/` first; deploy only after holistic pass |
+| Editing live agents during iteration | Hard to roll back mid-rewrite; agents run inconsistent drafts | Stage all drafts under `~/Documents/notes/Engineering/Plans/nix-darwin/staging/` first; deploy only after holistic pass |
 | Claiming "no changes needed" without auditing | Research/librarian were both flagged unchanged and had real gaps | Every agent in a rewrite gets its own Oracle pass |
 | Prompt says "Edit tool" but agent gets `apply_patch` | Model tries to call a tool that doesn't exist for its family | Match prompt tool names to what `tool/registry.ts` actually exposes for that model |
 | Leaving stale "override the base prompt" wording after rewrite | Base prompt is gone once body exists — the reference is meaningless | Self-audit step: grep your draft for "base prompt", "override", "inherit from" after writing |

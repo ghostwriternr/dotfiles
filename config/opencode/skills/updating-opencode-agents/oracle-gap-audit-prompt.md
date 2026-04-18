@@ -80,7 +80,7 @@ OpenCode agents replace the provider base prompt when they have body content. Pe
 ## Files to read
 
 **Staged drafts (the complete proposed agent set):**
-<PATHS — e.g. docs/superpowers/plans/YYYY-MM-DD-<topic>/*.md>
+<PATHS — e.g. ~/Documents/notes/Engineering/Plans/nix-darwin/staging/YYYY-MM-DD-<topic>/*.md>
 
 **Current live agents (for diff context):**
 config/opencode/agents/*.md
