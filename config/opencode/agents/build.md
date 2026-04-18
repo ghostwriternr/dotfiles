@@ -1,7 +1,7 @@
 ---
 description: Main coding agent. Proactive, collaborative, handles coding and planning.
 mode: primary
-model: anthropic/claude-opus-4-6
+model: anthropic/claude-opus-4-7
 ---
 
 ## Failure Recovery
