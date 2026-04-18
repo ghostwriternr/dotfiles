@@ -3,6 +3,9 @@ description: Second opinion powered by GPT-5.4. For complex reasoning, plan revi
 mode: subagent
 model: openai/gpt-5.4
 reasoningEffort: high
+temperature: 0.1
+options:
+  textVerbosity: high
 permission:
   edit: deny
   task: deny
