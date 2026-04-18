@@ -28,47 +28,30 @@ nix-darwin + home-manager flake for macOS (Apple Silicon, Lix). Cloudflare work 
 | Dev tools | fzf, zoxide, direnv, bat, ripgrep, fd, etc. | home-manager + nix | home/programs.nix, home.nix |
 | Secrets | sops-nix (age encryption) | home-manager | home/secrets.nix |
 | macOS | dock, keyboard, Finder, trackpad, screenshots, Touch ID sudo | nix-darwin | modules/macos.nix |
+| Postgres | launchd service + client libs | nix-darwin | modules/postgresql.nix |
 | Nix | gc, optimise, flakes-only, no channels | nix-darwin | modules/nix.nix |
-| Packages | 8 brew formulae, 17 casks, 28 nix pkgs | nix-darwin + nix | modules/homebrew.nix, home.nix |
+| Theme | Flexoki palette shared across terminal, fzf, eza, bat | home-manager | home/theme.nix |
+| Container runtime | Colima config (docker socket path) | home-manager | home/colima.nix |
+| Packages | CLI tools, dev toolchains, fonts | nix-darwin + nix | modules/homebrew.nix, home.nix |
 
 ## Repo structure
 
 ```
 ~/.config/nix-darwin/
-├── flake.nix              # Entry point — inputs and system config
-├── flake.lock             # Pinned dependency versions
-├── home.nix               # Home-manager root — imports, packages
-├── bootstrap.sh           # One-time WARP cert setup for first build
+├── flake.nix       # Entry point — inputs and darwinConfiguration
+├── flake.lock      # Pinned dependency versions
+├── home.nix        # Home-manager root — imports home/*.nix + packages
+├── bootstrap.sh    # One-time WARP cert setup for first build
+├── AGENTS.md       # OpenCode instructions for working in this repo
 │
-├── modules/               # System-level (nix-darwin) configuration
-│   ├── nix.nix            # Nix settings, gc, optimise
-│   ├── homebrew.nix       # Taps, formulae, casks
-│   ├── system.nix         # Platform, user, WARP cert path
-│   └── macos.nix          # macOS defaults (dock, keyboard, Finder, etc.)
-│   └── wm.nix             # Window manager services (yabai + skhd)
-│
-├── home/                  # User-level (home-manager) configuration
-│   ├── shell.nix          # Zsh: aliases, env vars, functions, integrations
-│   ├── git.nix            # Git: user, aliases, ignores, WARP cert include
-│   ├── programs.nix       # Programs: direnv, fzf, zoxide, starship, neovim, ghostty, ssh, gh
-│   ├── secrets.nix        # sops-nix: secret declarations and age key path
-│   ├── opencode.nix       # Opencode: config, skills, plugins, secret injection
-│   └── glab.nix           # GitLab CLI: config template, secret injection
-│
-├── config/                # Raw config files (templates, keybindings)
-│   ├── opencode/          # opencode.json (template), agents/, skills/
-│   ├── glab-cli/          # config.yml (template), aliases.yml
-│   ├── yabairc            # Yabai window manager rules and settings
-│   └── skhdrc             # skhd hotkey bindings
-│
-├── secrets/
-│   └── default.yaml       # sops-encrypted secrets (age)
-│
-└── docs/
-    ├── setup.md           # New machine bootstrap guide
-    ├── architecture.md    # How the system works
-    └── warp-cert.md       # WARP certificate handling
+├── modules/        # System-level (nix-darwin) configuration
+├── home/           # User-level (home-manager) configuration
+├── config/         # Raw config files (templates, keybindings, opencode)
+├── secrets/        # sops-encrypted secrets (age)
+└── docs/           # setup.md, architecture.md, warp-cert.md
 ```
+
+See `docs/architecture.md` for what each directory contains and how the pieces wire together.
 
 ## Common commands
 

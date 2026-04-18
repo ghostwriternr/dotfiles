@@ -6,20 +6,17 @@ This system uses a flake-based nix-darwin and home-manager configuration to mana
 ## Module graph
 ```
 flake.nix
-├── modules/nix.nix           # Nix daemon: flakes, gc, optimise
-├── modules/homebrew.nix      # Brew: taps, formulae, casks
-├── modules/system.nix        # Platform, user, WARP cert
-├── modules/macos.nix         # macOS defaults
-├── modules/wm.nix            # Window manager services (yabai + skhd)
+├── modules/nix.nix          # Nix daemon: flakes, gc, optimise
+├── modules/homebrew.nix     # Brew: taps, formulae, casks
+├── modules/system.nix       # Platform, user, WARP cert
+├── modules/macos.nix        # macOS defaults
+├── modules/wm.nix           # Window manager services (yabai + skhd)
+├── modules/postgresql.nix   # Postgres server launchd service
 └── home-manager
-    └── home.nix
-        ├── home/shell.nix    # Zsh config
-        ├── home/git.nix      # Git config
-        ├── home/programs.nix # CLI tools + their configs
-        ├── home/secrets.nix  # sops-nix declarations
-        ├── home/opencode.nix # AI tooling config
-        └── home/glab.nix     # GitLab CLI config
+    └── home.nix             # User packages + imports every home/*.nix
 ```
+
+`home/` contains one module per concern (`shell`, `git`, `programs`, `secrets`, `opencode`, `glab`, `theme`, `colima`). Any new home-manager module must be added to `home.nix`'s `imports` list; any new system module must be added to `flake.nix`'s `modules` list.
 
 ## Nix vs Brew
 The choice between Nix and Homebrew depends on the type of tool and its integration requirements.
@@ -42,7 +39,7 @@ Secrets are managed using sops-nix with age encryption. The age key is derived f
 
 On macOS, sops-nix uses a LaunchAgent rather than systemd. This means secrets are decrypted to `~/.config/sops-nix/secrets/` at login. Because decryption happens at login rather than during the nix activation phase, activation scripts use a retry loop to wait for decrypted files to appear. Activation scripts then read these secrets and substitute placeholders in configuration templates.
 
-Currently managed secrets include `exa_api_key` for opencode MCP and `glab_cfdata_token` for the GitLab CLI.
+Declared secrets live as `sops.secrets.<name>` entries in `home/*.nix` — grep for `sops.secrets` to see the live list rather than tracking it here.
 
 To add a new secret:
 1. Run `SOPS_AGE_KEY=$(nix run nixpkgs#ssh-to-age -- -private-key -i ~/.ssh/cloudflare/id_ed25519) nix run nixpkgs#sops -- --set '["secret_name"] "value"' secrets/default.yaml`.
@@ -77,19 +74,9 @@ Several components exist outside this repository and must be present for the sys
 ## OpenCode agents
 Custom agents are defined as markdown files in `config/opencode/agents/` and symlinked to `~/.config/opencode/agents/` via `mkOutOfStoreSymlink` in `home/opencode.nix`. Each file combines a YAML frontmatter (model, permissions, mode) with a system prompt body.
 
-| Agent | Mode | Model | Role |
-| :--- | :--- | :--- | :--- |
-| build | primary | Claude Opus 4.6 | Main coding agent (no custom prompt -- uses provider base) |
-| deep | primary | GPT-5.4 | Autonomous deep reasoning for complex problems |
-| quick | primary | Claude Haiku 4.5 | Fast, cheap agent for trivial tasks |
-| large | primary | Claude Opus 4.6 | Max context escape hatch for large refactors |
-| oracle | subagent | GPT-5.4 | Second opinion -- reasoning, plan review, debugging |
-| review | subagent | Gemini 3.1 Pro | Code review and bug identification |
-| research | subagent | Gemini 3 Flash | Fast codebase search and retrieval |
-| librarian | subagent | Claude Sonnet 4.6 | External code and documentation research |
-| lookat | subagent | Gemini 3 Flash | Image, PDF, and media analysis |
+The roster splits into **primary** agents (`build`, `deep`, `quick`, `large`) for top-level interaction and **subagents** (`oracle`, `review`, `research`, `librarian`) dispatched via the `task` tool. Image and PDF analysis is handled by the `look_at` plugin (`config/opencode/plugins/look-at.js`), not an agent. Built-in agents `plan`, `general`, and `explore` are disabled in `opencode.json` because the custom roster replaces them.
 
-Built-in agents `plan`, `general`, and `explore` are disabled in `opencode.json` as they are replaced by this roster. Model choices follow Amp's architecture: different model families for different cognitive styles (Claude for structured instruction-following, GPT for autonomous reasoning, Gemini for parallel tool use and analysis).
+Model choices follow Amp's architecture: different model families for different cognitive styles (Claude for structured instruction-following, GPT for autonomous reasoning, Gemini for parallel tool use and analysis). Live model assignments live in each agent's YAML frontmatter — don't duplicate them here; they drift. Use the `auditing-agent-sources` skill to compare against upstream references (OpenCode, Amp, oh-my-openagent) when bumping.
 
 Non-flake inputs are pinned in `flake.lock`. Update them using `nix flake update <input>`.
 
