@@ -65,6 +65,7 @@ Several components exist outside this repository and must be present for the sys
 
 ## Flake inputs
 - `nixpkgs`: The unstable package set.
+- `nixpkgs-master`: Tracks `NixOS/nixpkgs` master. Used via a narrow overlay in `flake.nix` to pull bleeding-edge versions of fast-moving packages while the rest of the system stays on cached `nixos-unstable`. Packages in this overlay may build from source when master's revision isn't in the binary cache yet; builds are quick (~30s). See the overlay block in `flake.nix` for the current membership.
 - `nix-darwin`: Manages macOS system configuration.
 - `home-manager`: Manages the user environment.
 - `sops-nix`: Handles secrets management.
