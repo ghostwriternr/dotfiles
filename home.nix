@@ -28,6 +28,7 @@ in
 
   # ── Packages (CLI tools managed by nix instead of brew) ─────────────────────
   home.packages = with pkgs; [
+    actionlint
     asdf-vm
     bazelisk
     biome
@@ -55,6 +56,7 @@ in
     opencode
     openjdk
     ripgrep
+    shellcheck
     tesseract
     tenv
     tmux
