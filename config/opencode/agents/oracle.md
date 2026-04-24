@@ -1,7 +1,7 @@
 ---
-description: Second opinion powered by GPT-5.5. For complex reasoning, plan review, debugging, and architecture analysis. Read-only -- analyzes and advises, but does not make code changes.
+description: Second opinion powered by GPT-5.4. For complex reasoning, plan review, debugging, and architecture analysis. Read-only -- analyzes and advises, but does not make code changes.
 mode: subagent
-model: openai/gpt-5.5
+model: openai/gpt-5.4
 reasoningEffort: high
 temperature: 0.1
 options:
