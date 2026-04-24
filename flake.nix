@@ -52,6 +52,12 @@
               direnv = prev.direnv.overrideAttrs (old: {
                 doCheck = !prev.stdenv.hostPlatform.isDarwin;
               });
+
+              # plannotator is a local package definition — not in nixpkgs.
+              # Packaged here so `nix-update -F .#plannotator` can target
+              # it for version/hash bumps. See pkgs/plannotator/default.nix
+              # and scripts/bump-plannotator.sh.
+              plannotator = prev.callPackage ./pkgs/plannotator { };
             })
           ];
 
