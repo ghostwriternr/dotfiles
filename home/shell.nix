@@ -155,10 +155,20 @@ in
           [[ "$choice" != "y" ]] && return 1
         fi
 
-        # .drv paths only appear under "will be built" — fetch paths don't end in .drv
+        # Surface fetch size so we have honest download visibility alongside builds.
+        local fetch_summary
+        fetch_summary=$(echo "$dry_output" | grep -E 'will be fetched' | head -1)
+        [[ -n "$fetch_summary" ]] && echo "   $fetch_summary"
+
+        # .drv paths only appear under "will be built" — fetch paths don't end in .drv.
+        # Filter out trivial local derivations: home-manager/Darwin config, wrappers,
+        # activation scripts, plists, generated configs. These "build" in <1s each and
+        # appear on every nixpkgs bump regardless of what's actually changed. We only
+        # want to flag real package compiles (Go/Rust/C/Python builds).
         local build_lines
         build_lines=$(echo "$dry_output" | grep '\.drv$' | \
-          sed 's|^[[:space:]]*/nix/store/[a-z0-9]*-||; s|\.drv$||')
+          sed 's|^[[:space:]]*/nix/store/[a-z0-9]*-||; s|\.drv$||' | \
+          grep -vE '^(darwin-.*|home-manager-.*|hm_.*|activate-.*|activation-.*|system-(path|applications)|etc|launchd|manifest\.json|options\.json|user-environment|nix\.conf|org\.(nixos|nix-community)\..*\.plist|.*-config|.*-configfile-check|.*-start|gh-config\.yml|starship-config|direnv-config|sops-nix-user|sops-install-secrets-.*|postgresql-.*|python3-.*-env|neovim-ruby-env|home-configuration-reference-manpage)$')
 
         if [[ -n "$build_lines" ]]; then
           local count=$(echo "$build_lines" | wc -l | tr -d ' ')
@@ -173,7 +183,7 @@ in
             echo "$safe_lock" > "$flake_dir/flake.lock"
           fi
         else
-          echo "✓ All packages cached"
+          echo "✓ All packages cached (trivial local config rebuilds excluded)"
         fi
 
         # 4. Rebuild
