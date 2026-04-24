@@ -20,6 +20,7 @@ in
     ./home/secrets.nix
     ./home/shell.nix
     ./home/opencode.nix
+    ./home/plannotator.nix
     ./home/glab.nix
     ./home/colima.nix
   ];
