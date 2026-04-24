@@ -43,6 +43,15 @@
                 inherit (prev.stdenv.hostPlatform) system;
                 config.allowUnfree = true;
               }).opencode;
+
+              # direnv 2.37.1 test-fish hangs/SIGKILLs on darwin in 25.11.
+              # Upstream bug: NixOS/nixpkgs#507531 (bisected to libarchive
+              # 3.8.4 -> 3.8.6, commit 32e655f). Skip the check phase on
+              # darwin only until a fix is backported. Remove this override
+              # once `nix-update` shows direnv building cleanly from cache.
+              direnv = prev.direnv.overrideAttrs (old: {
+                doCheck = !prev.stdenv.hostPlatform.isDarwin;
+              });
             })
           ];
 
