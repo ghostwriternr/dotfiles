@@ -85,17 +85,24 @@ Non-flake inputs are pinned in `flake.lock`. Update them using `nix flake update
 Using the `--impure` flag is required during system activation because `security.pki.certificateFiles` references an absolute path outside the flake tree. The WARP certificate at `~/.config/cloudflare/zero_trust_cert.pem` is machine-specific infrastructure rather than shared configuration. It cannot be committed to the repository as it is unique to each Cloudflare account. If you aren't using Cloudflare WARP, you can remove the certificateFiles line and the requirement for the `--impure` flag. See `docs/warp-cert.md` for more details.
 
 ## Plannotator
-[Plannotator](https://plannotator.ai) is a browser-based plan/code annotation UI for AI coding agents. It exposes a `submit_plan` tool and four universal slash commands. Packaged and wired in `home/plannotator.nix`.
+[Plannotator](https://plannotator.ai) is a browser-based plan/code annotation UI for AI coding agents. It exposes a `submit_plan` tool and four universal slash commands. Packaged in `pkgs/plannotator/default.nix`, exposed on the overlay as `pkgs.plannotator`, and consumed by the thin home-manager module `home/plannotator.nix`.
 
 Wired into `build`, `deep`, and `large` primary agents via `plan-agent` workflow mode (see `config/opencode/opencode.json`'s top-level `plugin` array). These are the primaries that write plans and route them to the human for review. When they call `submit_plan`, a browser opens for annotation; structured feedback round-trips to the agent. Composes with the existing oracle-subagent-autonomous-review flow: agent writes plan → oracle critiques the markdown → agent revises → plannotator shows the improved plan to the human. `quick` is excluded (Haiku one-liner agent, doesn't plan). Subagents are auto-excluded (the plugin only targets primaries).
 
-Four slash commands are installed as markdown stubs to `~/.config/opencode/commands/`: `/plannotator-annotate <file|url|dir>`, `/plannotator-last`, `/plannotator-review`, `/plannotator-archive`. These are **not** installed by the plugin's npm `postinstall` — OpenCode's plugin installer runs with `Arborist({ignoreScripts: true})` (`packages/opencode/src/npm/index.ts:150` in the opencode repo), so postinstalls never fire. The nix module fetches the npm tarball itself, extracts `package/commands/*.md`, and installs them via `xdg.configFile` so they're version-pinned alongside the binary.
+Four slash commands are installed as markdown stubs to `~/.config/opencode/commands/`: `/plannotator-annotate <file|url|dir>`, `/plannotator-last`, `/plannotator-review`, `/plannotator-archive`. These are **not** installed by the plugin's npm `postinstall` — OpenCode's plugin installer runs with `Arborist({ignoreScripts: true})` (`packages/opencode/src/npm/index.ts:150` in the opencode repo), so postinstalls never fire. The `plannotator-commands` subpackage fetches the npm tarball, extracts `package/commands/*.md`, and the home-manager module installs them via `xdg.configFile`. Keeping commands as a proper `mkDerivation` (not `runCommand`) is deliberate — it lets `nix-update -F -s commands .#plannotator` bump the tarball hash natively.
 
 The binary derivation follows the same shape as `nixpkgs/pkgs/by-name/cl/claude-code-bin/package.nix` — another Bun-compiled single-file CLI from GitHub releases. `dontStrip = true` is **critical**: Bun embeds JS bytecode after the Mach-O segments, and stripping corrupts it.
 
-**Bumping the version:** update three places in lockstep.
-1. Get the new binary SHA256: `gh release view --repo backnotprop/plannotator v<tag> --json assets | jq -r '.assets[] | select(.name=="plannotator-darwin-arm64") | .digest'` then convert hex to SRI via `nix hash convert --hash-algo sha256 --to sri <hex>`.
-2. In `home/plannotator.nix`: bump `version`, swap the binary `hash`, set the `commandsTarball.hash` to `sha256-AAAA...` placeholder. Run `nix build --dry-run '.#darwinConfigurations.KVQ52GY6N9.system' --impure` — it'll print the real tarball hash as a mismatch error. Paste it in. Or run `nix-prefetch-url --type sha256 <tarball-url>` then `nix hash convert --hash-algo sha256 --to sri --from nix32 <nix32-hash>`.
-3. In `config/opencode/opencode.json`: replace `@plannotator/opencode@<old>` with `@plannotator/opencode@<new>`.
+**Bumping the version:** automatic. The daily `nix-update` zsh function (`home/shell.nix:124`) runs a plannotator check as step 2.5, using `nix-update -F --version stable --use-github-releases` to bump the binary, then `nix-update -F --version skip -s commands` to bump the npm tarball hash, then a `sed` to update the plugin pin in `config/opencode/opencode.json`. The three changes land as a single `plannotator: X -> Y` commit, separate from the usual `flake: update inputs` commit. Plannotator is never cached on `cache.nixos.org` (personal package, not in nixpkgs), so it always shows up in the daily "will build from source" prompt — that gate doubles as a pre-merge review checkpoint. Answering `n` reverts both the nixpkgs bump and the plannotator bump cleanly.
 
-**Local state across rebuilds:** `~/.cache/opencode/node_modules/@plannotator/` is opencode's own plugin cache, refreshed when the version changes. `~/.plannotator/` is plannotator's runtime state (plan history, drafts) — user data, not nix-managed. The four `~/.config/opencode/commands/plannotator-*.md` entries are nix-store symlinks and disappear cleanly when the module is removed.
+**Manual bumping**, if ever needed: from the flake root, run:
+```sh
+nix run nixpkgs#nix-update -- -F --version <new> --use-github-releases \
+  darwinConfigurations.KVQ52GY6N9.pkgs.plannotator
+nix run nixpkgs#nix-update -- -F --version skip -s commands \
+  darwinConfigurations.KVQ52GY6N9.pkgs.plannotator
+sed -i '' "s|@plannotator/opencode@[0-9.]*|@plannotator/opencode@<new>|" \
+  config/opencode/opencode.json
+```
+
+**Local state across rebuilds:** `~/.cache/opencode/packages/@plannotator/` is opencode's own plugin cache, refreshed when the version changes. `~/.plannotator/` is plannotator's runtime state (plan history, drafts) — user data, not nix-managed. The four `~/.config/opencode/commands/plannotator-*.md` entries are nix-store symlinks and disappear cleanly when the module is removed.
