@@ -120,7 +120,8 @@ in
       # Updates non-nixpkgs inputs first (always fast), then nixpkgs with a
       # dry-run gate. If too many packages need building from source, lets you
       # revert the nixpkgs bump while keeping the other updates.
-      # Also upgrades Homebrew formulae and checks for skill updates.
+      # Also auto-bumps plannotator (not in nixpkgs, lives in pkgs/plannotator),
+      # upgrades Homebrew formulae, and checks for skill updates.
       nix-update() {
         local flake_dir="$HOME/.config/nix-darwin"
         local system_attr="$flake_dir#darwinConfigurations.KVQ52GY6N9.system"
@@ -140,6 +141,47 @@ in
         # 2. Update nixpkgs
         echo ":: Updating nixpkgs..."
         nix flake update nixpkgs --flake "$flake_dir" || return 1
+
+        # 2.5. Auto-bump plannotator to latest GitHub release.
+        # Plannotator isn't in nixpkgs — it's packaged locally under
+        # pkgs/plannotator/ and wired through the flake overlay. Two fixed-
+        # output hashes (binary + npm tarball) live in the package file, plus
+        # a plugin version pin in config/opencode/opencode.json that must
+        # match. nix-update handles the two hashes natively; the JSON pin
+        # is a one-line sed.
+        echo ":: Checking for plannotator updates..."
+        local plannotator_old plannotator_new plannotator_bumped=0
+        local plannotator_pkg_file="$flake_dir/pkgs/plannotator/default.nix"
+        local opencode_json="$flake_dir/config/opencode/opencode.json"
+        local plannotator_pkg_snapshot opencode_json_snapshot
+        plannotator_pkg_snapshot=$(<"$plannotator_pkg_file")
+        opencode_json_snapshot=$(<"$opencode_json")
+        plannotator_old=$(grep -m1 '^  version = ' "$plannotator_pkg_file" | sed -E 's/.*"([^"]+)".*/\1/')
+
+        # Silence nix-update's noisy per-step logs; we'll surface the result ourselves.
+        if nix run nixpkgs#nix-update -- -F --version stable --use-github-releases \
+             darwinConfigurations.KVQ52GY6N9.pkgs.plannotator >/dev/null 2>&1; then
+          plannotator_new=$(grep -m1 '^  version = ' "$plannotator_pkg_file" | sed -E 's/.*"([^"]+)".*/\1/')
+          if [[ "$plannotator_old" != "$plannotator_new" ]]; then
+            # Binary bumped. Now bump the commands subpackage (npm tarball) to
+            # match, and update the plugin pin in opencode.json.
+            if nix run nixpkgs#nix-update -- -F --version skip -s commands \
+                 darwinConfigurations.KVQ52GY6N9.pkgs.plannotator >/dev/null 2>&1 \
+               && sed -i ''' "s|@plannotator/opencode@[0-9.]*|@plannotator/opencode@$plannotator_new|" "$opencode_json"; then
+              echo "✓ plannotator bumped: $plannotator_old -> $plannotator_new"
+              plannotator_bumped=1
+            else
+              echo "⚠  plannotator bump failed partway through; reverting"
+              echo "$plannotator_pkg_snapshot" > "$plannotator_pkg_file"
+              echo "$opencode_json_snapshot" > "$opencode_json"
+            fi
+          else
+            echo "✓ plannotator already at latest ($plannotator_old)"
+          fi
+        else
+          echo "⚠  plannotator update check failed; continuing without bump"
+          echo "$plannotator_pkg_snapshot" > "$plannotator_pkg_file"
+        fi
 
         # 3. Dry-run: check what needs building from source
         echo ":: Checking binary cache coverage..."
@@ -181,6 +223,12 @@ in
           if [[ "$choice" != "y" ]]; then
             echo ":: Reverting nixpkgs (keeping other input updates)..."
             echo "$safe_lock" > "$flake_dir/flake.lock"
+            if [[ $plannotator_bumped -eq 1 ]]; then
+              echo ":: Reverting plannotator bump too..."
+              echo "$plannotator_pkg_snapshot" > "$plannotator_pkg_file"
+              echo "$opencode_json_snapshot" > "$opencode_json"
+              plannotator_bumped=0
+            fi
           fi
         else
           echo "✓ All packages cached (trivial local config rebuilds excluded)"
@@ -198,9 +246,18 @@ in
         echo ":: Checking for skill updates..."
         npx skills update
 
-        # 7. Commit and push
+        # 7. Commit and push.
+        # Plannotator bump gets its own commit (atomic, easy to revert).
+        # Flake inputs get the usual "flake: update inputs" commit.
+        if [[ $plannotator_bumped -eq 1 ]]; then
+          git -C "$flake_dir" add pkgs/plannotator/default.nix "$opencode_json"
+          git -C "$flake_dir" commit -m "plannotator: $plannotator_old -> $plannotator_new"
+        fi
         git -C "$flake_dir" add flake.lock
-        git -C "$flake_dir" commit -m 'flake: update inputs'
+        # Empty commit is an error in plain `git commit`; guard with --allow-empty check.
+        if ! git -C "$flake_dir" diff --cached --quiet; then
+          git -C "$flake_dir" commit -m 'flake: update inputs'
+        fi
         git -C "$flake_dir" push
       }
 
