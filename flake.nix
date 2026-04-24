@@ -11,6 +11,7 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     # Opencode skill packs (non-flake, pinned in flake.lock)
     superpowers.url = "github:obra/superpowers";
