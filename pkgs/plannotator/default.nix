@@ -50,7 +50,7 @@ let
 
       src = fetchurl {
         url = "https://registry.npmjs.org/@plannotator/opencode/-/opencode-${version}.tgz";
-        hash = "sha256-uvSbsELCB5fk8XPwGWDGK2WwyzatU/i3d0ykFpMfOZo=";
+        hash = "sha256-W17j8nhfplvdq1aS9nmMCudPRVu+mh+OCGAQ/murpcw=";
       };
 
       # src is a tarball; let stdenv unpack it. sourceRoot is `package/`
@@ -82,13 +82,13 @@ in
 
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "plannotator";
-  version = "0.19.1";
+  version = "0.19.2";
 
   # `name = "plannotator"` so installBin produces $out/bin/plannotator
   # rather than $out/bin/plannotator-darwin-arm64.
   src = fetchurl {
     url = "https://github.com/backnotprop/plannotator/releases/download/v${finalAttrs.version}/plannotator-darwin-arm64";
-    hash = "sha256-H2ebrkAC9pQ9gGT4k5KMcikhtme+BdLsTilrP2v8TZ8=";
+    hash = "sha256-TMr9Ad8C8uJlNz9oZ3jA0FGsUwKxiSkw9fudXOrA9ng=";
     name = "plannotator";
   };
 
