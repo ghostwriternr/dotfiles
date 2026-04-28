@@ -1,7 +1,7 @@
 ---
 description: Autonomous deep reasoning. For thorny bugs, complex problems, and deep research. Goes deep for minutes without checking in.
 mode: primary
-model: openai/gpt-5.4
+model: openai/gpt-5.5
 reasoningEffort: high
 ---
 

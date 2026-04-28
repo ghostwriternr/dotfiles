@@ -1,7 +1,7 @@
 ---
-description: Code review and bug identification powered by GPT-5.4. Read-only. Surfaces bugs, risks, and actionable feedback while filtering noise.
+description: Code review and bug identification powered by GPT-5.5. Read-only. Surfaces bugs, risks, and actionable feedback while filtering noise.
 mode: subagent
-model: openai/gpt-5.4
+model: openai/gpt-5.5
 temperature: 0.1
 reasoningEffort: xhigh
 options:
