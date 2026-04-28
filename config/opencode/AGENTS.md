@@ -1,66 +1,80 @@
-# Global Rules
+# OpenCode setup
 
-These rules apply to every OpenCode session on this machine, across all projects. Project-level `AGENTS.md` may override specifics.
+OpenCode is configured under this directory. Files are surfaced into `~/.config/opencode/` by `home/opencode.nix` using three patterns. Knowing which is which is the only thing that matters when editing.
 
-## Git Commit Messages
+## How files reach `~/.config/opencode/`
 
-Follow Chris Beams' seven rules (https://cbea.ms/git-commit/):
+- **`mkOutOfStoreSymlink` (mutable, lands in git)** — `agents/`, `skills/auditing-agent-sources/`, `skills/updating-opencode-agents/`, `plugins/look-at.js`, `plugins/interactive-bash.js`, `opencode.json`, and `global-rules.md` (surfaced as `~/.config/opencode/AGENTS.md`). The symlink at `~/.config/opencode/<x>` *is* this repo. Editing the live path edits git.
+- **Nix store, read-only** — upstream skill packs `skills/superpowers/` and `skills/cloudflare/`, plus the upstream `plugins/superpowers.js`. Sourced from flake inputs `superpowers` and `cloudflare-skills` in `flake.nix`, pinned via `flake.lock`. Bump with `nix flake update superpowers cloudflare-skills`. `force = true` in `home/opencode.nix` overwrites stale manual clones on rebuild.
+- **Activation script** — `home/opencode.nix:69` symlinks `~/.config/opencode/node_modules` into this repo's `node_modules` so Bun can resolve `@opencode-ai/plugin` for plugins running from their real (repo) path. `node_modules` is gitignored.
 
-1. **Separate subject from body with a blank line.** If the commit needs a body, there must be one blank line between the subject and the body.
-2. **Limit the subject line to 50 characters.** 72 is a hard ceiling.
-3. **Capitalize the subject line.** "Accelerate to 88 miles per hour", not "accelerate…".
-4. **Do not end the subject line with a period.**
-5. **Use the imperative mood in the subject line.** "Fix bug", not "Fixed bug" or "Fixes bug". A properly formed subject line should complete the sentence: *"If applied, this commit will ___."*
-6. **Wrap the body at 72 characters.** Git does not wrap text automatically.
-7. **Use the body to explain *what* and *why*, not *how*.** The diff shows how; the message explains intent and context.
+If a rebuild does not pick up an agent edit, verify `home/opencode.nix` still uses `mkOutOfStoreSymlink` rather than a copy with `force = true`.
 
-### Additional guidance
+`global-rules.md` (this directory) is **the global, machine-wide** rules file (commit-message rules, PR rules, plan-storage location). It is symlinked out as `~/.config/opencode/AGENTS.md` and applies to every OpenCode session everywhere — not just this repo. Do not put nix-darwin-specific notes there. The file you are reading now (`AGENTS.md` in this directory) is the **project-scoped** counterpart and only auto-loads when a session is rooted under `config/opencode/`.
 
-- Keep the subject line a concise summary of the change. Prefer specific verbs ("Refactor", "Introduce", "Remove") over vague ones ("Update", "Change").
-- Omit the body for trivial commits where the subject fully describes the change. Include a body when motivation, tradeoffs, side effects, or references matter.
-- Reference issues, PRs, or external links in the body, not the subject.
-- Match the repository's existing convention if it clearly diverges (e.g. Conventional Commits via `feat:`/`fix:` prefixes). When in doubt, ask. Project-level `AGENTS.md` takes precedence.
+## Agent roster (`agents/*.md`)
 
-## Pull Request / Merge Request Descriptions
+All agents are custom; built-in `plan`, `explore`, `general` are disabled in `opencode.json`. Models live in YAML frontmatter — never duplicate them here, they drift. Use the `auditing-agent-sources` skill to compare against upstream.
 
-When opening a PR or MR (forge-agnostic — GitHub, GitLab, Gitea, etc.), follow Google's CL description guidelines (https://google.github.io/eng-practices/review/developer/cl-descriptions.html):
+| File | Mode | Role |
+|---|---|---|
+| `build.md` | primary | Default coder |
+| `large.md` | primary | Same body as `build.md`, used when a long-context model is wanted |
+| `deep.md` | primary | Autonomous deep reasoning, long horizons |
+| `quick.md` | primary | One-shot tiny edits, cheap model |
+| `oracle.md` | subagent | Second-opinion advisor, read-only |
+| `review.md` | subagent | Code review, read-only |
+| `research.md` | subagent | Fast codebase search |
+| `librarian.md` | subagent | External-doc and dependency research |
 
-1. **First line is a short, imperative summary of *what* the change does.** Treat it exactly like a commit subject line: follow the Chris Beams rules above (≤50 chars target / 72 hard ceiling, capitalized, imperative mood, no trailing period). For single-commit PRs the title and the commit subject should be identical.
-2. **Body explains *why*, not *how*.** Motivation, context, tradeoffs, shortcomings of the chosen approach, links to issues/specs/design docs, screenshots for UI changes. The diff shows how. Assume external links may be inaccessible to future readers — include enough context in the body that the PR stands on its own.
-3. **Be specific.** "Fix bug" or "Phase 1" is a bad description; "Remove size limit on RPC server message freelist" is a good one. A reviewer should understand the change without reading the diff.
-4. **Write for the future reader, not just today's reviewer.** Someone will find this PR via `git log` or a bug hunt months later with no context.
-5. **Update the description as the PR evolves.** If review rounds change the scope or approach, edit the description to match the final state.
-6. **Keep PRs small and single-purpose.** Rule of thumb: ~100 lines is comfortable, ~1000 is almost always too large; a change touching 50 files counts as large even if the line count is modest. Whole-file deletions and trusted mechanical refactors (codemods, formatter runs) can be larger. If the description needs "and also…" clauses, the PR wants splitting. See https://google.github.io/eng-practices/review/developer/small-cls.html for splitting strategies (horizontal/vertical/stacking).
-7. **Separate refactors from behaviour changes.** Moving or renaming a class belongs in a different PR from fixing a bug in that class. Small local cleanups (a variable rename, a nearby typo) can ride along with a feature or bugfix.
-8. **Include related tests in the same PR.** Behaviour changes need new or updated tests; pure refactors should be covered by existing or newly-added tests. Test-only PRs that backfill coverage for untested code can land ahead of the refactor they enable.
+`large.md` is a verbatim mirror of `build.md`'s body. Empty-body agents fall back to the *raw provider prompt* — not to another agent's body — so any cross-agent prompt sharing has to be explicit.
 
-### Additional guidance
+## The body-replacement rule
 
-- Match the repository's existing PR template if one exists (`.github/PULL_REQUEST_TEMPLATE.md`, `.gitlab/merge_request_templates/`). Fill in every section — don't leave placeholder text.
-- Reference issues with the forge's auto-close syntax (`Fixes #123`, `Closes !456`) in the body when the PR resolves an issue.
-- When the repo squash-merges, the PR body becomes the squashed commit body — write it to be commit-worthy, not just reviewer-chatter.
-- Project-level `AGENTS.md` takes precedence over these rules.
+**Agent body content REPLACES the provider base prompt.** It does not extend or merge. A short custom body silently drops the 100+ lines of tool-use, parallelism, code-reference, and TodoWrite emphasis carried in `~/github/opencode/packages/opencode/src/session/prompt/{anthropic,gpt,gemini}.txt`.
 
-## Superpowers Plan Storage
+Re-verify before any major rewrite — if upstream flips this to extend, much of `skills/updating-opencode-agents/` needs updating:
 
-**Override** the default `docs/superpowers/plans/` location from `superpowers:writing-plans`. By default, plans, specs, and reviews are noisy working artifacts the user does not want to commit into source repos, but does want to revisit weeks later. Save them to the user's Obsidian vault instead.
+```bash
+rg -n "system|prompt" ~/github/opencode/packages/opencode/src/session/llm.ts
+```
 
-**Root:** `~/Documents/notes/Engineering/Plans/<repo-name>/`
+For any body rewrite, use the **`updating-opencode-agents` skill** — it documents the staging-directory + Oracle gap-audit loop that catches what the base prompt was carrying. Skipping it costs review rounds.
 
-**Layout:**
+## Permission model (`opencode.json`)
 
-- Plans → `~/Documents/notes/Engineering/Plans/<repo-name>/plans/YYYY-MM-DD-<feature>.md`
-- Specs (from `superpowers:brainstorming`) → `~/Documents/notes/Engineering/Plans/<repo-name>/specs/YYYY-MM-DD-<feature>.md`
-- Code review docs (from `superpowers:requesting-code-review` or saved oracle/review output) → `~/Documents/notes/Engineering/Plans/<repo-name>/reviews/YYYY-MM-DD-<topic>.md`
+`opencode.json` is the global allow/ask/deny matrix for tools and bash patterns. Three things to know:
 
-**Resolving `<repo-name>`:** `basename "$(git rev-parse --show-toplevel)"` from inside the working repo. If not in a git repo, use the basename of the current working directory.
+- **Last-match-wins.** Order matters within the bash block; later patterns override earlier ones. Add new entries near related rules.
+- **`task` is per-target.** `task: { "*": deny, research: allow }` is a real allowlist. Native subagents (`general`, `explore`) appear in the Task menu by default with edit permissions — always pair `task: allow` with an explicit allowlist or globally disable the natives.
+- **Bash patterns are prefix-matched.** `git status *` allows `git status`, `git status --short`, etc. Compound commands (`&&`, `||`, `;`, pipes, redirects) are NOT safely captured — `interactive-bash.js` routes those through the `interactive_bash` permission instead.
 
-**Create the directory if missing:** `mkdir -p ~/Documents/notes/Engineering/Plans/<repo-name>/{plans,specs,reviews}` before writing the first artifact for a repo.
+## Plugins (`plugins/`)
 
-**Cross-references:** When a plan references its spec (or vice versa), use the absolute vault path so links survive when files are read from either side. Example: `**Spec:** ~/Documents/notes/Engineering/Plans/nix-darwin/specs/2026-04-18-agent-upgrade-design.md`.
+- **`superpowers.js`** — upstream from `obra/superpowers`. Provides the `skill` tool that loads `skills/<name>/SKILL.md` content into context on demand. Read-only from our perspective; bump via `nix flake update superpowers`.
+- **`look-at.js`** — custom. `look_at` tool spawns a child session against `gemini-3-flash-preview` to analyze pasted images, files on disk, or base64 data. Solves the "task tool only forwards text" problem for vision work.
+- **`interactive-bash.js`** — custom. `interactive_bash` tool wraps tmux sessions auto-prefixed with `oc-<sessionID>-`. Buffers split text sends and re-checks them against `permission.bash` rules at Enter time so the buffer cannot bypass policy. Compound commands always prompt.
 
-**Announcement to the user:** When saving, report the full vault path, not the skill's default. e.g. *"Plan saved to `~/Documents/notes/Engineering/Plans/nix-darwin/plans/2026-04-18-foo.md`"*.
+`opencode.json`'s top-level `plugin` array additionally pulls `@plannotator/opencode` from npm — that one is managed by the daily `nix-update` zsh function and bumped automatically. See `docs/architecture.md` for plannotator integration details.
 
-**Do not commit these files to the working repo.** The vault is a separate git repo (`~/Documents/notes/`) with its own commit cadence — leave vault commits to the user unless asked.
+## Skills
 
-**Per-repo override:** A project-level `AGENTS.md` can opt back into committing plans inside the repo (useful for open-source or team projects). If the project-level file specifies a plan location, that wins over this rule.
+- **`skills/superpowers/`** — upstream meta-skills for brainstorming, planning, debugging, TDD, code review, worktrees, etc. Read-only.
+- **`skills/cloudflare/`** — upstream Cloudflare-platform skill pack (Workers, KV, R2, Agents SDK, Wrangler, etc.). Read-only.
+- **`skills/auditing-agent-sources/`** — custom. Run when checking whether our agent prompts are stale relative to OpenCode upstream, Amp, and oh-my-openagent. Surfaces deltas; does not apply them.
+- **`skills/updating-opencode-agents/`** — custom. Run when editing or rewriting an agent. Encodes the body-replacement rule, the Oracle gap-audit loop, and the known gotchas (model-specific tool selection, provider option defaults, parameter↔prompt tension, native-subagent escalation paths).
+
+## Editing checklist
+
+1. Edit files in this directory directly. The symlink picks up changes immediately for `mkOutOfStoreSymlink`-managed files; no rebuild needed unless the symlink itself moves.
+2. For new files, `git add` first — Nix flakes only see git-tracked files, and a new agent file won't be evaluable without it.
+3. For multi-file agent rewrites: stage drafts under `~/Documents/notes/Engineering/Plans/nix-darwin/staging/YYYY-MM-DD-<topic>/`, run the `updating-opencode-agents` skill's gap-audit loop, then deploy as a single commit.
+4. After substantive changes, restart the OpenCode session — frontmatter and body are loaded once at session start.
+5. For `home/opencode.nix` changes (adding a new managed file, changing how something is sourced), suggest the user run `nix-rebuild`. See the repo-root `AGENTS.md` for why you don't run rebuilds yourself and how `nix-rebuild` differs from `nix-update`.
+
+## Common gotchas
+
+- **`edit: deny` is not a sandbox.** It blocks `edit`/`write`/`apply_patch` but bash can still create files. "Read-only" is enforced by both the permission system and the prompt.
+- **GPT vs Claude/Gemini get different file tools.** `tool/registry.ts` historically routes non-`oss`, non-`gpt-4` GPT models to `apply_patch`; everything else gets `edit` + `write`. A prompt that says "use the Edit tool" fails for a GPT-5.x agent. Re-verify in `~/github/opencode/packages/opencode/src/tool/registry.ts` when porting prompts across families.
+- **Provider option defaults silently override frontmatter.** OpenCode has historically forced low verbosity on some GPT-5.x variants in `provider/transform.ts`. Set `options.textVerbosity: high` explicitly if you want it; do not trust inheritance.
+- **Parameter↔prompt tension.** Don't pair `textVerbosity: high` with a prompt that imposes "≤3 bullets" caps. Pick one.

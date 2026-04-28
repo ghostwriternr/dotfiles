@@ -26,10 +26,12 @@ nix-darwin + home-manager flake for a single machine (`KVQ52GY6N9`, Cloudflare w
 
 ## OpenCode-specific
 
-- `config/opencode/AGENTS.md` is the **global, machine-wide** OpenCode instructions file (commit-message rules). It is symlinked to `~/.config/opencode/AGENTS.md`. This file you're reading (`/AGENTS.md` at repo root) is the **repo-local** one.
-- Skill packs `superpowers` and `cloudflare-skills` are pinned flake inputs (`flake.nix:13-16`, `flake = false`). They are read-only; `force = true` in `home/opencode.nix` overwrites stale manual clones on rebuild. To bump them: `nix flake update superpowers cloudflare-skills`.
-- `config/opencode/node_modules` is gitignored and auto-symlinked by an activation script (`home/opencode.nix:69`) so that plugins resolving `@opencode-ai/plugin` from the real repo path work under Bun.
-- Agent roster and model choices live in `config/opencode/agents/*.md`. `plan` and `explore` are disabled in `opencode.json` because the custom agents replace them. Do not duplicate the model table into docs — it drifts; use the `auditing-agent-sources` skill to compare against upstream.
+OpenCode setup details (file-surfacing patterns, agent roster, permission model, plugins, skills, edit checklist, gotchas) live in `config/opencode/AGENTS.md`. OpenCode auto-loads it for any session rooted under `config/opencode/`. Do not duplicate that content here.
+
+Two cross-cutting reminders that interact with the rest of this file:
+
+- `config/opencode/global-rules.md` is the **global, machine-wide** OpenCode rules file (commit messages, PR descriptions, plan storage). It is symlinked to `~/.config/opencode/AGENTS.md` and applies to every session everywhere — not just this repo. Do not put nix-darwin-specific notes in it.
+- `config/opencode/node_modules` is gitignored and symlinked by an activation script in `home/opencode.nix:69` so plugins resolving `@opencode-ai/plugin` from the real repo path work under Bun.
 
 ## Secrets
 

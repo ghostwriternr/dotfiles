@@ -55,9 +55,15 @@ in
     config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/opencode/opencode.json";
 
   # ── Global AGENTS.md (mutable — machine-wide rules for every session) ───────
+  #
+  # The source is `global-rules.md` (not `AGENTS.md`) so that the
+  # `config/opencode/AGENTS.md` path stays free for project-scoped setup
+  # notes, which opencode auto-loads when a session is rooted under
+  # `config/opencode/`. opencode reads the well-known `~/.config/opencode/
+  # AGENTS.md` path regardless of what the symlink target is named.
 
   xdg.configFile."opencode/AGENTS.md".source =
-    config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/opencode/AGENTS.md";
+    config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/opencode/global-rules.md";
 
   # ── Plugin dependency resolution ────────────────────────────────────────────
   #
