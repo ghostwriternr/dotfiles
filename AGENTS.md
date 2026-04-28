@@ -4,9 +4,12 @@ nix-darwin + home-manager flake for a single machine (`KVQ52GY6N9`, Cloudflare w
 
 ## Critical traps
 
-- **Nix flakes only see git-tracked files.** Any new file must be `git add`ed before `darwin-rebuild` will see it. A missing `git add` manifests as cryptic "file not found" during evaluation.
+- **Nix flakes only see git-tracked files.** Any new file must be `git add`ed before a rebuild will see it. A missing `git add` manifests as cryptic "file not found" during evaluation.
 - **`--impure` is mandatory, not optional.** `modules/system.nix:12` references an absolute path outside the flake tree (`/Users/naresh/.config/cloudflare/zero_trust_cert.pem`). Do not try to "fix" this — the WARP cert is per-account infrastructure and intentionally excluded. See `docs/warp-cert.md`.
-- **Do not run `darwin-rebuild switch` yourself.** It needs sudo, takes 30s–10min, and the user has a smart wrapper (`nix-update`, defined in `home/shell.nix:124`) that gates on binary-cache coverage. Propose changes and let the user rebuild. For syntax-only verification, use `nix build --dry-run '.#darwinConfigurations.KVQ52GY6N9.system' --impure`.
+- **Do not rebuild yourself; propose changes and let the user rebuild.** Rebuilds need sudo and take 30s–10min. The user has two commands (both in `home/shell.nix`) that wrap `darwin-rebuild` for different purposes — pick the right one when suggesting:
+  - `nix-rebuild` (alias, `home/shell.nix:22`) — pure rebuild of the current working tree. Suggest this after editing nix files for an ad-hoc change.
+  - `nix-update` (zsh function, `home/shell.nix:125`) — daily/weekly hygiene wrapper. Updates flake inputs, bumps plannotator, runs a binary-cache dry-run gate, rebuilds, upgrades brew, refreshes skills, then commits + pushes. Do **not** suggest `nix-update` for ad-hoc rebuilds; its scope is much wider than what most edits need.
+  - For syntax-only verification without rebuilding, use `nix build --dry-run '.#darwinConfigurations.KVQ52GY6N9.system' --impure`.
 - **Host is hardcoded.** `flake.nix:20` only defines `darwinConfigurations."KVQ52GY6N9"`. Any dry-build or eval must use that attribute.
 
 ## Layout: system vs user, and where edits land
