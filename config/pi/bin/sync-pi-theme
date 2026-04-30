@@ -1,0 +1,46 @@
+#!/bin/bash
+# sync-pi-theme — flip pi's active "everforest" theme to match macOS appearance.
+#
+# Pi reads ~/.pi/agent/themes/everforest.json as its active theme
+# (settings.json sets `theme: "everforest"`). This script overwrites that
+# file with the contents of the appropriate variant from this repo, with
+# the JSON `name` field rewritten to "everforest" so pi resolves it
+# regardless of which variant was just written. Pi watches the active
+# theme file and hot-reloads on change, so a single write is enough to
+# flip light <-> dark live.
+#
+# Invoked from:
+#   - config/theme-watcher/theme-watcher.swift on
+#     AppleInterfaceThemeChangedNotification (system theme toggle)
+#   - home/pi.nix activation script (bootstraps a fresh install so the
+#     active file exists before pi first launches)
+#
+# Robustness:
+#   - PATH is set explicitly because launchd-spawned processes inherit a
+#     minimal env. /opt/homebrew/bin is the brew-installed jq; /usr/bin
+#     covers `defaults`; /bin covers `mkdir`/`mv`.
+#   - `defaults read -g AppleInterfaceStyle` returns "Dark" in Dark mode
+#     and exits non-zero with no output in Light mode (there is no
+#     "Light" value). Hence `|| true` and the explicit Light fallback.
+#   - Atomic write via tmp + mv so pi's file watcher never observes a
+#     half-written JSON during the swap.
+
+set -euo pipefail
+
+PATH="/opt/homebrew/bin:/usr/bin:/bin:${PATH:-}"
+
+REPO_THEMES="${HOME}/.config/nix-darwin/config/pi/themes"
+ACTIVE_FILE="${HOME}/.pi/agent/themes/everforest.json"
+
+appearance="$(defaults read -g AppleInterfaceStyle 2>/dev/null || true)"
+if [[ "$appearance" == "Dark" ]]; then
+    src="${REPO_THEMES}/everforest-dark.json"
+else
+    src="${REPO_THEMES}/everforest-light.json"
+fi
+
+mkdir -p "$(dirname "$ACTIVE_FILE")"
+
+tmp="${ACTIVE_FILE}.tmp.$$"
+jq '.name = "everforest"' "$src" > "$tmp"
+mv -f "$tmp" "$ACTIVE_FILE"

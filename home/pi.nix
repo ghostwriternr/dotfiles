@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, lib, ... }:
 
 # Pi reads from ~/.pi/, NOT XDG ~/.config/pi/. Hence home.file rather than
 # xdg.configFile. mkOutOfStoreSymlink keeps edits live in git so /reload
@@ -23,6 +23,47 @@ in
 
   home.file.".pi/agent/settings.json".source =
     config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/pi/settings.json";
+
+  # ── Themes (Everforest, auto-switching with macOS appearance) ───────────
+  #
+  # Strategy: settings.json sets `theme: "everforest"` (constant). The
+  # active theme file `~/.pi/agent/themes/everforest.json` is *not*
+  # nix-managed — it's a regular file that `sync-pi-theme` overwrites
+  # with the appropriate variant on system theme change. Pi watches the
+  # active theme file and hot-reloads, so no relaunch is needed.
+  #
+  # The two source variants below are symlinked into place per-file
+  # (rather than symlinking the whole `themes/` dir) so the parent stays
+  # a mutable real directory where `sync-pi-theme` can drop the active
+  # `everforest.json` without fighting nix ownership. The variants are
+  # also independently selectable as themes (`everforest-dark` /
+  # `everforest-light`) if you ever want to pin one regardless of
+  # macOS appearance.
+
+  home.file.".pi/agent/themes/everforest-dark.json".source =
+    config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/pi/themes/everforest-dark.json";
+
+  home.file.".pi/agent/themes/everforest-light.json".source =
+    config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/pi/themes/everforest-light.json";
+
+  # ── Theme sync helper (invoked by theme-watcher + activation) ────────────
+  #
+  # Lives in ~/.local/bin/ so theme-watcher.swift can reference it via
+  # "$HOME/.local/bin/sync-pi-theme" (launchd-spawned shells have a
+  # minimal env; absolute path under $HOME is the most stable handle).
+
+  home.file.".local/bin/sync-pi-theme" = {
+    source = ../config/pi/bin/sync-pi-theme;
+    executable = true;
+  };
+
+  # Bootstrap the active theme file on every rebuild so a fresh install
+  # has the right variant in place before pi first launches. After the
+  # first system theme toggle, theme-watcher takes over.
+  home.activation.syncPiTheme =
+    lib.hm.dag.entryAfter [ "writeBoundary" "linkGeneration" ] ''
+      $DRY_RUN_CMD ${config.home.homeDirectory}/.local/bin/sync-pi-theme || true
+    '';
 
   # ── Global AGENTS.md (mutable — machine-wide rules for every session) ───────
   #
