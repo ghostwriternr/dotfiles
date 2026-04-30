@@ -27,6 +27,7 @@ in
     ./home/plannotator.nix
     ./home/glab.nix
     ./home/colima.nix
+    ./home/pi.nix
   ];
 
   home.stateVersion = "25.11";

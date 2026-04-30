@@ -1,0 +1,14 @@
+{
+  "name": "cloudflare-ai-pi-extension",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "pi extension for the corporate opencode-access Cloudflare Worker (CF AI Gateway proxy)",
+  "pi": {
+    "extensions": ["./index.ts"]
+  },
+  "peerDependencies": {
+    "@mariozechner/pi-ai": "*",
+    "@mariozechner/pi-coding-agent": "*"
+  }
+}
