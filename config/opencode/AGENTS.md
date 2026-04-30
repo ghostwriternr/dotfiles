@@ -4,13 +4,13 @@ OpenCode is configured under this directory. Files are surfaced into `~/.config/
 
 ## How files reach `~/.config/opencode/`
 
-- **`mkOutOfStoreSymlink` (mutable, lands in git)** — `agents/`, `skills/auditing-agent-sources/`, `skills/updating-opencode-agents/`, `plugins/look-at.js`, `plugins/interactive-bash.js`, `opencode.json`, and `global-rules.md` (surfaced as `~/.config/opencode/AGENTS.md`). The symlink at `~/.config/opencode/<x>` *is* this repo. Editing the live path edits git.
+- **`mkOutOfStoreSymlink` (mutable, lands in git)** — `agents/`, `skills/auditing-agent-sources/`, `skills/updating-opencode-agents/`, `plugins/look-at.js`, `plugins/interactive-bash.js`, `opencode.json`, and `../agent-rules.md` (surfaced as `~/.config/opencode/AGENTS.md`; shared with pi). The symlink at `~/.config/opencode/<x>` *is* this repo. Editing the live path edits git.
 - **Nix store, read-only** — upstream skill packs `skills/superpowers/` and `skills/cloudflare/`, plus the upstream `plugins/superpowers.js`. Sourced from flake inputs `superpowers` and `cloudflare-skills` in `flake.nix`, pinned via `flake.lock`. Bump with `nix flake update superpowers cloudflare-skills`. `force = true` in `home/opencode.nix` overwrites stale manual clones on rebuild.
 - **Activation script** — `home/opencode.nix:69` symlinks `~/.config/opencode/node_modules` into this repo's `node_modules` so Bun can resolve `@opencode-ai/plugin` for plugins running from their real (repo) path. `node_modules` is gitignored.
 
 If a rebuild does not pick up an agent edit, verify `home/opencode.nix` still uses `mkOutOfStoreSymlink` rather than a copy with `force = true`.
 
-`global-rules.md` (this directory) is **the global, machine-wide** rules file (commit-message rules, PR rules, plan-storage location). It is symlinked out as `~/.config/opencode/AGENTS.md` and applies to every OpenCode session everywhere — not just this repo. Do not put nix-darwin-specific notes there. The file you are reading now (`AGENTS.md` in this directory) is the **project-scoped** counterpart and only auto-loads when a session is rooted under `config/opencode/`.
+`../agent-rules.md` (one level up, at `config/agent-rules.md`) is **the global, machine-wide, tool-agnostic** rules file (commit-message rules, PR rules, plan-storage location). It is symlinked out as `~/.config/opencode/AGENTS.md` *and* `~/.pi/agent/AGENTS.md`, and applies to every agent session everywhere — not just this repo. Do not put nix-darwin-specific notes or opencode-specific notes there; keep it tool-neutral. The file you are reading now (`AGENTS.md` in this directory) is the **project-scoped** counterpart and only auto-loads when a session is rooted under `config/opencode/`.
 
 ## Agent roster (`agents/*.md`)
 

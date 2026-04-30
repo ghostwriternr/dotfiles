@@ -56,14 +56,17 @@ in
 
   # ── Global AGENTS.md (mutable — machine-wide rules for every session) ───────
   #
-  # The source is `global-rules.md` (not `AGENTS.md`) so that the
-  # `config/opencode/AGENTS.md` path stays free for project-scoped setup
-  # notes, which opencode auto-loads when a session is rooted under
-  # `config/opencode/`. opencode reads the well-known `~/.config/opencode/
+  # The source is `config/agent-rules.md` — a tool-agnostic file shared with
+  # pi (see `home/pi.nix`). Its content (commit-message rules, PR rules, plan
+  # storage) is about the user's standards, not opencode-specific behaviour,
+  # so both agents read from the same source. The path is named `agent-rules`
+  # rather than `AGENTS.md` so that `config/opencode/AGENTS.md` stays free for
+  # project-scoped setup notes (auto-loaded when sessions are rooted under
+  # `config/opencode/`). opencode reads the well-known `~/.config/opencode/
   # AGENTS.md` path regardless of what the symlink target is named.
 
   xdg.configFile."opencode/AGENTS.md".source =
-    config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/opencode/global-rules.md";
+    config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/agent-rules.md";
 
   # ── Plugin dependency resolution ────────────────────────────────────────────
   #

@@ -1,0 +1,17 @@
+{
+  "lastChangelogVersion": "0.70.6",
+  "defaultProvider": "cloudflare-ai",
+  "defaultModel": "claude-opus-4-7",
+  "defaultThinkingLevel": "medium",
+  "enabledModels": [
+    "claude-opus-4-7",
+    "claude-sonnet-4-6",
+    "claude-haiku-4-5",
+    "gpt-5.5",
+    "gemini-3-flash-preview",
+    "gemini-3-pro-preview"
+  ],
+  "warnings": {
+    "anthropicExtraUsage": false
+  }
+}

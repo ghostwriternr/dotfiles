@@ -33,7 +33,7 @@ OpenCode setup details (file-surfacing patterns, agent roster, permission model,
 
 Two cross-cutting reminders that interact with the rest of this file:
 
-- `config/opencode/global-rules.md` is the **global, machine-wide** OpenCode rules file (commit messages, PR descriptions, plan storage). It is symlinked to `~/.config/opencode/AGENTS.md` and applies to every session everywhere — not just this repo. Do not put nix-darwin-specific notes in it.
+- `config/agent-rules.md` is the **global, machine-wide, tool-agnostic** rules file (commit messages, PR descriptions, plan storage). It is symlinked to both `~/.config/opencode/AGENTS.md` and `~/.pi/agent/AGENTS.md`, applies to every agent session everywhere — not just this repo — and is shared between opencode and pi. Do not put nix-darwin-specific notes or tool-specific notes in it; keep it neutral.
 - `config/opencode/node_modules` is gitignored and symlinked by an activation script in `home/opencode.nix:69` so plugins resolving `@opencode-ai/plugin` from the real repo path work under Bun.
 
 ## Secrets
