@@ -162,6 +162,22 @@ let
     selection-foreground=${fg}
     selection-background=${sel}
   '';
+
+  # Builds the theme-watcher Swift binary from source. Uses the system
+  # /usr/bin/swiftc (Xcode CLT) rather than nixpkgs swift because:
+  #   - nixpkgs swift on darwin is historically painful for trivial Foundation
+  #     programs touching DistributedNotificationCenter (Apple-only API).
+  #   - the flake already runs with --impure (modules/system.nix:12 reaches to
+  #     /Users/naresh/.config/cloudflare/...), so reaching to /usr/bin/swiftc
+  #     introduces no new impurity.
+  #   - macOS nix builds are unsandboxed (Apple's sandbox is incompatible with
+  #     nix's), so runCommand can shell out to system tools without
+  #     __noChroot or __impureHostDeps gymnastics.
+  # The derivation hashes on the .swift content via the path interpolation, so
+  # the binary only rebuilds when the source changes.
+  themeWatcher = pkgs.runCommand "theme-watcher" { } ''
+    /usr/bin/swiftc ${../config/theme-watcher/theme-watcher.swift} -o $out
+  '';
 in
 {
   # ── Direnv ──────────────────────────────────────────────────────────────────
@@ -342,9 +358,12 @@ in
   # ── fastfetch ───────────────────────────────────────────────────────────
   home.file.".config/fastfetch/config.jsonc".source = ../config/fastfetch/config.jsonc;
 
-  # ── Theme watcher (reloads SketchyBar/JankyBorders on appearance change) ─
+  # ── Theme watcher (reloads SketchyBar/JankyBorders/pi on appearance change) ─
+  #
+  # Source: config/theme-watcher/theme-watcher.swift. Built by the
+  # `themeWatcher` derivation above; no committed binary.
   home.file.".local/bin/theme-watcher" = {
-    source = ../config/theme-watcher/theme-watcher;
+    source = themeWatcher;
     executable = true;
   };
 
