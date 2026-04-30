@@ -4,6 +4,15 @@
     experimental-features = "nix-command flakes";
     warn-dirty = false;
     trusted-users = [ "root" "@admin" "naresh" ];
+
+    # Numtide's binary cache for everything from `inputs.llm-agents`
+    # (opencode, pi, skills CLI). Saves source-building Bun bundles,
+    # Node deps, etc. on every bump. Public key from the upstream flake's
+    # `nixConfig.extra-trusted-public-keys`.
+    extra-substituters = [ "https://cache.numtide.com" ];
+    extra-trusted-public-keys = [
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+    ];
   };
 
   # Allow specific packages with non-free licenses (e.g. HashiCorp BSL).

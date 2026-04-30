@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 
 let
   llvm = pkgs.llvmPackages_18;
@@ -11,6 +11,10 @@ let
       -resource-dir=${llvm.clang-unwrapped.lib}/lib/clang/18 \
       "$@"
   '';
+
+  # Numtide's catalogue of AI coding agents (see flake.nix `inputs.llm-agents`).
+  # Aliased so the home.packages block reads `llm.pi` instead of the long form.
+  llm = inputs.llm-agents.packages.${pkgs.system};
 in
 {
   imports = [
@@ -54,7 +58,6 @@ in
     just
     nerd-fonts.fira-code
     nginx
-    opencode
     openjdk
     ripgrep
     shellcheck
@@ -81,6 +84,11 @@ in
     binaryen # provides wasm-opt
     lld # provides wasm-ld linker for wasm32 targets
     wasm-clang # clang-18 with resource-dir wired for wasm32 cross-compilation
+
+    # ai coding agents (numtide/llm-agents.nix)
+    llm.opencode
+    llm.pi      # pi.dev — smoke testing
+    llm.skills  # skills CLI consumed by `nix-update`
   ];
 
 }

@@ -65,12 +65,12 @@ Several components exist outside this repository and must be present for the sys
 
 ## Flake inputs
 - `nixpkgs`: The unstable package set.
-- `nixpkgs-master`: Tracks `NixOS/nixpkgs` master. Used via a narrow overlay in `flake.nix` to pull bleeding-edge versions of fast-moving packages while the rest of the system stays on cached `nixos-unstable`. Packages in this overlay may build from source when master's revision isn't in the binary cache yet; builds are quick (~30s). See the overlay block in `flake.nix` for the current membership.
 - `nix-darwin`: Manages macOS system configuration.
 - `home-manager`: Manages the user environment.
 - `sops-nix`: Handles secrets management.
 - `superpowers`: An opencode skill pack from `obra/superpowers`.
 - `cloudflare-skills`: An opencode skill pack from `cloudflare/skills`.
+- `llm-agents`: Numtide's daily-updated catalogue of AI coding agents (`numtide/llm-agents.nix`). Sources `opencode`, `pi`, and the `skills` CLI; transparently extensible to other agents (claude-code, codex, crush, gemini-cli, etc.) by adding `llm.<name>` to `home.packages`. Binary cache configured at `cache.numtide.com` (see `modules/nix.nix`).
 
 ## OpenCode agents
 Custom agents are defined as markdown files in `config/opencode/agents/` and symlinked to `~/.config/opencode/agents/` via `mkOutOfStoreSymlink` in `home/opencode.nix`. Each file combines a YAML frontmatter (model, permissions, mode) with a system prompt body.

@@ -127,11 +127,8 @@ in
         local system_attr="$flake_dir#darwinConfigurations.KVQ52GY6N9.system"
 
         # 1. Update non-nixpkgs inputs (always fast — no source builds).
-        # nixpkgs-master sits in this group: it supplies a narrow overlay of
-        # fast-moving packages whose uncached builds are quick enough to
-        # track on every update.
         echo ":: Updating non-nixpkgs inputs..."
-        nix flake update home-manager nix-darwin sops-nix superpowers cloudflare-skills nixpkgs-master \
+        nix flake update home-manager nix-darwin sops-nix superpowers cloudflare-skills llm-agents \
           --flake "$flake_dir" || return 1
 
         # Snapshot lock after safe updates, before touching nixpkgs
@@ -244,7 +241,7 @@ in
 
         # 6. Check for skill updates
         echo ":: Checking for skill updates..."
-        npx skills update
+        skills update
 
         # 7. Commit and push.
         # Plannotator bump gets its own commit (atomic, easy to revert).
