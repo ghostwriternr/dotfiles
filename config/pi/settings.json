@@ -1,16 +1,17 @@
 {
   "lastChangelogVersion": "0.70.6",
   "defaultProvider": "cloudflare-ai",
-  "defaultModel": "claude-opus-4-7",
-  "defaultThinkingLevel": "off",
+  "defaultModel": "gpt-5.5",
+  "defaultThinkingLevel": "low",
   "theme": "everforest",
   "enabledModels": [
-    "claude-opus-4-7",
-    "claude-sonnet-4-6",
-    "claude-haiku-4-5",
     "gpt-5.5",
     "gemini-3-flash-preview",
-    "gemini-3-pro-preview"
+    "claude-sonnet-4-6",
+    "gemini-3.1-pro-preview",
+    "claude-opus-4-7",
+    "workers-ai/@cf/zai-org/glm-5.1",
+    "workers-ai/@cf/moonshotai/kimi-k2.6"
   ],
   "warnings": {
     "anthropicExtraUsage": false
