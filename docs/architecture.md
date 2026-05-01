@@ -16,7 +16,7 @@ flake.nix
     └── home.nix             # User packages + imports every home/*.nix
 ```
 
-`home/` contains one module per concern (`shell`, `git`, `programs`, `secrets`, `opencode`, `glab`, `theme`, `colima`). Any new home-manager module must be added to `home.nix`'s `imports` list; any new system module must be added to `flake.nix`'s `modules` list.
+`home/` contains one module per concern (`shell`, `git`, `programs`, `secrets`, `opencode`, `pi`, `glab`, `theme`, `colima`). Any new home-manager module must be added to `home.nix`'s `imports` list; any new system module must be added to `flake.nix`'s `modules` list.
 
 ## Nix vs Brew
 The choice between Nix and Homebrew depends on the type of tool and its integration requirements.
@@ -51,7 +51,7 @@ The system uses three distinct patterns for managing configuration files.
 
 1. **Nix module**: Used for tools like Ghostty or SSH. Home-manager generates the configuration file as a read-only symlink pointing to the nix store. This is the preferred method for tools that don't need to write back to their own configuration.
 2. **Template + activation script**: Used for `opencode.json` and GitLab's `config.yml`. A template file in `config/` contains placeholder tokens like `__SECRET__`. An activation script copies this template to the target location and substitutes secrets from sops. The resulting file is a real, mutable file rather than a symlink. This pattern is necessary for tools that write state back to their configuration and require secret injection.
-3. **mkOutOfStoreSymlink**: Creates a symlink from the home directory to a file within the git repository. The target remains mutable, and any edits made by the user or external tools land directly in the git working tree. This is used for files that are frequently edited.
+3. **mkOutOfStoreSymlink**: Creates a symlink from the home directory to a file within the git repository. The target remains mutable, and any edits made by the user or external tools land directly in the git working tree. This is used for files that are frequently edited. Pi uses this pattern for `~/.pi/agent/settings.json`, custom extensions, theme variants, and the shared `AGENTS.md` rules file.
 
 ## External dependencies
 Several components exist outside this repository and must be present for the system to function correctly.
@@ -61,6 +61,8 @@ Several components exist outside this repository and must be present for the sys
 - `~/.config/cloudflare/vault-funcs`: Cloudflare vault helpers, sourced if present.
 - `~/.local/share/cloudflare-warp-certs/`: Environment variables and git configuration for WARP certificates.
 - `~/.config/nvim/`: Neovim configuration, managed in the `ghostwriternr/LazyVim` repository.
+- `~/.pi/agent/auth.json`: Pi provider credentials created by `/login`.
+- `~/.pi/agent/cloudflare-ai-cache.json`: Cached model metadata for the custom Pi provider.
 - `~/.colima/`: Configuration for the Colima Docker runtime.
 
 ## Flake inputs
@@ -71,6 +73,23 @@ Several components exist outside this repository and must be present for the sys
 - `superpowers`: An opencode skill pack from `obra/superpowers`.
 - `cloudflare-skills`: An opencode skill pack from `cloudflare/skills`.
 - `llm-agents`: Numtide's daily-updated catalogue of AI coding agents (`numtide/llm-agents.nix`). Sources `opencode`, `pi`, and the `skills` CLI; transparently extensible to other agents (claude-code, codex, crush, gemini-cli, etc.) by adding `llm.<name>` to `home.packages`. Binary cache configured at `cache.numtide.com` (see `modules/nix.nix`).
+
+## Pi
+
+Pi is installed from Numtide's `llm-agents` flake input as `llm.pi`. Home-manager wires its files with `home/pi.nix`; unlike most tools, Pi reads from `~/.pi/agent/` rather than XDG paths, so the module uses `home.file` instead of `xdg.configFile`.
+
+Mutable Pi config lives in `config/pi/` and is surfaced with `mkOutOfStoreSymlink` so `/reload`, `/settings`, and direct edits inside Pi take effect without a rebuild and still land in git:
+
+- `config/pi/settings.json` → `~/.pi/agent/settings.json`: default provider/model, enabled models, theme, and subagent overrides.
+- `config/pi/extensions/cloudflare-ai/` → `~/.pi/agent/extensions/cloudflare-ai/`: custom provider for the corporate `opencode-access` worker.
+- `config/pi/themes/everforest-{dark,light}.json` → `~/.pi/agent/themes/`: selectable theme variants.
+- `config/agent-rules.md` → `~/.pi/agent/AGENTS.md`: machine-wide tool-agnostic agent rules shared with OpenCode.
+
+The default provider is `cloudflare-ai`, a local extension that discovers model/provider metadata from `https://opencode.cloudflare.dev/.well-known/opencode`, authenticates through Pi's `/login` flow using `cloudflared`, and stores credentials in `~/.pi/agent/auth.json`. It caches merged model metadata in `~/.pi/agent/cloudflare-ai-cache.json` so Pi can continue to start during transient network failures.
+
+Two read-only Pi extensions are pinned as non-flake inputs in `flake.lock`: `pi-subagents` provides the delegation tool and builtin subagents, while `pi-intercom` provides cross-session coordination so child agents can ask the parent for clarification. Per-agent model choices and disabled builtin agents live in `config/pi/settings.json`, not beside the read-only extension source.
+
+Pi's active Everforest theme is intentionally a regular mutable file at `~/.pi/agent/themes/everforest.json`, generated by `config/pi/bin/sync-pi-theme`. Home-manager runs it during activation, and the macOS theme watcher runs it on appearance changes so Pi hot-reloads between dark and light variants without restarting.
 
 ## OpenCode agents
 Custom agents are defined as markdown files in `config/opencode/agents/` and symlinked to `~/.config/opencode/agents/` via `mkOutOfStoreSymlink` in `home/opencode.nix`. Each file combines a YAML frontmatter (model, permissions, mode) with a system prompt body.
