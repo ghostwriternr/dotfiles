@@ -16,6 +16,19 @@
     cloudflare-skills.url = "github:cloudflare/skills";
     cloudflare-skills.flake = false;
 
+    # Pi extension: subagent delegation (non-flake, pinned in flake.lock).
+    # Builtin agents (scout/worker/planner/oracle/reviewer) are wired up
+    # in home/pi.nix; per-agent model overrides live in config/pi/settings.json.
+    pi-subagents.url = "github:nicobailon/pi-subagents";
+    pi-subagents.flake = false;
+
+    # Pi extension: cross-session coordination companion to pi-subagents.
+    # Lets child agents `intercom.ask` the parent for clarification mid-run
+    # rather than guessing or stalling. Pi-subagents auto-detects the bridge
+    # when both extensions are loaded.
+    pi-intercom.url = "github:nicobailon/pi-intercom";
+    pi-intercom.flake = false;
+
     # Numtide's daily-updated catalogue of AI coding agents. Sources
     # opencode, pi, and the skills CLI; the same input can later expose
     # claude-code, codex, crush, gemini-cli, etc. with one line each.

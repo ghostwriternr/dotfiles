@@ -178,6 +178,38 @@
         "type": "github"
       }
     },
+    "pi-intercom": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1777317844,
+        "narHash": "sha256-M/9H4jC4YQW3dTasBwWaMbWm87KRkAIJJ7r7OAnwc5s=",
+        "owner": "nicobailon",
+        "repo": "pi-intercom",
+        "rev": "8c03a1489dd9edcec0f0e3b75b83b714a3f15733",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nicobailon",
+        "repo": "pi-intercom",
+        "type": "github"
+      }
+    },
+    "pi-subagents": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1777574237,
+        "narHash": "sha256-YRo8/t8aiddT+RPx522cheSHvJCZS9K4uQ5TkX3amm8=",
+        "owner": "nicobailon",
+        "repo": "pi-subagents",
+        "rev": "c0396e2055cccc23494c62ca6ee2ae4b15f1d6fe",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nicobailon",
+        "repo": "pi-subagents",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "cloudflare-skills": "cloudflare-skills",
@@ -185,6 +217,8 @@
         "llm-agents": "llm-agents",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs",
+        "pi-intercom": "pi-intercom",
+        "pi-subagents": "pi-subagents",
         "sops-nix": "sops-nix",
         "superpowers": "superpowers"
       }

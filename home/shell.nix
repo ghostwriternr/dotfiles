@@ -128,7 +128,7 @@ in
 
         # 1. Update non-nixpkgs inputs (always fast — no source builds).
         echo ":: Updating non-nixpkgs inputs..."
-        nix flake update home-manager nix-darwin sops-nix superpowers cloudflare-skills llm-agents \
+        nix flake update home-manager nix-darwin sops-nix superpowers cloudflare-skills llm-agents pi-subagents pi-intercom \
           --flake "$flake_dir" || return 1
 
         # Snapshot lock after safe updates, before touching nixpkgs

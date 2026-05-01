@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, inputs, ... }:
 
 # Pi reads from ~/.pi/, NOT XDG ~/.config/pi/. Hence home.file rather than
 # xdg.configFile. mkOutOfStoreSymlink keeps edits live in git so /reload
@@ -18,6 +18,32 @@ in
 
   home.file.".pi/agent/extensions/cloudflare-ai".source =
     config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/pi/extensions/cloudflare-ai";
+
+  # ── Subagents extension (pinned via flake input) ────────────────────────
+  #
+  # Adds builtin agents (scout/worker/planner/oracle/reviewer/...) plus
+  # the `subagent` delegation tool. Per-agent model overrides live in
+  # config/pi/settings.json under `subagents.agentOverrides`. Disabled
+  # builtins (delegate/researcher/context-builder) are also configured
+  # there. Pinned to a specific upstream commit via flake.lock; bump with
+  # `nix-update`.
+  #
+  # Source path is the nix-store directory of the input (read-only). The
+  # extension itself only reads from this path, so a non-mutable link is
+  # fine — our agent definitions live in the override block, not next to
+  # the extension's own builtin agents.
+
+  home.file.".pi/agent/extensions/subagent".source = inputs.pi-subagents;
+
+  # ── Pi-intercom companion (pinned via flake input) ──────────────────────
+  #
+  # Optional but valuable companion: gives child subagents a private
+  # coordination channel back to the parent. Lets `worker` ask the parent
+  # for a clarifying decision mid-run instead of guessing or stalling.
+  # Pi-subagents detects the bridge automatically when both extensions
+  # are loaded.
+
+  home.file.".pi/agent/extensions/intercom".source = inputs.pi-intercom;
 
   # ── settings.json (mutable — pi writes lastChangelogVersion + /settings) ────
 

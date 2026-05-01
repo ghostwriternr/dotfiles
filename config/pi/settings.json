@@ -13,6 +13,32 @@
     "workers-ai/@cf/zai-org/glm-5.1",
     "workers-ai/@cf/moonshotai/kimi-k2.6"
   ],
+  "subagents": {
+    "agentOverrides": {
+      "scout": {
+        "model": "cloudflare-ai/gemini-3-flash-preview",
+        "thinking": "off"
+      },
+      "worker": {
+        "model": "cloudflare-ai/gpt-5.5",
+        "thinking": "low"
+      },
+      "planner": {
+        "model": "cloudflare-ai/gemini-3.1-pro-preview"
+      },
+      "oracle": {
+        "model": "cloudflare-ai/claude-opus-4-7",
+        "thinking": "off"
+      },
+      "reviewer": {
+        "model": "cloudflare-ai/claude-sonnet-4-6",
+        "thinking": "off"
+      },
+      "delegate": { "disabled": true },
+      "researcher": { "disabled": true },
+      "context-builder": { "disabled": true }
+    }
+  },
   "warnings": {
     "anthropicExtraUsage": false
   }
