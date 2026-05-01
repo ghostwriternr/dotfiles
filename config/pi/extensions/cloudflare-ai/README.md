@@ -18,6 +18,11 @@ The extension caches the merged config at
 `~/.pi/agent/cloudflare-ai-cache.json` (5min TTL, atomic writes). On network
 failure the cache is used as fallback. Safe to delete the cache file.
 
+It also mirrors remote MCP servers from the worker's well-known `config.mcp`
+block to `~/.pi/agent/mcp.json`, the standard Pi override file consumed by
+`pi-mcp-adapter`. OAuth is preserved and servers use lazy lifecycle, so they
+are not contacted until a Pi session uses them.
+
 ## Models
 
 Live list comes from the worker; see <https://opencode.cloudflare.dev/.well-known/opencode>.

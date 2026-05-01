@@ -52,7 +52,10 @@ interface WellKnownModel {
 
 interface WellKnownConfig {
 	auth: { command: string[]; env: string };
-	config: { provider: Record<string, WellKnownProvider> };
+	config: {
+		provider: Record<string, WellKnownProvider>;
+		mcp?: import("./mcp.js").WellKnownMcpConfig;
+	};
 }
 
 interface ModelsDevModel {

@@ -54,13 +54,16 @@ import {
 	streamSimpleOpenAIResponses,
 } from "@mariozechner/pi-ai";
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
-import { loginViaCloudflared, refreshViaCloudflared } from "./oauth.js";
+import { buildPiMcpConfig, writePiMcpConfig } from "./mcp.js";
 import { type Backend, type CFModel, buildModels, loadConfig } from "./models.js";
+import { loginViaCloudflared, refreshViaCloudflared } from "./oauth.js";
 
 const WORKER_URL = "https://opencode.cloudflare.dev";
 const WELL_KNOWN_URL = `${WORKER_URL}/.well-known/opencode`;
 const MODELS_DEV_URL = "https://models.dev/api.json";
-const CACHE_PATH = join(homedir(), ".pi", "agent", "cloudflare-ai-cache.json");
+const AGENT_DIR = join(homedir(), ".pi", "agent");
+const CACHE_PATH = join(AGENT_DIR, "cloudflare-ai-cache.json");
+const MCP_PATH = join(AGENT_DIR, "mcp.json");
 const CACHE_TTL_MS = 5 * 60 * 1000;
 const FETCH_TIMEOUT_MS = 5 * 1000;
 const SENTINEL_API_KEY = "cloudflare-ai-sentinel"; // placeholder; the worker strips the Authorization header
@@ -158,6 +161,12 @@ export default async function (pi: ExtensionAPI) {
 	} catch (err) {
 		console.error(`[cloudflare-ai] startup failed: ${(err as Error).message}`);
 		return;
+	}
+
+	try {
+		writePiMcpConfig(MCP_PATH, buildPiMcpConfig(cfg.wellKnown.config.mcp));
+	} catch (err) {
+		console.warn(`[cloudflare-ai] MCP config write failed: ${(err as Error).message}`);
 	}
 
 	const models = buildModels(cfg);
