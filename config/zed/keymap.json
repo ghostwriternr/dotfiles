@@ -9,7 +9,8 @@
   {
     "context": "Workspace",
     "bindings": {
-      "cmd-alt-t": "workspace::NewCenterTerminal"
+      "ctrl-`": "workspace::NewCenterTerminal",
+      "ctrl-~": "workspace::NewCenterTerminal"
     }
   },
   {
