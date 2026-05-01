@@ -33,7 +33,11 @@ in
   # fine — our agent definitions live in the override block, not next to
   # the extension's own builtin agents.
 
-  home.file.".pi/agent/extensions/subagent".source = inputs.pi-subagents;
+  # Wrapper keeps Pi's startup extension list readable. Loading the upstream
+  # package directly shows the entrypoint directory basename (`extension`).
+  home.file.".pi/agent/extensions/pi-subagents/index.ts".text = ''
+    export { default } from "${inputs.pi-subagents}/src/extension/index.ts";
+  '';
 
   # ── Pi-intercom companion (pinned via flake input) ──────────────────────
   #
@@ -53,6 +57,13 @@ in
 
   home.file.".pi/agent/packages/context-mode".source =
     "${pkgs.piPackages.context-mode}/lib/node_modules/context-mode";
+
+  # Wrapper keeps Pi's startup extension list readable. The context-mode
+  # package entrypoint is named `pi-extension.js`, so settings.json disables
+  # that package extension and this top-level wrapper loads it instead.
+  home.file.".pi/agent/extensions/context-mode/index.ts".text = ''
+    export { default } from "${pkgs.piPackages.context-mode}/lib/node_modules/context-mode/build/pi-extension.js";
+  '';
 
   home.file.".pi/agent/packages/pi-mcp-adapter".source =
     "${pkgs.piPackages.pi-mcp-adapter}/lib/node_modules/pi-mcp-adapter";

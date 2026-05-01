@@ -14,7 +14,10 @@
     "./skills/cloudflare"
   ],
   "packages": [
-    "./packages/context-mode",
+    {
+      "source": "./packages/context-mode",
+      "extensions": []
+    },
     "./packages/pi-mcp-adapter"
   ],
   "subagents": {
