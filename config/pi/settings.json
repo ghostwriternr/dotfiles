@@ -30,9 +30,15 @@
         "model": "cloudflare-ai/claude-sonnet-4-6",
         "thinking": "off"
       },
-      "delegate": { "disabled": true },
-      "researcher": { "disabled": true },
-      "context-builder": { "disabled": true }
+      "delegate": {
+        "disabled": true
+      },
+      "researcher": {
+        "disabled": true
+      },
+      "context-builder": {
+        "disabled": true
+      }
     }
   },
   "warnings": {
