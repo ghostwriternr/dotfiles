@@ -13,6 +13,10 @@
     "./skills/superpowers",
     "./skills/cloudflare"
   ],
+  "packages": [
+    "./packages/context-mode",
+    "./packages/pi-mcp-adapter"
+  ],
   "subagents": {
     "agentOverrides": {
       "planner": {

@@ -69,6 +69,14 @@
               # it for version/hash bumps. See pkgs/plannotator/default.nix
               # and scripts/bump-plannotator.sh.
               plannotator = prev.callPackage ./pkgs/plannotator { };
+
+              # Pi packages sourced from released npm tarballs. Home-manager
+              # exposes their package roots as local Pi packages so Pi keeps
+              # package-manifest semantics without mutable global npm state.
+              piPackages = {
+                context-mode = prev.callPackage ./pkgs/pi-packages/context-mode { };
+                pi-mcp-adapter = prev.callPackage ./pkgs/pi-packages/pi-mcp-adapter { };
+              };
             })
           ];
 

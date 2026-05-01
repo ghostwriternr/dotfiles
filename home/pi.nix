@@ -1,4 +1,4 @@
-{ config, lib, inputs, ... }:
+{ config, lib, inputs, pkgs, ... }:
 
 # Pi reads from ~/.pi/, NOT XDG ~/.config/pi/. Hence home.file rather than
 # xdg.configFile. mkOutOfStoreSymlink keeps edits live in git so /reload
@@ -44,6 +44,18 @@ in
   # are loaded.
 
   home.file.".pi/agent/extensions/pi-intercom".source = inputs.pi-intercom;
+
+  # ── Reproducible Pi packages (Nix-built npm release artifacts) ─────────────
+  #
+  # Pi loads these through `settings.json` as local package paths. This keeps
+  # Pi's package-manifest semantics (extensions + skills from package.json)
+  # while Nix owns the npm tarball versions, hashes, and dependency closures.
+
+  home.file.".pi/agent/packages/context-mode".source =
+    "${pkgs.piPackages.context-mode}/lib/node_modules/context-mode";
+
+  home.file.".pi/agent/packages/pi-mcp-adapter".source =
+    "${pkgs.piPackages.pi-mcp-adapter}/lib/node_modules/pi-mcp-adapter";
 
   # ── settings.json (mutable — pi writes lastChangelogVersion + /settings) ────
 

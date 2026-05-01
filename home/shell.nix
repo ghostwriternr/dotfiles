@@ -180,6 +180,25 @@ in
           echo "$plannotator_pkg_snapshot" > "$plannotator_pkg_file"
         fi
 
+        # 2.6. Auto-bump Pi npm packages to latest published npm releases.
+        # These are local Nix derivations under pkgs/pi-packages/ that fetch
+        # npm tarballs and freeze dependency closures with npmDepsHash. The
+        # helper updates version, tarball hash, lockfile, and npmDepsHash.
+        echo ":: Checking Pi package updates..."
+        local pi_pkg_bumped=0
+        local pi_pkg_snapshot
+        pi_pkg_snapshot=$(tar -C "$flake_dir" -cf - pkgs/pi-packages 2>/dev/null | base64)
+        if "$flake_dir/scripts/bump-pi-package.sh" context-mode \
+          && "$flake_dir/scripts/bump-pi-package.sh" pi-mcp-adapter; then
+          if ! git -C "$flake_dir" diff --quiet -- pkgs/pi-packages; then
+            pi_pkg_bumped=1
+          fi
+        else
+          echo "⚠  Pi package update check failed; reverting"
+          echo "$pi_pkg_snapshot" | base64 --decode | tar -C "$flake_dir" -xf -
+          pi_pkg_bumped=0
+        fi
+
         # 3. Dry-run: check what needs building from source
         echo ":: Checking binary cache coverage..."
         local dry_output
@@ -226,6 +245,11 @@ in
               echo "$opencode_json_snapshot" > "$opencode_json"
               plannotator_bumped=0
             fi
+            if [[ $pi_pkg_bumped -eq 1 ]]; then
+              echo ":: Reverting Pi package bumps too..."
+              echo "$pi_pkg_snapshot" | base64 --decode | tar -C "$flake_dir" -xf -
+              pi_pkg_bumped=0
+            fi
           fi
         else
           echo "✓ All packages cached (trivial local config rebuilds excluded)"
@@ -249,6 +273,10 @@ in
         if [[ $plannotator_bumped -eq 1 ]]; then
           git -C "$flake_dir" add pkgs/plannotator/default.nix "$opencode_json"
           git -C "$flake_dir" commit -m "plannotator: $plannotator_old -> $plannotator_new"
+        fi
+        if [[ $pi_pkg_bumped -eq 1 ]]; then
+          git -C "$flake_dir" add pkgs/pi-packages
+          git -C "$flake_dir" commit -m "pi: update package artifacts"
         fi
         git -C "$flake_dir" add flake.lock
         # Empty commit is an error in plain `git commit`; guard with --allow-empty check.
