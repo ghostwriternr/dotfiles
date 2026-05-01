@@ -7,14 +7,7 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
-  "agent_servers": {
-    "opencode": {
-      "type": "registry"
-    },
-    "pi-acp": {
-      "type": "registry"
-    }
-  },
+  "disable_ai": true,
   "cli_default_open_behavior": "existing_window",
   "icon_theme": {
     "mode": "light",
@@ -24,6 +17,17 @@
   "telemetry": {
     "diagnostics": false,
     "metrics": false,
+  },
+  "collaboration_panel": {
+    "button": false,
+  },
+  "calls": {
+    "mute_on_join": true,
+    "share_on_join": false,
+  },
+  "show_call_status_icon": false,
+  "file_finder": {
+    "include_channels": false,
   },
   "vim_mode": true,
   "base_keymap": "VSCode",
