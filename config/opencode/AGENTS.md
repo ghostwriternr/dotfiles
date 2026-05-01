@@ -4,7 +4,7 @@ OpenCode is configured under this directory. Files are surfaced into `~/.config/
 
 ## How files reach `~/.config/opencode/`
 
-- **`mkOutOfStoreSymlink` (mutable, lands in git)** — `agents/`, `skills/auditing-agent-sources/`, `skills/updating-opencode-agents/`, `plugins/look-at.js`, `plugins/interactive-bash.js`, `opencode.json`, and `../agent-rules.md` (surfaced as `~/.config/opencode/AGENTS.md`; shared with pi). The symlink at `~/.config/opencode/<x>` *is* this repo. Editing the live path edits git.
+- **`mkOutOfStoreSymlink` (mutable, lands in git)** — `agents/`, `plugins/look-at.js`, `plugins/interactive-bash.js`, `opencode.json`, and `../agent-rules.md` (surfaced as `~/.config/opencode/AGENTS.md`; shared with pi). The symlink at `~/.config/opencode/<x>` *is* this repo. Editing the live path edits git. Repo-authored skills live in `.agents/skills/` at the repo root so both OpenCode and Pi discover them only for this repo.
 - **Nix store, read-only** — upstream skill packs `skills/superpowers/` and `skills/cloudflare/`, plus the upstream `plugins/superpowers.js`. Sourced from flake inputs `superpowers` and `cloudflare-skills` in `flake.nix`, pinned via `flake.lock`. Bump with `nix flake update superpowers cloudflare-skills`. `force = true` in `home/opencode.nix` overwrites stale manual clones on rebuild.
 - **Activation script** — `home/opencode.nix:69` symlinks `~/.config/opencode/node_modules` into this repo's `node_modules` so Bun can resolve `@opencode-ai/plugin` for plugins running from their real (repo) path. `node_modules` is gitignored.
 
@@ -39,7 +39,7 @@ Re-verify before any major rewrite — if upstream flips this to extend, much of
 rg -n "system|prompt" ~/github/opencode/packages/opencode/src/session/llm.ts
 ```
 
-For any body rewrite, use the **`updating-opencode-agents` skill** — it documents the staging-directory + Oracle gap-audit loop that catches what the base prompt was carrying. Skipping it costs review rounds.
+For any body rewrite, use the **`updating-opencode-agents` skill** — it documents the staging-directory + Oracle gap-audit loop that catches what the base prompt was carrying. Skipping it costs review rounds. The source lives in project-local `.agents/skills/updating-opencode-agents/`.
 
 ## Permission model (`opencode.json`)
 
@@ -61,8 +61,8 @@ For any body rewrite, use the **`updating-opencode-agents` skill** — it docume
 
 - **`skills/superpowers/`** — upstream meta-skills for brainstorming, planning, debugging, TDD, code review, worktrees, etc. Read-only.
 - **`skills/cloudflare/`** — upstream Cloudflare-platform skill pack (Workers, KV, R2, Agents SDK, Wrangler, etc.). Read-only.
-- **`skills/auditing-agent-sources/`** — custom. Run when checking whether our agent prompts are stale relative to OpenCode upstream, Amp, and oh-my-openagent. Surfaces deltas; does not apply them.
-- **`skills/updating-opencode-agents/`** — custom. Run when editing or rewriting an agent. Encodes the body-replacement rule, the Oracle gap-audit loop, and the known gotchas (model-specific tool selection, provider option defaults, parameter↔prompt tension, native-subagent escalation paths).
+- **`.agents/skills/auditing-agent-sources/`** — custom project-local skill. Run when checking whether our agent prompts are stale relative to OpenCode upstream, Amp, and oh-my-openagent. Surfaces deltas; does not apply them.
+- **`.agents/skills/updating-opencode-agents/`** — custom project-local skill. Run when editing or rewriting an agent. Encodes the body-replacement rule, the Oracle gap-audit loop, and the known gotchas (model-specific tool selection, provider option defaults, parameter↔prompt tension, native-subagent escalation paths).
 
 ## Editing checklist
 

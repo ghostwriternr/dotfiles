@@ -18,14 +18,6 @@ in
     force = true;
   };
 
-  # ── Skills — user-authored (mutable — symlink to repo) ──────────────────────
-
-  xdg.configFile."opencode/skills/auditing-agent-sources".source =
-    config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/opencode/skills/auditing-agent-sources";
-
-  xdg.configFile."opencode/skills/updating-opencode-agents".source =
-    config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/opencode/skills/updating-opencode-agents";
-
   # ── Custom agents (mutable — symlink to repo so edits land in git) ──────────
 
   xdg.configFile."opencode/agents".source =

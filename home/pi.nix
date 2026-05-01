@@ -50,6 +50,28 @@ in
   home.file.".pi/agent/settings.json".source =
     config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/pi/settings.json";
 
+  # ── Custom subagents (mutable — prompt overrides tuned for our models) ──────
+
+  home.file.".pi/agent/agents".source =
+    config.lib.file.mkOutOfStoreSymlink "${nixDarwinDir}/config/pi/agents";
+
+  # ── Skills — shared with OpenCode ───────────────────────────────────────────
+  #
+  # Pi-subagents discovers global skills from ~/.pi/agent/skills. Surface the
+  # same upstream packs that OpenCode sees so workflows like Superpowers are
+  # available from both harnesses. Repo-authored skills are project-local in
+  # .agents/skills, which both Pi and OpenCode discover automatically.
+
+  home.file.".pi/agent/skills/superpowers" = {
+    source = "${inputs.superpowers}/skills";
+    force = true;
+  };
+
+  home.file.".pi/agent/skills/cloudflare" = {
+    source = "${inputs.cloudflare-skills}/skills";
+    force = true;
+  };
+
   # ── Themes (Everforest, auto-switching with macOS appearance) ───────────
   #
   # Strategy: settings.json sets `theme: "everforest"` (constant). The

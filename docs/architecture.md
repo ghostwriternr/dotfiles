@@ -82,6 +82,8 @@ Mutable Pi config lives in `config/pi/` and is surfaced with `mkOutOfStoreSymlin
 
 - `config/pi/settings.json` → `~/.pi/agent/settings.json`: default provider/model, enabled models, theme, and subagent overrides.
 - `config/pi/extensions/cloudflare-ai/` → `~/.pi/agent/extensions/cloudflare-ai/`: custom provider for the corporate `opencode-access` worker.
+- `config/pi/agents/` → `~/.pi/agent/agents/`: custom subagent definitions that shadow selected upstream builtins with harness- and model-tuned prompts.
+- Global skill sources are exposed to Pi under `~/.pi/agent/skills/`: Superpowers and Cloudflare skills. Repo-authored skills in `.agents/skills/` are project-local for both OpenCode and Pi.
 - `config/pi/themes/everforest-{dark,light}.json` → `~/.pi/agent/themes/`: selectable theme variants.
 - `config/agent-rules.md` → `~/.pi/agent/AGENTS.md`: machine-wide tool-agnostic agent rules shared with OpenCode.
 
