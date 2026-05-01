@@ -43,7 +43,7 @@ in
   # Pi-subagents detects the bridge automatically when both extensions
   # are loaded.
 
-  home.file.".pi/agent/extensions/intercom".source = inputs.pi-intercom;
+  home.file.".pi/agent/extensions/pi-intercom".source = inputs.pi-intercom;
 
   # ── settings.json (mutable — pi writes lastChangelogVersion + /settings) ────
 
