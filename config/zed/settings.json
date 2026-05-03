@@ -8,16 +8,16 @@
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
   "outline_panel": {
-    "dock": "left"
+    "dock": "left",
   },
   "debugger": {
-    "dock": "left"
+    "dock": "left",
   },
   "git_panel": {
-    "dock": "left"
+    "dock": "left",
   },
   "project_panel": {
-    "dock": "left"
+    "dock": "left",
   },
   "disable_ai": true,
   "cli_default_open_behavior": "existing_window",
@@ -48,6 +48,6 @@
   "theme": {
     "mode": "system",
     "light": "Everforest Light Medium (material)",
-    "dark": "Everforest Dark Hard (regular)",
+    "dark": "Everforest Dark Hard (material)",
   },
 }
